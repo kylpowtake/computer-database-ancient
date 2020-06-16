@@ -9,7 +9,11 @@ public class Company {
 	
 	public Company(int id, String name) {
 		this.setId(id);
-		this.setName(name);
+		if(name == "null") {
+			this.setName("");
+		} else {
+			this.setName(name);
+		}
 	}
 
 	public int getId() {
@@ -23,5 +27,10 @@ public class Company {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public String toString() {
+		System.out.println("yop");
+		return "Company index : " + id + " , name " + name + "\n";
 	}
 }

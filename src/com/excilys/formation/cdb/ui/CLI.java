@@ -1,6 +1,5 @@
 package com.excilys.formation.cdb.ui;
 
-import java.io.IOException;
 import java.util.Scanner;
 
 public abstract class CLI {

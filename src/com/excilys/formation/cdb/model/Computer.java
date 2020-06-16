@@ -1,23 +1,20 @@
 package com.excilys.formation.cdb.model;
 
 
-import java.time.*;
+import java.time.LocalDate;
 
-import java.util.Date;
-
-import com.excilys.formation.cdb.model.Company;
 public class Computer {
 	private int id;
 	private String name;
-	private Date introduced;
-	private Date discontinued;
+	private LocalDate introduced;
+	private LocalDate discontinued;
 	private Company company;
 	
 	public Computer(String name) {
 		this.setName(name);
 	}
 	
-	public Computer(int id, String name, Date introduced, Date discontinued, Company company) {
+	public Computer(int id, String name, LocalDate introduced, LocalDate discontinued, Company company) {
 		this.setId(id);
 		this.setName(name);
 		this.setIntroduced(introduced);
@@ -37,17 +34,17 @@ public class Computer {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public Date getIntroduced() {
+	public LocalDate getIntroduced() {
 		return introduced;
 	}
-	public void setIntroduced(Date introduced) {
+	public void setIntroduced(LocalDate introduced) {
 		this.introduced = introduced;
 	}
-	public Date getDiscontinued() {
+	public LocalDate getDiscontinued() {
 		return discontinued;
 	}
-	public void setDiscontinued(Date discontinued) {
-		if(this.introduced == null || this.introduced.compareTo(discontinued) >= 0) {
+	public void setDiscontinued(LocalDate discontinued) {
+		if(this.introduced == null || this.discontinued == null || this.introduced.compareTo(discontinued) >= 0) {
 			this.discontinued = discontinued;
 		}
 	}
@@ -59,7 +56,13 @@ public class Computer {
 	}
 	
 	public String toString() {
-		return "index : " + this.id + " , name : " + this.name + " , introduced : " + this.introduced + " , discontinued : " + this.discontinued + " , company : " + this.company;
+		String message = "index : " + this.id + " , name : " + this.name + " , introduced : " + this.introduced + " , discontinued : " + this.discontinued + " , company : ";
+		if(company != null) {
+			message += company.toString();
+		} else {
+			message += "null\n";
+		}
+		return message;
 	}
 	
 }
