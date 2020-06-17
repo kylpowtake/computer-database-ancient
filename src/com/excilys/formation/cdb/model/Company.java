@@ -1,12 +1,30 @@
 package com.excilys.formation.cdb.model;
 
-
+/**
+ * Classe représentant une company avec ses différentes valeurs.
+ * @author kylian
+ *
+ */
 public class Company {
+	/**
+	 * L'id de la company.
+	 */
 	private int id;
+	/**
+	 * Le nom de la company.
+	 */
 	private String name;
 	
+	/**
+	 * Constructeur vide d'une company.
+	 */
 	public Company() {}
 	
+	/**
+	 * Constructeur avec tous les paramètres d'une company.
+	 * @param id L'id de la company.
+	 * @param name Le nom de la company.
+	 */
 	public Company(int id, String name) {
 		this.setId(id);
 		if(name == "null") {
@@ -30,7 +48,6 @@ public class Company {
 	}
 	
 	public String toString() {
-		System.out.println("yop");
 		return "Company index : " + id + " , name " + name + "\n";
 	}
 }

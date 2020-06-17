@@ -5,27 +5,51 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 
-import com.excilys.formation.cdb.JDBC.JDBC;
+import com.excilys.formation.cdb.JDBC.ConnexionSQL;
 import com.excilys.formation.cdb.model.Company;
 
+/**
+ * Classe comprenant les méthodes pour faire des requêtes à la base de données à propos de la classe Companie.
+ * 
+ * @author kylian
+ * @see Company
+ *
+ */
 public class DAOCompany {
+	/**
+	 * Champ privé permettant d'avoir un singleton pour cette classe.
+	 */
 	private static DAOCompany daoCompany;
 	
+	/**
+	 * Constructeur de la classe, en privé pour le singleton.
+	 */
 	private DAOCompany() {}
 	
+	/**
+	 * Méthode permettant d'obtenir l'instance unique de la classe.
+	 * Si l'instance existe déjà elle est renvoyée, sinon elle est créée puis renvoyée.
+	 * @return une instance de la classe.
+	 */
 	public static DAOCompany getDAOCompany() {
 		if(daoCompany == null) {
 			return new DAOCompany();
 		} else {
-		return daoCompany;
+			return daoCompany;
 		}
 	}
-	public String ListerCompany(){
+	
+	/**
+	 * Méthode faisant la requête à la base de données pour avoir la liste de companies.
+	 * @return un string étant soit un message d'erreur soit la liste de companies.
+	 * @exception SQLException Si problème lorsque la base de données s'occupe de la requête.
+	 */
+	public String listerCompanies(){
 		// Code pour obtenir la liste de company de la base de données.
 		String message = "";
 		try {
 			String requete = "Select * from company";
-			Statement statement = JDBC.con.createStatement();
+			Statement statement = ConnexionSQL.getConnexion().createStatement();
 			ResultSet resultSet = statement.executeQuery(requete);
 			while(resultSet.next()) {
 				int idCompany = resultSet.getInt("company.id");

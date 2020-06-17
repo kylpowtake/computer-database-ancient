@@ -3,17 +3,49 @@ package com.excilys.formation.cdb.model;
 
 import java.time.LocalDate;
 
+/**
+ * Classe représentant un computer avec ses différentes valeurs.
+ * @author kylian
+ * @see Company
+ */
 public class Computer {
+	/**
+	 * L'id du computer.
+	 */
 	private int id;
+	/**
+	 * Le nom du computer.
+	 */
 	private String name;
+	/**
+	 * La date d'introduction du computer.
+	 */
 	private LocalDate introduced;
+	/**
+	 * La date d'arrêt du computer.
+	 */
 	private LocalDate discontinued;
+	/**
+	 * La company du computer.
+	 */
 	private Company company;
 	
+	/**
+	 * Constructeur minimal avec seulement le nom du computer.
+	 * @param name
+	 */
 	public Computer(String name) {
 		this.setName(name);
 	}
 	
+	/**
+	 * Constructeur maxial avec toutes ses valeurs.
+	 * @param id L'id du computer.
+	 * @param name Le nom du computer.
+	 * @param introduced La date d'introduction du computer.
+	 * @param discontinued La date d'arrêt du computer.
+	 * @param company La company du computer.
+	 */
 	public Computer(int id, String name, LocalDate introduced, LocalDate discontinued, Company company) {
 		this.setId(id);
 		this.setName(name);
@@ -56,7 +88,7 @@ public class Computer {
 	}
 	
 	public String toString() {
-		String message = "index : " + this.id + " , name : " + this.name + " , introduced : " + this.introduced + " , discontinued : " + this.discontinued + " , company : ";
+		String message = "index : " + this.id + " , name : " + this.name + " , introduced : " + this.introduced + " , discontinued : " + this.discontinued + " , ";
 		if(company != null) {
 			message += company.toString();
 		} else {
