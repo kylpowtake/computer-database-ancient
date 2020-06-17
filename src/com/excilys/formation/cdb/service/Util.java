@@ -2,8 +2,8 @@ package com.excilys.formation.cdb.service;
 
 import java.time.LocalDate;
 
-import com.excilys.formation.cdb.JDBC.ConnexionSQL;
 import com.excilys.formation.cdb.Pageable.Page;
+import com.excilys.formation.cdb.connectiviteSQL.ConnexionSQL;
 import com.excilys.formation.cdb.model.Computer;
 import com.excilys.formation.cdb.persistence.DAOCompany;
 import com.excilys.formation.cdb.persistence.DAOComputer;

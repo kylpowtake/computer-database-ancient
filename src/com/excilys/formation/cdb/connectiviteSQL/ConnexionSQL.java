@@ -1,4 +1,4 @@
-package com.excilys.formation.cdb.JDBC;
+package com.excilys.formation.cdb.connectiviteSQL;
 
 import java.sql.*;
 import com.mysql.cj.jdbc.MysqlDataSource;

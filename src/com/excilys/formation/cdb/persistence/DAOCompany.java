@@ -4,8 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-
-import com.excilys.formation.cdb.JDBC.ConnexionSQL;
+import com.excilys.formation.cdb.connectiviteSQL.ConnexionSQL;
 import com.excilys.formation.cdb.model.Company;
 
 /**

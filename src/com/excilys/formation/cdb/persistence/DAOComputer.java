@@ -7,8 +7,8 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.sql.Date;
 
-import com.excilys.formation.cdb.JDBC.ConnexionSQL;
 import com.excilys.formation.cdb.Pageable.Page;
+import com.excilys.formation.cdb.connectiviteSQL.ConnexionSQL;
 import com.excilys.formation.cdb.mapper.MapperComputer;
 import com.excilys.formation.cdb.model.Company;
 import com.excilys.formation.cdb.model.Computer;
