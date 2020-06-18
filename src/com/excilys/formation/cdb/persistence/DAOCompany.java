@@ -26,6 +26,12 @@ public class DAOCompany {
 	private DAOCompany() {}
 	
 	/**
+	 * String représentant la requête pour obtenir la liste entière de companies de la base de données.
+	 */
+	private static final String REQUETELISTECOMPANIES = "SELECT company.id, company.name FROM company";
+	
+	private static final String REQUETEFINDBYID= "SELECT company.id, company.name FROM company WHERE company.id = ";
+	/**
 	 * Méthode permettant d'obtenir l'instance unique de la classe.
 	 * Si l'instance existe déjà elle est renvoyée, sinon elle est créée puis renvoyée.
 	 * @return une instance de la classe.
@@ -44,12 +50,10 @@ public class DAOCompany {
 	 * @exception SQLException Si problème lorsque la base de données s'occupe de la requête.
 	 */
 	public String listerCompanies(){
-		// Code pour obtenir la liste de company de la base de données.
 		String message = "";
 		try {
-			String requete = "Select * from company";
 			Statement statement = ConnexionSQL.getConnexion().createStatement();
-			ResultSet resultSet = statement.executeQuery(requete);
+			ResultSet resultSet = statement.executeQuery(REQUETELISTECOMPANIES);
 			while(resultSet.next()) {
 				int idCompany = resultSet.getInt("company.id");
 				String nameCompany = resultSet.getString("company.name");
@@ -61,5 +65,23 @@ public class DAOCompany {
 			System.exit(1);
 		}
 		return message;
+	}
+	
+	/**
+	 * Méthode faisant une requête pour vérifier que la base de données contient la company dont l'id est passé en paramètre et retournée ses valeurs.
+	 * @param companyId : L'id de la company concernant la requête.
+	 * @return ResultSet contenant les résultats de la requête.
+	 * @exception SQLException Si problème lorsque la base de données s'occupe des requêtes.
+	 */
+	public ResultSet findCompanybyId(int companyId) {
+		try {
+			Statement statement = ConnexionSQL.getConnexion().createStatement();
+			ResultSet resultSet = statement.executeQuery(REQUETEFINDBYID + companyId + ";");
+			return resultSet;
+		} catch(SQLException e) {
+			System.out.println("Erreur lors de la vérification de l'existence d'une company : " + e.getLocalizedMessage());
+			System.exit(1);
+		}
+		return null;
 	}
 }

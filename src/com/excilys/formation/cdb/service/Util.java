@@ -1,9 +1,11 @@
 package com.excilys.formation.cdb.service;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 
 import com.excilys.formation.cdb.Pageable.Page;
 import com.excilys.formation.cdb.connectiviteSQL.ConnexionSQL;
+import com.excilys.formation.cdb.mapper.MapperComputer;
 import com.excilys.formation.cdb.model.Computer;
 import com.excilys.formation.cdb.persistence.DAOCompany;
 import com.excilys.formation.cdb.persistence.DAOComputer;
@@ -72,6 +74,9 @@ public class Util {
 					break;
 				case "List computers page":
 					commandeListComputersBeginning();
+					break;
+				case "Quit":
+					commandeArretApplication();
 					break;
 				default:
 					demandeMauvaiseCommande();
@@ -239,6 +244,13 @@ public class Util {
 	}
 	
 	/**
+	 * Méthode arrêtant l'application.
+	 */
+	public static void commandeArretApplication() {
+		ConnexionSQL.finirConnexion();
+	}
+	
+	/**
 	 * Méthode permettant d'afficher la liste entière de companies.
 	 */
 	public static void commandeListCompanies() {
@@ -257,73 +269,44 @@ public class Util {
 	}
 	
 	/**
-	 * Méthode prenant les données d'un computer en String en paramètre et appelant une méthode de daoComputer pour faire la requête de sa création.
+	 * Méthode prenant les données d'un computer en String en paramètre et appellant une méthode de daoComputer pour faire la requête de sa création.
 	 * @param argument Les données d'un computer à créer en String.
 	 */
 	public static void commandeCreateComputer(String argument) {
+		Computer computer = null;
 		String message = "";
 		String[] argumentSplit = argument.split("::");
 		if(argumentSplit.length == 4) {
-			String name = verificationString(argumentSplit[0]);
-			if(name.equals("")) {
-				message = "L'argument donné pour le nom du computer est vide, ce n'est autorisé.";
-				gestionMessage(message);
-				return;
-			}
-			String[] introducedString = argumentSplit[1].split(":");
-			String[] discontinuedString = argumentSplit[2].split(":");
-			LocalDate introduced = null;
-			LocalDate discontinued = null;
-			int idCompany = 0;
-			if(testArgumentInt(argumentSplit[3])) {
-				idCompany = Integer.parseInt(argumentSplit[3]);
+			computer = MapperComputer.stringToComputer(argumentSplit[0], argumentSplit[1], argumentSplit[2], argumentSplit[3]);
+			if(computer != null) {
+				message = daoComputer.ajouter(computer, Integer.parseInt(argumentSplit[3]));
 			} else {
-				message = "L'argument donné pour l'indice de la company du computer n'est pas valide.";
-				gestionMessage(message);
-				return;
-			}
-			if(introducedString.length == 3) {
-				int yearIntroduced = stringDateToInt(introducedString[0], "year");
-				int monthIntroduced = stringDateToInt(introducedString[1], "month");
-				int dayIntroduced = stringDateToInt(introducedString[2], "day");
-				if(yearIntroduced != 0 && monthIntroduced != 0 && dayIntroduced != 0) {
-					introduced = LocalDate.of(yearIntroduced,monthIntroduced, dayIntroduced);
-				} else {
-					message = "L'argument donné pour la date 'introduced' n'est pas valide.";
-					gestionMessage(message);
-					return;
-				}
-			} else if(introducedString != null){
-				message = "L'argument donné pour la date 'introduced' n'est pas valide.";
-				gestionMessage(message);
-				return;
-			}
-			if(discontinuedString.length == 3) {
-				int yearDiscontinued = stringDateToInt(discontinuedString[0], "year");
-				int monthDiscontinued = stringDateToInt(discontinuedString[1], "month");
-				int dayDiscontinued = stringDateToInt(discontinuedString[2], "day");
-				if(yearDiscontinued != 0 && monthDiscontinued != 0 && dayDiscontinued != 0) {
-					discontinued = LocalDate.of(yearDiscontinued, monthDiscontinued, dayDiscontinued);
-				} else {
-					message = "L'argument donné pour la date 'discontinued' n'est pas valide.";
-					gestionMessage(message);
-					return;
-				}
-			} else if(discontinuedString != null){
-				message = "L'argument donné pour la date 'discontinued' n'est pas valide.";
-				gestionMessage(message);
-				return;
-			}
-			if(introduced.isBefore(discontinued)) {
-			Computer computer = new Computer(0, name, introduced, discontinued, null);
-			message = daoComputer.ajouter(computer, idCompany);				
-			} else {
-				message = "La date 'discontinued' donné n'est pas plus récente que celle de 'introduced'.";
+				message = "Au moins un des arguments n'est pas valide.";
 			}
 		} else {
 			message = "Le nombre d'arguments n'est pas le bon.";
 		}
 		gestionMessage(message);
+	}
+	
+	public static String[] dateStringToTableauString(String dateString) {
+		String[] tableauString = dateString.split(":");
+		if(tableauString.length == 3) {
+			return tableauString;
+		} else {
+			return null;
+		}
+	}
+	
+	public static LocalDate tableauStringToLocalDate(String[] tableauString) {
+		LocalDate localDate = null;
+		try {
+			localDate = LocalDate.of(stringDateToInt(tableauString[0], "year"), stringDateToInt(tableauString[1], "month"), stringDateToInt(tableauString[2], "day"));
+		} catch(DateTimeException e) {
+			System.out.println("Les valeurs d'une date passé en paramètre sont invalides : " + e.getLocalizedMessage());
+			System.exit(1);
+		}
+		return localDate;
 	}
 	
 	/**
@@ -334,70 +317,13 @@ public class Util {
 		String message = "";
 		String[] argumentSplit = argument.split("::");
 		if(argumentSplit.length == 5) {
-			int id = 0;
-			if(testArgumentInt(argumentSplit[0])) {
-				id = Integer.parseInt(argumentSplit[0]);
+			Computer computer = MapperComputer.stringToComputerAvecId(argumentSplit[0], argumentSplit[1], argumentSplit[2], argumentSplit[3], argumentSplit[4]);
+			if(computer != null) {
+				message = daoComputer.modifier(computer, Integer.parseInt(argumentSplit[4]));
 			} else {
-				message = "L'argument donné pour l'indice du computer n'est pas valide.";
-				gestionMessage(message);
-				return;
+				message = "Au moins un des paramètres n'est pas valide.";
 			}
-			String name = verificationString(argumentSplit[1]);
-			if(name.equals("")) {
-				message = "L'argument donné pour le nom du computer est vide, ce n'est autorisé.";
-				gestionMessage(message);
-				return;
-			}
-			String[] introducedString = argumentSplit[2].split(":");
-			String[] discontinuedString = argumentSplit[3].split(":");
-			LocalDate introduced = null;
-			LocalDate discontinued = null;
-			int idCompany = 0;
-			if(testArgumentInt(argumentSplit[4])) {
-				idCompany = Integer.parseInt(argumentSplit[4]);
-			} else {
-				message = "L'argument donné pour l'indice de la company du computer n'est pas valide.";
-				gestionMessage(message);
-				return;
-			}
-			if(introducedString.length == 3) {
-				int yearIntroduced = stringDateToInt(introducedString[0], "year");
-				int monthIntroduced = stringDateToInt(introducedString[1], "month");
-				int dayIntroduced = stringDateToInt(introducedString[2], "day");
-				if(yearIntroduced != 0 && monthIntroduced != 0 && dayIntroduced != 0) {
-					introduced = LocalDate.of(yearIntroduced,monthIntroduced, dayIntroduced);
-				} else {
-					message = "L'argument donné pour la date 'introduced' n'est pas valide.";
-					gestionMessage(message);
-					return;
-				}
-			} else if(introducedString != null){
-				message = "L'argument donné pour la date 'introduced' n'est pas valide.";
-				gestionMessage(message);
-				return;
-			}
-			if(discontinuedString.length == 3) {
-				int yearDiscontinued = stringDateToInt(discontinuedString[0], "year");
-				int monthDiscontinued = stringDateToInt(discontinuedString[1], "month");
-				int dayDiscontinued = stringDateToInt(discontinuedString[2], "day");
-				if(yearDiscontinued != 0 && monthDiscontinued != 0 && dayDiscontinued != 0) {
-					discontinued = LocalDate.of(yearDiscontinued, monthDiscontinued, dayDiscontinued);
-				} else {
-					message = "L'argument donné pour la date 'discontinued' n'est pas valide.";
-					gestionMessage(message);
-					return;
-				}
-			} else if(discontinuedString != null){
-				message = "L'argument donné pour la date 'discontinued' n'est pas valide.";
-				gestionMessage(message);
-				return;
-			}
-			if(introduced.isBefore(discontinued)) {
-			Computer computer = new Computer(id, name, introduced, discontinued, null);
-			message = daoComputer.modifier(computer, idCompany);				
-			} else {
-				message = "La date 'discontinued' donné n'est pas plus récente que celle de 'introduced'.";
-			}
+			gestionMessage(message);
 		} else {
 			message = "Le nombre d'arguments n'est pas le bon.";
 		}
@@ -449,6 +375,7 @@ public class Util {
 		message = message + "'List computers' : Affiche la liste entière de computer.\n";
 		message = message + "'List companies' : Affiche la liste entière de company.\n";
 		message = message + "'List computers page' : affiche les computers par page de " + page.getNombreParPage() + " et ajoute de nouvelles commandes pour changer de place.\n";
+		message = message + "'Quit' : Ferme l'application.";
 		gestionMessage(message);
 	}
 	
@@ -528,7 +455,7 @@ public class Util {
 	}
 	
 	/**
-	 * Méthode vérifiant que les antislash dans le String passé en paramètre soient antislasher.
+	 * Méthode vérifiant que les antislash dans le String passé en paramètre soient antislashés.
 	 * @return Le String avec ses antislash antishlashés.
 	 */
 	public static String verificationString(String message) {

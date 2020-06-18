@@ -1,6 +1,10 @@
 package com.excilys.formation.cdb.connectiviteSQL;
 
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.*;
+import java.util.Properties;
+
 import com.mysql.cj.jdbc.MysqlDataSource;
 
 /**
@@ -14,15 +18,25 @@ public class ConnexionSQL {
 	 */
 	private static Connection connexion;
 	
+	private static final String FICHIERPROPERTIES = "config.properties";
+	
+	private static String dbUser = "";
+	private static String dbPassword = "";
+	private static String dbURL = "";
+	private static final String DBUSERKEY = "dbUser";
+	private static final String DBPASSWORDKEY = "dbPassword";
+	private static final String DBURLKEY = "dbURL";
+	
 	/**
 	 * Méthode initialisant la connexion à la base de données.
 	 * @exception SQLException S'il y a eu un problème lors de la création de la connexion à la base de données.
 	 */
 	private static void connexionSQL() {
+		readFichierProperties();
 		MysqlDataSource mysqlDataSource = new MysqlDataSource();
-		mysqlDataSource.setURL("jdbc:mysql://localhost:3306/computer-database-db?serverTimezone=UTC");
-		mysqlDataSource.setUser("admincdb");
-		mysqlDataSource.setPassword("qwerty1234");
+		mysqlDataSource.setURL(dbURL);
+		mysqlDataSource.setUser(dbUser);
+		mysqlDataSource.setPassword(dbPassword);
 		try {
 			connexion = mysqlDataSource.getConnection();
 		} catch (SQLException e) {
@@ -40,5 +54,35 @@ public class ConnexionSQL {
 			connexionSQL();
 		}
 		return connexion;
+	}
+	
+	/**
+	 * Méthode terminant la connexion à la base de données.
+	 */
+	public static void finirConnexion() {
+		try {
+			connexion.close();
+		} catch (SQLException e) {
+			System.out.println("Une erreur s'est produite lors de la tentative de fermeture de la connexion à la base de données : " + e.getLocalizedMessage());
+		}
+	}
+	
+	/**
+	 * Méthode lisant le fichier config.properties pour obtenir les informations permettant de se connecter à la base de données.
+	 */
+	public static void readFichierProperties() {
+		try {
+			FileReader fileReader = new FileReader(FICHIERPROPERTIES);
+			Properties properties = new Properties();
+			if(fileReader != null){
+				properties.load(fileReader);
+				dbUser = properties.getProperty(DBUSERKEY);
+				dbPassword = properties.getProperty(DBPASSWORDKEY);
+				dbURL = properties.getProperty(DBURLKEY);
+			}
+			fileReader.close();
+		} catch (IOException e) {
+			System.out.println("Erreur lors de la lectures des propriétés de la connexion à la base de données : " + e.getLocalizedMessage());
+		}
 	}
 }

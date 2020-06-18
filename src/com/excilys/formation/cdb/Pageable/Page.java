@@ -93,5 +93,9 @@ public class Page{
 		this.peutAllerAnciennePage = peutAlleranciennePage;
 	}
 	
+	public void setPeutAllerAncienneEtNouvellePage(int nombreComputers) {
+		this.setPeutAllerNouvellePage(nombreComputers > this.getNumeroPage() * this.getNombreParPage());
+		this.setPeutAllerAnciennePage(this.getNumeroPage() != 1);
+	}
 	
 }
