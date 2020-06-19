@@ -128,10 +128,7 @@ public class MapperComputer {
 			discontinued = Util.tableauStringToLocalDate(discontinuedDateStringSplit);
 		}
 		
-		int idCompany = 0;
-		if(Util.testArgumentInt(companyIdString)) {
-			idCompany = Integer.parseInt(companyIdString);
-		} else {
+		if(!Util.testArgumentInt(companyIdString)) {
 			//message = "L'argument donné pour l'indice de la company du computer n'est pas valide.";
 			//gestionMessage(message);
 			return null;
