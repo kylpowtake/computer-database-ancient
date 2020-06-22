@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.excilys.formation.cdb.Pageable.Page;
 import com.excilys.formation.cdb.connectiviteSQL.ConnexionSQL;
+import com.excilys.formation.cdb.exception.ParametresException;
 import com.excilys.formation.cdb.mapper.MapperComputer;
 import com.excilys.formation.cdb.model.Computer;
 
@@ -147,13 +148,18 @@ public class DAOComputer {
 	 * @exception SQLException Si problème lorsque la base de données s'occupe des requêtes.
 	 * @see Page
 	 */
-	public String listerComputersEnd() {
+	public String listerComputersEnd() throws ParametresException{
 		String message = "";
 		Page page = Page.getPage();
 		int nombreComputers = DemandeNombreComputers();
 		page.setNumeroPage(((nombreComputers-(nombreComputers%10))/10)+1);
 		page.setPeutAllerAncienneEtNouvellePage(nombreComputers);
-		List<Computer> listComputers = MapperComputer.mapResultSetToListComputer(faireRequeteAvecResultat(REQUETENOMBRECOMPUTERSDEPUIS + (page.getNumeroPage()-1) * page.getNombreParPage() + ";"));
+		List<Computer> listComputers = null;
+		try {
+			listComputers = MapperComputer.mapResultSetToListComputer(faireRequeteAvecResultat(REQUETENOMBRECOMPUTERSDEPUIS + (page.getNumeroPage()-1) * page.getNombreParPage() + ";"));
+		} catch (ParametresException e) {
+			throw e;
+		}
 		message = listComputers.toString();
 		return message;	
 	}
@@ -164,13 +170,18 @@ public class DAOComputer {
 	 * @exception SQLException Si problème lorsque la base de données s'occupe des requêtes.
 	 * @see Page
 	 */
-	public String listerComputersPage() {
+	public String listerComputersPage() throws ParametresException{
 		String message = "";
 		Page page = Page.getPage();
 		int nombreComputers = DemandeNombreComputers();
 		page.setPeutAllerAncienneEtNouvellePage(nombreComputers);
+		List<Computer> listComputers = null;
 		// Requête pour obtenir les computers de la page actuelle.
-		List<Computer> listComputers = MapperComputer.mapResultSetToListComputer(this.faireRequeteAvecResultat(REQUETENOMBRECOMPUTERSDEPUIS + (page.getNumeroPage()-1) * page.getNombreParPage() + ";"));
+		try {
+		listComputers = MapperComputer.mapResultSetToListComputer(this.faireRequeteAvecResultat(REQUETENOMBRECOMPUTERSDEPUIS + (page.getNumeroPage()-1) * page.getNombreParPage() + ";"));
+		} catch(ParametresException e) {
+			throw e;
+		}
 		message = listComputers.toString();
 		return message;	
 	}
@@ -180,9 +191,14 @@ public class DAOComputer {
 	 * @return Un message d'erreur ou la liste de computers en String.
 	 * @exception SQLException Si problème lorsque la base de données s'occupe des requêtes.
 	 */
-	public String listerComputers(){
+	public String listerComputers() throws ParametresException{
 		String message = "";
-		List<Computer> listeComputers = MapperComputer.mapResultSetToListComputer(this.faireRequeteAvecResultat(REQUETELISTECOMPLETECOMPUTERS));
+		List<Computer> listeComputers = null;
+		try {
+		listeComputers = MapperComputer.mapResultSetToListComputer(this.faireRequeteAvecResultat(REQUETELISTECOMPLETECOMPUTERS));
+		} catch(ParametresException e) {
+			throw e;
+		}
 		message = listeComputers.toString();
 		return message;
 	}
@@ -286,9 +302,14 @@ public class DAOComputer {
 	 * @return message d'erreur ou les informations du computer en String.
 	 * @exception SQLException Si problème lorsque la base de données s'occupe des requêtes.
 	 */
-	public String computerDetails(int computerId) {
+	public String computerDetails(int computerId) throws ParametresException{
 		String message = "";
-		List<Computer> listeComputers = MapperComputer.mapResultSetToListComputer(this.faireRequeteAvecResultat(REQUETEFINDCOMPUTERBYID + computerId + ";"));
+		List<Computer> listeComputers = null;
+		try {
+			listeComputers = MapperComputer.mapResultSetToListComputer(this.faireRequeteAvecResultat(REQUETEFINDCOMPUTERBYID + computerId + ";"));
+		} catch(ParametresException e) {
+			throw e;
+		}
 		if(listeComputers.size() != 1) {
 			message = "Le nombre de computers trouvés n'est pas valide (" + listeComputers.size() + ").";
 		} else if(listeComputers.get(0) != null) {

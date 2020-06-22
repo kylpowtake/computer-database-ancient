@@ -1,10 +1,8 @@
 package com.excilys.formation.cdb.service;
 
-import java.time.DateTimeException;
-import java.time.LocalDate;
-
 import com.excilys.formation.cdb.Pageable.Page;
 import com.excilys.formation.cdb.connectiviteSQL.ConnexionSQL;
+import com.excilys.formation.cdb.exception.ParametresException;
 import com.excilys.formation.cdb.mapper.MapperComputer;
 import com.excilys.formation.cdb.model.Computer;
 import com.excilys.formation.cdb.persistence.DAOCompany;
@@ -193,7 +191,11 @@ public class Util {
 		String message = "";
 		page.setNumeroPage(page.getNumeroPage()+1);
 		page.setPeutAllerAnciennePage(true);
-		message = daoComputer.listerComputersPage();
+		try {
+			message = daoComputer.listerComputersPage();
+		} catch (ParametresException e) {
+			message = e.getLocalizedMessage();
+		}
 		gestionMessagePage(message);
 		} else {
 			String message = "Vous êtes à la fin de la liste des computers, vous ne pouvez allez plus loin.\n";
@@ -214,7 +216,11 @@ public class Util {
 		} else {
 			page.setPeutAllerAnciennePage(true);	
 		}
-		message = daoComputer.listerComputersPage();
+		try {
+			message = daoComputer.listerComputersPage();
+		} catch (ParametresException e) {
+			message = e.getLocalizedMessage();
+		}
 		gestionMessagePage(message);
 		} else {
 			String message = "Vous êtes au début de la liste des computers, vous ne pouvez allez en arrière.\n";
@@ -228,7 +234,11 @@ public class Util {
 	 */
 	public static void commandeListComputersEnd() {
 		String message = "";
-		message = daoComputer.listerComputersEnd();
+		try {
+			message = daoComputer.listerComputersEnd();
+		} catch (ParametresException e) {
+			message = e.getLocalizedMessage();
+		}
 		gestionMessagePage(message);
 	}
 	
@@ -239,7 +249,11 @@ public class Util {
 		String message = "";
 		page.setNumeroPage(1);
 		page.setPeutAllerAnciennePage(false);
-		message = daoComputer.listerComputersPage();
+		try {
+			message = daoComputer.listerComputersPage();
+		} catch (ParametresException e) {
+			message = e.getLocalizedMessage();
+		}
 		gestionMessagePage(message);
 	}
 	
@@ -264,7 +278,11 @@ public class Util {
 	 */
 	public static void commandeListComputers() {
 		String message = "";
-		message = daoComputer.listerComputers();
+		try {
+			message = daoComputer.listerComputers();
+		} catch (ParametresException e) {
+			message = e.getLocalizedMessage();
+		}
 		gestionMessage(message);
 	}
 	
@@ -277,7 +295,11 @@ public class Util {
 		String message = "";
 		String[] argumentSplit = argument.split("::");
 		if(argumentSplit.length == 4) {
+			try {
 			computer = MapperComputer.stringToComputer(argumentSplit[0], argumentSplit[1], argumentSplit[2], argumentSplit[3]);
+			} catch(ParametresException e) {
+				gestionMessage(e.getLocalizedMessage());
+			}
 			if(computer != null) {
 				message = daoComputer.ajouter(computer, Integer.parseInt(argumentSplit[3]));
 			} else {
@@ -289,35 +311,20 @@ public class Util {
 		gestionMessage(message);
 	}
 	
-	public static String[] dateStringToTableauString(String dateString) {
-		String[] tableauString = dateString.split(":");
-		if(tableauString.length == 3) {
-			return tableauString;
-		} else {
-			return null;
-		}
-	}
-	
-	public static LocalDate tableauStringToLocalDate(String[] tableauString) {
-		LocalDate localDate = null;
-		try {
-			localDate = LocalDate.of(stringDateToInt(tableauString[0], "year"), stringDateToInt(tableauString[1], "month"), stringDateToInt(tableauString[2], "day"));
-		} catch(DateTimeException e) {
-			System.out.println("Les valeurs d'une date passé en paramètre sont invalides : " + e.getLocalizedMessage());
-			System.exit(1);
-		}
-		return localDate;
-	}
-	
 	/**
 	 * Méthode prenant les données d'un computer en String en paramètre et appelant une méthode de daoComputer pour faire la requête de sa modification.
 	 * @param argument Les données d'un computer à créer en String.
 	 */
 	public static void commandeMAJComputer(String argument) {
+		Computer computer = null;
 		String message = "";
 		String[] argumentSplit = argument.split("::");
 		if(argumentSplit.length == 5) {
-			Computer computer = MapperComputer.stringToComputerAvecId(argumentSplit[0], argumentSplit[1], argumentSplit[2], argumentSplit[3], argumentSplit[4]);
+			try {
+			computer = MapperComputer.stringToComputerAvecId(argumentSplit[0], argumentSplit[1], argumentSplit[2], argumentSplit[3], argumentSplit[4]);
+			} catch(ParametresException e) {
+				gestionMessage(e.getLocalizedMessage());
+			}
 			if(computer != null) {
 				message = daoComputer.modifier(computer, Integer.parseInt(argumentSplit[4]));
 			} else {
@@ -336,7 +343,7 @@ public class Util {
 	 */
 	public static void commandeSupprimerComputer(String argument) {
 		String message = "";
-		if(testArgumentInt(argument)) {
+		if(stringIsInt(argument)) {
 			message = daoComputer.supprimer(Integer.parseInt(argument));
 		} else {
 			message = "L\'argument donné à la commande n\'est pas un nombre.";
@@ -350,8 +357,14 @@ public class Util {
 	 */
 	public static void commandeDetailsComputer(String argument) {
 		String message = "";
-		if(testArgumentInt(argument)) {
-			message = daoComputer.computerDetails(Integer.parseInt(argument));
+		if(stringIsInt(argument)) {
+			try {
+				message = daoComputer.computerDetails(Integer.parseInt(argument));
+			} catch (NumberFormatException e) {
+				message = "L\'argument donné à la commande n\'est pas un nombre.";
+			} catch (ParametresException e) {
+				message = e.getLocalizedMessage();
+			}
 		} else {
 			message = "L\'argument donné à la commande n\'est pas un nombre.";
 		}
@@ -367,7 +380,7 @@ public class Util {
 		message = message + "Lorsqu'il y a besoin de donner plusieurs arguments, il faut les séparer avec '::'.\n";
 		message = message + "Une date doit être de type 'YYYY:MM:DD'.\n";
 		message = message + "Un computer est composé dans l'ordre de son indice, son nom, sa date d'introduction, sa date de fin et de sa campany(l'indice).\n";
-		message = message  + "'Help' : Affiche les différentes commandes et leurs effets.\n";
+		message = message + "'Help' : Affiche les différentes commandes et leurs effets.\n";
 		message = message + "'Show computer details' : Affiche  les détails de l'ordinateur dont l'indice est donné en argument.\n";
 		message = message + "'Delete a computer' : Supprime l'ordinateur dont l'indice est donné en argument.\n";
 		message = message + "'Update a computer' : Modifie s'il existe l'ordinateur passé en argument.\n";
@@ -406,45 +419,12 @@ public class Util {
 	}
 	
 	/**
-	 * Méthode utilisé pour vérifier que la partie de Date en String passé en paramètre soit vraiment une partie de Date et valide puis la changé en int.
-	 * @param stringDate La partie de Date en String.
-	 * @param type String désignant quelle partie de Date est concernée (année/mois/jour).
-	 * @return La partie de Date en int.
-	 */
-	public static int stringDateToInt(String stringDate, String type) {
-		switch(type) {
-		case "year":
-			if(stringDate.length() == 4 && testArgumentInt(stringDate)) {
-				return Integer.parseInt(stringDate);
-			}
-			break;
-		case "month":
-			if(stringDate.length() == 2 
-			&& testArgumentInt(stringDate) 
-			&& Integer.parseInt(stringDate) >= 1 
-			&& Integer.parseInt(stringDate) < 13) {
-				return Integer.parseInt(stringDate);
-			}
-			break;
-		case "day":
-			if(stringDate.length() == 2 && testArgumentInt(stringDate) && Integer.parseInt(stringDate) >= 1 && Integer.parseInt(stringDate) < 32) {
-				return Integer.parseInt(stringDate);
-			}
-			break;
-		default :
-			System.out.println("Mauvais paramétrage passé à stringDateToInt");
-			System.exit(1);
-			break;
-		}
-		return 0;
-	}
-	
-	/**
 	 * Méthode vérifiant si le String passé en argument est constitué seulement de chiffre.
 	 * @param argument String devant être vérifié.
 	 * @return Booléan représentant la vérification.
 	 */
-	public static Boolean testArgumentInt(String argument) {		
+	public static Boolean stringIsInt(String argument) {	
+		if(argument != null && argument.length() != 0) {
 		for(int i = 0; i < argument.length(); i++) {
 			char c = argument.charAt(i);
 			if(c > '9' || c < '0') {
@@ -452,14 +432,7 @@ public class Util {
 			}
 		}
 		return true;
-	}
-	
-	/**
-	 * Méthode vérifiant que les antislash dans le String passé en paramètre soient antislashés.
-	 * @return Le String avec ses antislash antishlashés.
-	 */
-	public static String verificationString(String message) {
-		message = message.replaceAll("\\\\", "\\\\\\\\");
-		return message;
+		}
+		return false;
 	}
 }
