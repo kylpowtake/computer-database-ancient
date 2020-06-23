@@ -17,7 +17,6 @@ public class MapperComputerTest extends TestCase{
 
 	
 	
-	@SuppressWarnings("deprecation")
 	public static void testDataToComputerTrue() {
 		try {
 			assertEquals(new Computer(5, "nom", LocalDate.of(2222, 12, 12), LocalDate.of(2223, 12, 12), new Company(5, "plop")), 

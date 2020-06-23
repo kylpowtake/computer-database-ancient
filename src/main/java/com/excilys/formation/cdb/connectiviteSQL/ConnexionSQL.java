@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+
+import com.excilys.formation.cdb.logging.Logging;
 import com.mysql.cj.jdbc.MysqlDataSource;
 
 /**
@@ -20,6 +23,7 @@ public class ConnexionSQL {
 	
 	private static final String FICHIERPROPERTIES = "config.properties";
 	
+	private static Logger logger = Logging.getLogger();
 	private static String dbUser = "";
 	private static String dbPassword = "";
 	private static String dbURL = "";
@@ -40,7 +44,7 @@ public class ConnexionSQL {
 		try {
 			connexion = mysqlDataSource.getConnection();
 		} catch (SQLException e) {
-			System.out.println("Problème lors du lancement de la connection avec mySQL." + e.getLocalizedMessage());
+			logger.error("Problème lors de la connexion à la base de données : " + e.getLocalizedMessage());
 			System.exit(1);
 		}
 	}
@@ -63,7 +67,7 @@ public class ConnexionSQL {
 		try {
 			connexion.close();
 		} catch (SQLException e) {
-			System.out.println("Une erreur s'est produite lors de la tentative de fermeture de la connexion à la base de données : " + e.getLocalizedMessage());
+			logger.error("Problème lors de la fin de la connexion avec la base de données : " + e.getLocalizedMessage());
 		}
 	}
 	
@@ -82,7 +86,7 @@ public class ConnexionSQL {
 			}
 			fileReader.close();
 		} catch (IOException e) {
-			System.out.println("Erreur lors de la lectures des propriétés de la connexion à la base de données : " + e.getLocalizedMessage());
+			logger.error("Problème lors de la lecture du fichier config.properties de la base de données : " + e.getLocalizedMessage());
 		}
 	}
 }

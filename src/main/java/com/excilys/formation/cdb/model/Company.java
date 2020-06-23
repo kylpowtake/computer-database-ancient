@@ -50,4 +50,21 @@ public class Company {
 	public String toString() {
 		return "Company index : " + id + " , name " + name + "\n";
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if(obj == null) {
+			return false;
+		}
+		if(obj.getClass().equals(this.getClass())) {
+				Company other = (Company) obj;
+				if(this.getId() == other.getId() && this.getName() != null && this.getName().equals(other.getName())) {
+					return true;
+				} else if(this.getName() == null && other.getName() == null){
+					return true;
+				}
+		}
+		return false;
+	}
+	
 }

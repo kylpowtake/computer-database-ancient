@@ -4,11 +4,11 @@ public class MauvaisFonctionnementException extends Exception{
 	private static final long serialVersionUID = 1L;
 	
 	public MauvaisFonctionnementException() {
-		System.out.println("Il y a eu un mauvais fonctionnemnt entre deux fonctions.");
+		System.out.println("Il y a eu un mauvais fonctionnement entre deux fonctions.");
 	}
 	
 	public MauvaisFonctionnementException(String raison) {
-		System.out.println("Il y a eu un mauvais fonctionnemnt entre deux fonctions. \n" + raison);
+		System.out.println("Il y a eu un mauvais fonctionnement entre deux fonctions. \n" + raison);
 	}
 
 }

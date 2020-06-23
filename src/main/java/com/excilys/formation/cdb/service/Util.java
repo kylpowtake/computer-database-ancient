@@ -1,8 +1,11 @@
 package com.excilys.formation.cdb.service;
 
+import org.slf4j.Logger;
+
 import com.excilys.formation.cdb.Pageable.Page;
 import com.excilys.formation.cdb.connectiviteSQL.ConnexionSQL;
 import com.excilys.formation.cdb.exception.ParametresException;
+import com.excilys.formation.cdb.logging.Logging;
 import com.excilys.formation.cdb.mapper.MapperComputer;
 import com.excilys.formation.cdb.model.Computer;
 import com.excilys.formation.cdb.persistence.DAOCompany;
@@ -30,11 +33,13 @@ public class Util {
 	 */
 	public static Page page;
 	
+	public static Logger logger = Logging.getLogger();
 	/**
 	 * La méthode main, lance l'initialisation des daos et de la page puis lance la communication avec l'utilisateur..
 	 * @param args les paramèters utilisés au lancement du programme, ne sont pas pris en compte.
 	 */
 	public static void main(String[] args) {
+		logger.trace("Début du programme.");
 		ConnexionSQL.getConnexion();
 		daoComputer = DAOComputer.getDAOComputer();
 		daoCompany = DAOCompany.getDAOCompany();
@@ -261,7 +266,9 @@ public class Util {
 	 * Méthode arrêtant l'application.
 	 */
 	public static void commandeArretApplication() {
+		Logger logger = Logging.getLogger();
 		ConnexionSQL.finirConnexion();
+		logger.trace("Fin du programme");
 	}
 	
 	/**

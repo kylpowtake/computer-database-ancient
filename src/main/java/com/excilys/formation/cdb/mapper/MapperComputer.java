@@ -8,7 +8,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+
 import com.excilys.formation.cdb.exception.ParametresException;
+import com.excilys.formation.cdb.logging.Logging;
 import com.excilys.formation.cdb.model.Company;
 import com.excilys.formation.cdb.model.Computer;
 import com.excilys.formation.cdb.service.Util;
@@ -19,6 +22,8 @@ import com.excilys.formation.cdb.service.Util;
  * @see Computer
  */
 public class MapperComputer {
+	
+	private static Logger logger = Logging.getLogger();
 	
 	public static enum TypeDate{
 		DAY,
@@ -76,7 +81,8 @@ public class MapperComputer {
 			}
 			company = new Company(companyId, companyName);
 		}
-		if("".equals(name)) {
+		if(name == null || "".equals(name)) {
+			logger.error("Problème causé par le nom d'un computer étant soit vide soit null.");
 			throw new ParametresException("Le parametre pour le nom du computer est vide, ce n'est pas valide.");
 		}
 		LocalDate introduced = null;
@@ -103,6 +109,7 @@ public class MapperComputer {
 		if(Util.stringIsInt(idString)) {
 			id = Integer.parseInt(idString);
 		} else {
+			logger.error("Problème causé par l'id d'un computer n'étant pas un nombre.");
 			throw new ParametresException("Le paramètre pour l'id du computer n'est pas valide.");
 		}
 		try {
@@ -119,6 +126,7 @@ public class MapperComputer {
 	public static Computer stringToComputer(String name, String introducedString, String discontinuedString, String companyIdString) throws ParametresException{
 		name = doublerAntislash(name);
 		if(name == null || name.equals("")) {
+			logger.error("Problème causé par le nom d'un computer étant soit vide soit null.");
 			throw new ParametresException("Le paramètre pour le nom du computer est vide, ce n'est pas autorisé.");
 		}
 		LocalDate introduced = null;
@@ -134,12 +142,14 @@ public class MapperComputer {
 			throw new ParametresException("Un des paramètres données pour la date discontinued est invalide.");
 		}		
 		if(!Util.stringIsInt(companyIdString)) {
+			logger.error("Problème causé par l'id d'une companie n'étant pas un nombre.");
 			throw new ParametresException("Le paramètre pour l'indice de la company est invalide.");
 		}			 
 		if(introduced.isBefore(discontinued)) {
 		Computer computer = new Computer(0, name, introduced, discontinued, null);
 		return computer;
 		} else {
+			logger.error("Problème causé par une date discontinued étant plus vieille que la date introduced.");
 			throw new ParametresException("La date de discontinued est plus vieille que celle de introduced.");
 		}
 	}
@@ -156,9 +166,11 @@ public class MapperComputer {
 					throw e;
 				}
 			} else {
+				logger.error("Problème causé lors de la manipulation d'une date passé en paramètre.");
 				throw new ParametresException("Les valeurs d'une des dates passées en paramètre ne sont pas valide, le format 'année:mois:jour' n'est pas respecté.");
 			}
 		} else {
+			logger.error("Problème causé lors de la manipulation d'une date passé en paramètre.");
 			throw new ParametresException("Les valeurs d'une des dates passées en paramètre ne sont pas valide, il n'y en a pas.");
 		}
 	}
@@ -175,9 +187,11 @@ public class MapperComputer {
 			}
 			localDate = LocalDate.of(year, month, day);
 			} else {
+				logger.error("Problème causé lors de la manipulation d'une date passé en paramètre.");
 				throw new ParametresException("Les valeurs d'une des dates passées en paramètres ne sont pas valides, format non respecté.");
 			}
 		} catch(DateTimeException e) {
+			logger.error("Problème causé lors de la manipulation d'une date passé en paramètre : " + e.getLocalizedMessage());
 			throw new ParametresException("Les valeurs d'une date passé en paramètre sont invalides.");
 		}
 		return localDate;

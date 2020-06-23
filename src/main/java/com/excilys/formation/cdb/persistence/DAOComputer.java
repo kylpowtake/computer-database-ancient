@@ -6,9 +6,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
+import org.slf4j.Logger;
+
 import com.excilys.formation.cdb.Pageable.Page;
 import com.excilys.formation.cdb.connectiviteSQL.ConnexionSQL;
 import com.excilys.formation.cdb.exception.ParametresException;
+import com.excilys.formation.cdb.logging.Logging;
 import com.excilys.formation.cdb.mapper.MapperComputer;
 import com.excilys.formation.cdb.model.Computer;
 
@@ -53,6 +56,7 @@ public class DAOComputer {
 	 */
 	private static final String REQUETEDELETECOMPUTERBYID = "DELETE FROM computer WHERE computer.id = ";
 	
+	private static Logger logger = Logging.getLogger();
 	/**
 	 * Méthode permettant d'obtenir l'instance unique de la classe.
 	 * Si l'instance existe déjà elle est renvoyée, sinon elle est créée puis renvoyée.
@@ -80,7 +84,7 @@ public class DAOComputer {
 				nombreComputers = resultSet.getInt(1);
 			}
 		} catch(SQLException e) {
-			System.out.println("Erreur lors de la recherche du nombre de computers: " + e.getLocalizedMessage());
+			logger.error("Problème lors de la requête du nombre de computers à la base de données : " + e.getLocalizedMessage());
 			System.exit(1);
 		}
 		return nombreComputers;
@@ -98,7 +102,7 @@ public class DAOComputer {
 			ResultSet resultSet = statement.executeQuery(REQUETEFINDCOMPUTERBYID + computerId + ";");
 			return resultSet;
 		} catch(SQLException e) {
-			System.out.println("Erreur lors de la vérification de l'existence du computer : " + e.getLocalizedMessage());
+			logger.error("Problème lors de la requête de l'id d'un computer à la base de données : " + e.getLocalizedMessage());
 			System.exit(1);
 		}
 		return null;
@@ -118,7 +122,7 @@ public class DAOComputer {
 			ResultSet resultSet = statement.executeQuery(requete);
 			return resultSet;
 		} catch(SQLException e) {
-			System.out.println("Erreur lors du requêteage (SELECT) à la base de données à propos de Computers : \n " + e.getLocalizedMessage());
+			logger.error("Problème lors d'une requête concernant les computers : " + e.getLocalizedMessage());
 			System.exit(1);
 		}
 		return null;
@@ -136,7 +140,7 @@ public class DAOComputer {
 			int nombreLignes = statement.executeUpdate(requete);
 			return nombreLignes;
 		} catch(SQLException e) {
-			System.out.println("Erreur lors du requêteage (Non SELECT) à la base de données à propos de Computers : \n " + e.getLocalizedMessage());
+			logger.error("Problème lors d'une requête concernant les computers : " + e.getLocalizedMessage());
 			System.exit(1);
 		}
 		return 0;
@@ -238,7 +242,7 @@ public class DAOComputer {
 					return message;
 				}
 			} catch (SQLException e) {
-				System.out.println("Un problème a occuré lors de l'utilisation d'un ResultSet : " + e.getLocalizedMessage());
+				logger.error("Problème lors de la requête de l'id d'une company lors de l'ajout d'un computer à la base de données : " + e.getLocalizedMessage());
 				System.exit(1);
 			}
 			nombreLignes = this.faireRequeteSansResultat("INSERT INTO computer (name, introduced, discontinued, company_id) VALUES ('" + computer.getName() + "', '" + computer.getIntroduced() + "', '" + computer.getDiscontinued() + "', '" + companyId + "');");
@@ -265,7 +269,7 @@ public class DAOComputer {
 				return message;
 			}
 		} catch(SQLException e) {
-			System.out.println("Erreur lors de la vérification de l'existence du computer : " + e.getLocalizedMessage());
+			logger.error("Problème lors de la requête de l'id d'une company à la base de données : " + e.getLocalizedMessage());
 			System.exit(1);
 		}
 		ResultSet resultSet = DAOCompany.getDAOCompany().findCompanybyId(companyId);
@@ -275,7 +279,7 @@ public class DAOComputer {
 				return message;
 			}
 		} catch (SQLException e) {
-			System.out.println("Un problème a occuré lors de l'utilisation d'un ResultSet : " + e.getLocalizedMessage());
+			logger.error("Problème lors de la requête pour modifier un computer : " + e.getLocalizedMessage());
 			System.exit(1);
 		}
 		int nombreLignes = this.faireRequeteSansResultat("update computer set computer.name = '" + computer.getName() + "', computer.introduced = '" + computer.getIntroduced() + "', computer.discontinued = '" + computer.getDiscontinued() + "', computer.company_id = " + companyId + " where computer.id = " + computer.getId() + ";");

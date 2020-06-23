@@ -97,4 +97,23 @@ public class Computer {
 		return message;
 	}
 	
+	public boolean equals(Object o) {
+		if(o == null) {
+			return false;
+		}
+		Computer other = (Computer) o;
+		if((this.getCompany() != null && !this.getCompany().equals(other.getCompany())) 
+				|| (this.getDiscontinued() != null && !this.getDiscontinued().equals(other.getDiscontinued()))
+				|| (this.getIntroduced() != null && !this.getIntroduced().equals(other.getIntroduced()))
+				|| (!(this.getId() == other.getId()))
+				|| (this.getName() != null && !this.getName().equals(other.getName()))) {
+			return false;
+		} else if((this.getCompany() == null && other.getCompany() != null)
+				|| (this.getDiscontinued() == null && other.getDiscontinued() != null)
+				|| (this.getIntroduced() == null && other.getIntroduced() != null)
+				|| (this.getName() == null && other.getName() != null)){
+			return false;
+		}
+		return true;
+	}
 }

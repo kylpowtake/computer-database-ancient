@@ -4,7 +4,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.slf4j.Logger;
+
 import com.excilys.formation.cdb.connectiviteSQL.ConnexionSQL;
+import com.excilys.formation.cdb.logging.Logging;
 import com.excilys.formation.cdb.model.Company;
 
 /**
@@ -20,6 +23,7 @@ public class DAOCompany {
 	 */
 	private static DAOCompany daoCompany;
 	
+	private static Logger logger = Logging.getLogger();
 	/**
 	 * Constructeur de la classe, en privé pour le singleton.
 	 */
@@ -61,7 +65,7 @@ public class DAOCompany {
 				message += company.toString();
 			}
 		} catch(SQLException e) {
-			System.out.println("Erreur lors du listage des computer : " + e.getLocalizedMessage());
+			logger.error("Problème lors de la requête de la liste de companies à la base de données : " + e.getLocalizedMessage());
 			System.exit(1);
 		}
 		return message;
@@ -79,7 +83,7 @@ public class DAOCompany {
 			ResultSet resultSet = statement.executeQuery(REQUETEFINDBYID + companyId + ";");
 			return resultSet;
 		} catch(SQLException e) {
-			System.out.println("Erreur lors de la vérification de l'existence d'une company : " + e.getLocalizedMessage());
+			logger.error("Problème SQL lors de la requête de l'id d'une company à la base de données : " + e.getLocalizedMessage());
 			System.exit(1);
 		}
 		return null;
