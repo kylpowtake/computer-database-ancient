@@ -8,14 +8,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
-public class testServlet extends HttpServlet{
+public class Accueil extends HttpServlet{
 
 	@Override
 	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		super.doDelete(req, resp);
 	}
 
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	public void doGet( HttpServletRequest request, HttpServletResponse response )	throws ServletException, IOException {
+		String message = "Transmission de variables : OK !";
+		request.setAttribute( "test", message );
+		this.getServletContext().getRequestDispatcher( "/WEB-INF/accueil.jsp" ).forward( request, response );
 	}
 
 	@Override
@@ -24,6 +27,7 @@ public class testServlet extends HttpServlet{
 
 	@Override
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		super.doPut(req, resp);
 	}
 
 }

@@ -1,0 +1,15 @@
+/home/kylian/Documents/workspace/computer-database-master/src/main/java/com/excilys/formation/cdb/model/Company.java
+/home/kylian/Documents/workspace/computer-database-master/src/main/java/com/excilys/formation/cdb/persistence/DAOComputer.java
+/home/kylian/Documents/workspace/computer-database-master/src/main/java/com/excilys/formation/cdb/mapper/MapperComputer.java
+/home/kylian/Documents/workspace/computer-database-master/src/main/java/com/excilys/formation/cdb/model/Computer.java
+/home/kylian/Documents/workspace/computer-database-master/src/main/java/com/excilys/formation/cdb/connectiviteSQL/ConnexionSQL.java
+/home/kylian/Documents/workspace/computer-database-master/src/main/java/com/excilys/formation/cdb/ui/CLI.java
+/home/kylian/Documents/workspace/computer-database-master/src/main/java/com/excilys/formation/cdb/exception/MauvaisFonctionnementException.java
+/home/kylian/Documents/workspace/computer-database-master/src/main/java/com/excilys/formation/cdb/Pageable/Page.java
+/home/kylian/Documents/workspace/computer-database-master/src/main/java/com/excilys/formation/cdb/exception/ParametresException.java
+/home/kylian/Documents/workspace/computer-database-master/src/main/java/com/excilys/formation/cdb/logging/Logging.java
+/home/kylian/Documents/workspace/computer-database-master/src/main/java/com/excilys/formation/cdb/servlets/Accueil.java
+/home/kylian/Documents/workspace/computer-database-master/src/main/java/com/excilys/formation/cdb/servlets/AddComputer.java
+/home/kylian/Documents/workspace/computer-database-master/src/main/java/com/excilys/formation/cdb/App.java
+/home/kylian/Documents/workspace/computer-database-master/src/main/java/com/excilys/formation/cdb/service/Util.java
+/home/kylian/Documents/workspace/computer-database-master/src/main/java/com/excilys/formation/cdb/persistence/DAOCompany.java
