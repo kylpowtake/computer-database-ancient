@@ -108,7 +108,7 @@ public class MapperComputer {
 		int id = 0;
 		if(Util.stringIsInt(idString)) {
 			id = Integer.parseInt(idString);
-		} else {
+		} else if(idString != null && !idString.equals("null") && !(idString.length() == 0)){
 			logger.error("Problème causé par l'id d'un computer n'étant pas un nombre.");
 			throw new ParametresException("Le paramètre pour l'id du computer n'est pas valide.");
 		}
@@ -129,23 +129,15 @@ public class MapperComputer {
 			logger.error("Problème causé par le nom d'un computer étant soit vide soit null.");
 			throw new ParametresException("Le paramètre pour le nom du computer est vide, ce n'est pas autorisé.");
 		}
-		LocalDate introduced = null;
-		try {
-			introduced = dateStringToLocalDate(introducedString);
-		} catch(ParametresException e) {
-			throw new ParametresException("Un des paramètres données pour la date introduced est invalide.");
-		}
+		LocalDate introduced = null;	
+		introduced = MapperDate.StringToLocalDate(introducedString);
 		LocalDate discontinued = null;
-		try {
-			discontinued = dateStringToLocalDate(discontinuedString);
-		} catch(ParametresException e) {
-			throw new ParametresException("Un des paramètres données pour la date discontinued est invalide.");
-		}		
-		if(!Util.stringIsInt(companyIdString)) {
+		discontinued = MapperDate.StringToLocalDate(discontinuedString);
+		if(!Util.stringIsInt(companyIdString) && companyIdString!=null && !companyIdString.equals("null") && !(companyIdString.length()!=0)) {
 			logger.error("Problème causé par l'id d'une companie n'étant pas un nombre.");
 			throw new ParametresException("Le paramètre pour l'indice de la company est invalide.");
 		}			 
-		if(introduced.isBefore(discontinued)) {
+		if(discontinued == null || introduced.isBefore(discontinued)) {
 		Computer computer = new Computer(0, name, introduced, discontinued, null);
 		return computer;
 		} else {
@@ -156,7 +148,8 @@ public class MapperComputer {
 	
 	
 	public static LocalDate dateStringToLocalDate(String dateString) throws ParametresException{
-		if(dateString != null) {
+		if(dateString != null && !"".equals(dateString)) {
+			System.out.println(dateString + "  " +  dateString.length());
 			String[] tableauString = dateString.split(":");
 			if(tableauString.length == 3) {
 				try {
@@ -169,10 +162,8 @@ public class MapperComputer {
 				logger.error("Problème causé lors de la manipulation d'une date passé en paramètre.");
 				throw new ParametresException("Les valeurs d'une des dates passées en paramètre ne sont pas valide, le format 'année:mois:jour' n'est pas respecté.");
 			}
-		} else {
-			logger.error("Problème causé lors de la manipulation d'une date passé en paramètre.");
-			throw new ParametresException("Les valeurs d'une des dates passées en paramètre ne sont pas valide, il n'y en a pas.");
 		}
+		return null;
 	}
 	
 	public static LocalDate tableauStringToLocalDate(String[] tableauString) throws ParametresException {

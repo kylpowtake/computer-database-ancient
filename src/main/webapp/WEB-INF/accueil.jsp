@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -19,7 +20,9 @@
 		<section id="main">
 		<div class="container">
 			<div class="alert alert-danger">
-			Plop
+			<c:out value="Plop"></c:out>
+			<c:out value="test"></c:out>
+			<c:out value="${test}"></c:out>
 			<%
 			String attribut = (String) request.getAttribute("test");
 			out.println(attribut);

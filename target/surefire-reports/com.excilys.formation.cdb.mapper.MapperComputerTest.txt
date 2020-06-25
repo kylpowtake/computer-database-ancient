@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.excilys.formation.cdb.mapper.MapperComputerTest
 -------------------------------------------------------------------------------
-Tests run: 24, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.009 s - in com.excilys.formation.cdb.mapper.MapperComputerTest
+Tests run: 24, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.018 s - in com.excilys.formation.cdb.mapper.MapperComputerTest

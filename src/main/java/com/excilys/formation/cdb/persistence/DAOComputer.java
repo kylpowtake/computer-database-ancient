@@ -233,8 +233,21 @@ public class DAOComputer {
 	 */
 	public String ajouter(Computer computer, int companyId) {
 		String message = "";
+		String requete = "";
 		ResultSet resultSet = DAOCompany.getDAOCompany().findCompanybyId(companyId);
+		System.out.println(computer.getIntroduced());
 		int nombreLignes = 0;
+		requete += "INSERT INTO computer (name, introduced, discontinued, company_id) VALUES ('" + computer.getName() + "', ";
+		if(computer.getIntroduced() != null) {
+			requete += "'" + computer.getIntroduced() + "', ";
+		} else {
+			requete += "NULL, ";
+		}
+		if(computer.getDiscontinued() != null) {
+			requete += "'" + computer.getDiscontinued() + "', ";
+		} else {
+			requete += "NULL, ";
+		}
 		if(companyId != 0) {
 			try {
 				if(resultSet == null || !resultSet.next()) {
@@ -245,10 +258,12 @@ public class DAOComputer {
 				logger.error("Problème lors de la requête de l'id d'une company lors de l'ajout d'un computer à la base de données : " + e.getLocalizedMessage());
 				System.exit(1);
 			}
-			nombreLignes = this.faireRequeteSansResultat("INSERT INTO computer (name, introduced, discontinued, company_id) VALUES ('" + computer.getName() + "', '" + computer.getIntroduced() + "', '" + computer.getDiscontinued() + "', '" + companyId + "');");
+			requete += "'" + companyId + "');";
 		} else {
-			nombreLignes = this.faireRequeteSansResultat("INSERT INTO computer (name, introduced, discontinued, company_id) VALUES ('" + computer.getName() + "', '" + computer.getIntroduced() + "', '" + computer.getDiscontinued() + "', " + "NULL" + ");");
+			requete += "NULL" + ");";
 		}
+		System.out.println(requete);
+		nombreLignes = this.faireRequeteSansResultat(requete);
 		message = this.verificationFonctionnementRequêteNonSelectUnique(nombreLignes);
 		return message;
 	}

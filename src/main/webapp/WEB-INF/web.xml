@@ -6,6 +6,13 @@
   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_4_0.xsd"
   version="4.0"
   metadata-complete="true">
+  
+<resource-ref>
+<description>[Your Description]</description>
+<res-ref-name>computer-database-db</res-ref-name>
+<res-type>javax.sql.DataSource</res-type>
+<res-auth>Container</res-auth>
+</resource-ref>
 
 <servlet>
 	<description>Servlet s'occupant de l'accueil.</description>
@@ -27,6 +34,16 @@
 	</init-param>
 </servlet>
 
+<servlet>
+	<description>Servlet s'occupant de l'affichage d'une page de computer.</description>
+	<servlet-name>DashBoard</servlet-name>
+	<servlet-class>com.excilys.formation.cdb.servlets.DashBoard</servlet-class>
+	<init-param>
+		<param-name>auteur</param-name> 
+		<param-value>Kylian</param-value> 
+	</init-param>
+</servlet>
+
 <servlet-mapping>
 	<servlet-name>Accueil</servlet-name>
 	<url-pattern>/accueil</url-pattern>
@@ -35,5 +52,11 @@
 	<servlet-name>AddComputer</servlet-name>
 	<url-pattern>/addComputer</url-pattern>
 </servlet-mapping>
+<servlet-mapping>
+	<servlet-name>DashBoard</servlet-name>
+	<url-pattern>/dashboard</url-pattern>
+</servlet-mapping>
+
+
 
 </web-app>
