@@ -78,8 +78,6 @@ public class AddComputer extends HttpServlet {
 		} catch (ValidationException e) {
 			erreurs.put(CHAMP_COMPANY_ID, e.getLocalizedMessage());
 		}
-
-		System.out.println("plop :" + companyId + ":plop");
 		
 		req.setAttribute(CHAMP_NAME, computerName);
 		req.setAttribute(CHAMP_INTRODUCED, computerIntroduced);

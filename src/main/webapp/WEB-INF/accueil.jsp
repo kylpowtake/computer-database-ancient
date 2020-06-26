@@ -34,11 +34,11 @@
 	</section>
 	
 		<div class="container">
-			<a class="navbar-brand" href="HTML/addComputer.html"> Envie de créer un computer ? </a>
+			<a class="navbar-brand" href="addComputer"> Envie de créer un computer ? </a>
 			<br>
-			<a class="navbar-brand" href="HTML/dashboard.html"> Envie de voir la liste de computers ? </a>
+			<a class="navbar-brand" href="dashboard"> Envie de voir la liste de computers ? </a>
 			<br>
-			<a class="navbar-brand" href="HTML/editComputer.html"> Envie de modifier un computer ? </a>
+			<a class="navbar-brand" href="editComputer"> Envie de modifier un computer ? </a>
 			<br>
 			<a class="navbar-brand" href=""> Envie de voir le vide ? </a>
 		</div>

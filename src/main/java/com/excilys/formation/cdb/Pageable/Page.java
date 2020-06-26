@@ -22,7 +22,7 @@ public class Page{
 	 * Nombre de computer maximum pour la page.
 	 * {@value}
 	 */
-	private static final int NOMBREPARPAGE = 10;
+	private static int nombreParPage = 10;
 	/**
 	 * Le numéro de page permettant de se positionner parmi tous les computer.
 	 */
@@ -66,7 +66,11 @@ public class Page{
 	}
 
 	public int getNombreParPage() {
-		return NOMBREPARPAGE;
+		return nombreParPage;
+	}
+	
+	public void setNombreParPage(int pNombreParPage) {
+		nombreParPage = pNombreParPage;
 	}
 
 	public int getNumeroPage() {

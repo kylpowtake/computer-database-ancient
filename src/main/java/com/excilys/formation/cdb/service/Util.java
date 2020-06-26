@@ -192,46 +192,46 @@ public class Util {
 	 * Méthode permettant d'afficher la page suivante de computers.
 	 */
 	public static void commandeListComputersNext() {
-		if(page.isPeutAllerNouvellePage()) {
-		String message = "";
-		page.setNumeroPage(page.getNumeroPage()+1);
-		page.setPeutAllerAnciennePage(true);
-		try {
-			message = daoComputer.listerComputersPage();
-		} catch (ParametresException e) {
-			message = e.getLocalizedMessage();
-		}
-		gestionMessagePage(message);
-		} else {
-			String message = "Vous êtes à la fin de la liste des computers, vous ne pouvez allez plus loin.\n";
-			message = message + "Que voulez vous faire ? Si besoin  d'aide faites la commande 'Help'";
-			gestionMessagePage(message);
-		}
+//		if(page.isPeutAllerNouvellePage()) {
+//		String message = "";
+//		page.setNumeroPage(page.getNumeroPage()+1);
+//		page.setPeutAllerAnciennePage(true);
+//		try {
+//			message = daoComputer.listerComputersPage();
+//		} catch (ParametresException e) {
+//			message = e.getLocalizedMessage();
+//		}
+//		gestionMessagePage(message);
+//		} else {
+//			String message = "Vous êtes à la fin de la liste des computers, vous ne pouvez allez plus loin.\n";
+//			message = message + "Que voulez vous faire ? Si besoin  d'aide faites la commande 'Help'";
+//			gestionMessagePage(message);
+//		}
 	}
 	
 	/**
 	 * Méthode permettant d'afficher la page précédante de computers.
 	 */
 	public static void commandeListComputersPrevious() {
-		if(page.isPeutAllerAnciennePage()) {
-		String message = "";
-		page.setNumeroPage(page.getNumeroPage()-1);
-		if(page.getNumeroPage() == 1) {
-			page.setPeutAllerAnciennePage(false);
-		} else {
-			page.setPeutAllerAnciennePage(true);	
-		}
-		try {
-			message = daoComputer.listerComputersPage();
-		} catch (ParametresException e) {
-			message = e.getLocalizedMessage();
-		}
-		gestionMessagePage(message);
-		} else {
-			String message = "Vous êtes au début de la liste des computers, vous ne pouvez allez en arrière.\n";
-			message = message + "Que voulez vous faire ? Si besoin  d'aide faites la commande 'Help'";
-			gestionMessagePage(message);
-		}
+//		if(page.isPeutAllerAnciennePage()) {
+//		String message = "";
+//		page.setNumeroPage(page.getNumeroPage()-1);
+//		if(page.getNumeroPage() == 1) {
+//			page.setPeutAllerAnciennePage(false);
+//		} else {
+//			page.setPeutAllerAnciennePage(true);	
+//		}
+//		try {
+//			message = daoComputer.listerComputersPage();
+//		} catch (ParametresException e) {
+//			message = e.getLocalizedMessage();
+//		}
+//		gestionMessagePage(message);
+//		} else {
+//			String message = "Vous êtes au début de la liste des computers, vous ne pouvez allez en arrière.\n";
+//			message = message + "Que voulez vous faire ? Si besoin  d'aide faites la commande 'Help'";
+//			gestionMessagePage(message);
+//		}
 	}
 	
 	/**
@@ -251,15 +251,15 @@ public class Util {
 	 * Méthode permettant d'afficher la première page de computer.
 	 */
 	public static void commandeListComputersBeginning() {
-		String message = "";
-		page.setNumeroPage(1);
-		page.setPeutAllerAnciennePage(false);
-		try {
-			message = daoComputer.listerComputersPage();
-		} catch (ParametresException e) {
-			message = e.getLocalizedMessage();
-		}
-		gestionMessagePage(message);
+//		String message = "";
+//		page.setNumeroPage(1);
+//		page.setPeutAllerAnciennePage(false);
+//		try {
+//			message = daoComputer.listerComputersPage();
+//		} catch (ParametresException e) {
+//			message = e.getLocalizedMessage();
+//		}
+//		gestionMessagePage(message);
 	}
 	
 	/**

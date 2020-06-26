@@ -74,7 +74,7 @@ public class DAOComputer {
 	 * @return Le nombre de computers dans la base de données dans un ResultSet.
 	 * @exception SQLException Si problème lorsque la base de données s'occupe des requêtes.
 	 */
-	private int DemandeNombreComputers() {
+	public int DemandeNombreComputers() {
 		int nombreComputers = 0;
 		try {
 			Statement statement = ConnexionSQL.getConnexion().createStatement();
@@ -174,20 +174,20 @@ public class DAOComputer {
 	 * @exception SQLException Si problème lorsque la base de données s'occupe des requêtes.
 	 * @see Page
 	 */
-	public String listerComputersPage() throws ParametresException{
-		String message = "";
+	public List<Computer> listerComputersPage() throws ParametresException{
+//		String message = "";
 		Page page = Page.getPage();
 		int nombreComputers = DemandeNombreComputers();
 		page.setPeutAllerAncienneEtNouvellePage(nombreComputers);
 		List<Computer> listComputers = null;
 		// Requête pour obtenir les computers de la page actuelle.
 		try {
-		listComputers = MapperComputer.mapResultSetToListComputer(this.faireRequeteAvecResultat(REQUETENOMBRECOMPUTERSDEPUIS + (page.getNumeroPage()-1) * page.getNombreParPage() + ";"));
+		listComputers = MapperComputer.mapResultSetToListComputer(this.faireRequeteAvecResultat(REQUETENOMBRECOMPUTERSDEPUIS + (page.getNumeroPage()) * page.getNombreParPage() + ";"));
 		} catch(ParametresException e) {
 			throw e;
 		}
-		message = listComputers.toString();
-		return message;	
+//		message = listComputers.toString();
+		return listComputers;	
 	}
 	
 	/**

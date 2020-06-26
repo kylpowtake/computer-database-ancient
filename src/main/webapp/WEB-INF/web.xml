@@ -44,6 +44,16 @@
 	</init-param>
 </servlet>
 
+<servlet>
+	<description>Servlet s'occupant de la modification d'un computer.</description>
+	<servlet-name>EditComputer</servlet-name>
+	<servlet-class>com.excilys.formation.cdb.servlets.EditComputer</servlet-class>
+	<init-param>
+		<param-name>auteur</param-name> 
+		<param-value>Kylian</param-value> 
+	</init-param>
+</servlet>
+
 <servlet-mapping>
 	<servlet-name>Accueil</servlet-name>
 	<url-pattern>/accueil</url-pattern>
@@ -56,7 +66,10 @@
 	<servlet-name>DashBoard</servlet-name>
 	<url-pattern>/dashboard</url-pattern>
 </servlet-mapping>
-
+<servlet-mapping>
+	<servlet-name>EditComputer</servlet-name>
+	<url-pattern>/editComputer</url-pattern>
+</servlet-mapping>
 
 
 </web-app>
