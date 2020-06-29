@@ -28,6 +28,10 @@ public class Page{
 	 */
 	private static int numeroPage;
 	/**
+	 * Le nom recherché pour chaque computer.
+	 */
+	private static String nomRecherche = "";
+	/**
 	 * Booléan donnant la présence de page antérieure.
 	 */
 	private boolean peutAllerNouvellePage;
@@ -42,6 +46,7 @@ public class Page{
 	private Page() {
 		computers = null;
 		numeroPage = 0;
+		nomRecherche = "";
 		peutAllerAnciennePage = false;
 		peutAllerNouvellePage = false;
 	}
@@ -79,6 +84,14 @@ public class Page{
 
 	public void setNumeroPage(int pNumeroPage) {
 		numeroPage = pNumeroPage;
+	}
+
+	public String getNomRecherche() {
+		return nomRecherche;
+	}
+
+	public void setNomRecherche(String nomRecherche) {
+		Page.nomRecherche = nomRecherche;
 	}
 
 	public boolean isPeutAllerNouvellePage() {

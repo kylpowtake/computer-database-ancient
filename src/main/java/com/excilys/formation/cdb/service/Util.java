@@ -276,7 +276,7 @@ public class Util {
 	 */
 	public static void commandeListCompanies() {
 		String message = "";
-		message = daoCompany.listerCompanies();
+//		List<Company> listCompanies = daoCompany.listerCompanies();
 		gestionMessage(message);
 	}
 	

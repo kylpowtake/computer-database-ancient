@@ -20,7 +20,8 @@ import com.excilys.formation.cdb.service.Util;
 @SuppressWarnings("serial")
 public class DashBoard extends HttpServlet {
 	public static final String CHAMP_NUMERO_PAGE = "numeroPage";
-	public static final String CHAMP_NOMBRE_PAR_PAGE = "nombreParPage";
+	public static final String CHAMP_NOMBRE_PAR_PAGE = "nombreParPage";	
+	public static final String CHAMP_SEARCH = "search";
 	public static final String ATT_NOMBRE_COMPUTERS = "nombreComputers";
 	public static final String ATT_LIST_COMPUTERS = "listComputers";
 	public static final String ATT_RESULTAT = "resultat";
@@ -35,12 +36,12 @@ public class DashBoard extends HttpServlet {
 		int nombreComputers = 0;
 		String numeroPage = req.getParameter(CHAMP_NUMERO_PAGE);
 		String nombreParPage = req.getParameter(CHAMP_NOMBRE_PAR_PAGE);
+		String nomRecherche = req.getParameter(CHAMP_SEARCH);
+		System.out.println("plop :  " + Page.getPage().getNomRecherche() + "  " + nomRecherche);
 		String previous = req.getParameter(VALEUR_PREVIOUS);
 		String next = req.getParameter(VALEUR_NEXT);
 		Map<String, String> erreurs = new HashMap<String, String>();
 		Page page = Page.getPage();
-
-		
 		try {
 			this.validationNombreParPage(nombreParPage);
 			page.setNombreParPage(Integer.parseInt(nombreParPage));
@@ -59,15 +60,25 @@ public class DashBoard extends HttpServlet {
 		} catch (ValidationException e) {
 			page.setNumeroPage(0);
 		}
-
-		if (!erreurs.isEmpty()) {
-			resultat = "Le numéro de page donnée n'est pas valide.";
-			numeroPage = "0";
+		try {
+			this.validationSearch(nomRecherche);
+			page.setNomRecherche(nomRecherche);
+		} catch(ValidationException e) {
+			if(nomRecherche != null) {
+				nomRecherche = page.getNomRecherche();
+			} else {
+				nomRecherche = "";
+			}
 		}
+
 		try {
 			nombreComputers = DAOComputer.getDAOComputer().DemandeNombreComputers();
 			List<Computer> listComputers = null;
-			listComputers = DAOComputer.getDAOComputer().listerComputersPage();
+			if("".equals(nomRecherche)) {
+				listComputers = DAOComputer.getDAOComputer().listerComputersPage();
+			} else {
+				listComputers = DAOComputer.getDAOComputer().listerComputersPageRecherche(nomRecherche);
+			}
 			req.setAttribute(ATT_LIST_COMPUTERS, listComputers);
 			resultat = "Liste de computers obtenue.";
 		} catch (ParametresException e) {
@@ -78,6 +89,7 @@ public class DashBoard extends HttpServlet {
 		req.setAttribute(ATT_NOMBRE_COMPUTERS, nombreComputers);
 		req.setAttribute(ATT_RESULTAT, resultat);
 		req.setAttribute(ATT_PAGE, page);
+		req.setAttribute(CHAMP_SEARCH, nomRecherche);
 		this.getServletContext().getRequestDispatcher("/WEB-INF/dashboard.jsp").forward(req, resp);
 
 	}
@@ -93,6 +105,12 @@ public class DashBoard extends HttpServlet {
 		if (numeroPage == null || numeroPage.equals("") || numeroPage.equals("null")
 				|| !(Util.stringIsInt(numeroPage))) {
 			throw new ValidationException("Le nombre de page n'est pas valide : " + numeroPage);
+		}
+	}
+	
+	private void validationSearch(String nomRecherche) throws ValidationException {
+		if (nomRecherche == null || nomRecherche.equals("")) {
+			throw new ValidationException("Le mot recherché est null : " + nomRecherche);
 		}
 	}
 }

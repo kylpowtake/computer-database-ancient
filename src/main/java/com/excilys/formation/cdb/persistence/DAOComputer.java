@@ -38,9 +38,9 @@ public class DAOComputer {
 	private static final String REQUETENOMBRECOMPUTERS = "SELECT COUNT(computer.id) FROM computer;";
 	
 	/**
-	 * String représentant la requête pour avoir un ceratin nombre de computer à partir d'une position précise.
+	 * String représentant la requête pour avoir un certain nombre de computer à partir d'une position précise.
 	 */
-	private static final String REQUETENOMBRECOMPUTERSDEPUIS = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name from computer LEFT JOIN company ON computer.company_id = company.id LIMIT 10 OFFSET ";
+	private static final String REQUETENOMBRECOMPUTERSDEPUIS = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name from computer LEFT JOIN company ON computer.company_id = company.id ";
 	/**
 	 * String représentant la requête pour avoir la liste complète de computers dans la base de données.
 	 */
@@ -160,7 +160,12 @@ public class DAOComputer {
 		page.setPeutAllerAncienneEtNouvellePage(nombreComputers);
 		List<Computer> listComputers = null;
 		try {
-			listComputers = MapperComputer.mapResultSetToListComputer(faireRequeteAvecResultat(REQUETENOMBRECOMPUTERSDEPUIS + (page.getNumeroPage()-1) * page.getNombreParPage() + ";"));
+			listComputers = MapperComputer.mapResultSetToListComputer(faireRequeteAvecResultat(REQUETENOMBRECOMPUTERSDEPUIS
+					+ "LIMIT "
+					+ page.getNombreParPage()
+					+ " OFFSET "
+					+ (page.getNumeroPage()-1) * page.getNombreParPage() 
+					+ ";"));
 		} catch (ParametresException e) {
 			throw e;
 		}
@@ -182,7 +187,44 @@ public class DAOComputer {
 		List<Computer> listComputers = null;
 		// Requête pour obtenir les computers de la page actuelle.
 		try {
-		listComputers = MapperComputer.mapResultSetToListComputer(this.faireRequeteAvecResultat(REQUETENOMBRECOMPUTERSDEPUIS + (page.getNumeroPage()) * page.getNombreParPage() + ";"));
+		listComputers = MapperComputer.mapResultSetToListComputer(
+				this.faireRequeteAvecResultat(REQUETENOMBRECOMPUTERSDEPUIS 
+						+ "LIMIT "
+						+ page.getNombreParPage()
+						+ " OFFSET "
+						+ (page.getNumeroPage()) * page.getNombreParPage() 
+						+ ";"));
+		} catch(ParametresException e) {
+			throw e;
+		}
+//		message = listComputers.toString();
+		return listComputers;	
+	}
+	
+	
+	/**
+	 * Méthode faisant une requête à la base de données pour avoir la page actuelle de computers dont le nom contient celui passé en paramètre et les renvoyant en String.
+	 * @return un message d'erreur ou une liste de computers.
+	 * @exception SQLException Si problème lorsque la base de données s'occupe des requêtes.
+	 * @see Page
+	 */
+	public List<Computer> listerComputersPageRecherche(String motRecherche) throws ParametresException{
+//		String message = "";
+		Page page = Page.getPage();
+		int nombreComputers = DemandeNombreComputers();
+		page.setPeutAllerAncienneEtNouvellePage(nombreComputers);
+		List<Computer> listComputers = null;
+		// Requête pour obtenir les computers de la page actuelle.
+		try {
+		listComputers = MapperComputer.mapResultSetToListComputer(
+				this.faireRequeteAvecResultat(REQUETENOMBRECOMPUTERSDEPUIS
+						+ "WHERE computer.name LIKE '%" 
+						+ motRecherche
+						+ "%' LIMIT "
+						+ page.getNombreParPage()
+						+ " OFFSET "
+						+ (page.getNumeroPage()) * page.getNombreParPage() 
+						+ ";"));
 		} catch(ParametresException e) {
 			throw e;
 		}

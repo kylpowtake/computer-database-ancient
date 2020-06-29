@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -17,6 +18,7 @@ import com.excilys.formation.cdb.exception.ParametresException;
 import com.excilys.formation.cdb.exception.ValidationException;
 import com.excilys.formation.cdb.mapper.MapperComputer;
 import com.excilys.formation.cdb.mapper.MapperDate;
+import com.excilys.formation.cdb.model.Company;
 import com.excilys.formation.cdb.model.Computer;
 import com.excilys.formation.cdb.persistence.DAOCompany;
 import com.excilys.formation.cdb.persistence.DAOComputer;
@@ -30,6 +32,7 @@ public class AddComputer extends HttpServlet {
 	private static final String CHAMP_CHRONOLOGY = "chronology";
 	private static final String ATT_RESULTAT = "resultat";
 	private static final String ATT_ERREURS = "erreurs";
+	private static final String ATT_LIST_COMPANIES = "listcompanies";
 	
 	@Override
 	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -44,6 +47,7 @@ public class AddComputer extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String resultat = "";
+		List<Company> listCompanies = null;
 		Map<String, String> erreurs = new HashMap<String, String>();
 		// On prend les paramètres pour la création du computer.
 		String computerName = (String) req.getParameter(CHAMP_NAME);
@@ -79,6 +83,9 @@ public class AddComputer extends HttpServlet {
 			erreurs.put(CHAMP_COMPANY_ID, e.getLocalizedMessage());
 		}
 		
+		listCompanies = DAOCompany.getDAOCompany().listerCompanies();
+		
+		req.setAttribute(ATT_LIST_COMPANIES, listCompanies);
 		req.setAttribute(CHAMP_NAME, computerName);
 		req.setAttribute(CHAMP_INTRODUCED, computerIntroduced);
 		req.setAttribute(CHAMP_DISCONTINUED, computerDiscontinued);

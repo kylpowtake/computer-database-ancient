@@ -8,9 +8,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta charset="utf-8">
 <!-- Bootstrap -->
-<link href="../css/bootstrap.min.css" rel="stylesheet" media="screen">
-<link href="../css/font-awesome.css" rel="stylesheet" media="screen">
-<link href="../css/main.css" rel="stylesheet" media="screen">
+<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+<link href="css/font-awesome.css" rel="stylesheet" media="screen">
+<link href="css/main.css" rel="stylesheet" media="screen">
 </head>
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
@@ -22,7 +22,7 @@
 
 	<section id="main">
 		<div class="container">
-			<h1 id="homeTitle">${nombreComputers}Computers found</h1>
+			<h1 id="homeTitle">${nombreComputers} Computers found</h1>
 			<div id="actions" class="form-horizontal">
 				<div class="pull-left">
 					<form id="searchForm" action="#" method="GET" class="form-inline">
@@ -59,6 +59,7 @@
 									class="fa fa-trash-o fa-lg"></i>
 							</a>
 						</span></th>
+						<th>computer id</th>
 						<th>Computer name</th>
 						<th>Introduced date</th>
 						<!-- Table header for Discontinued Date -->
@@ -78,7 +79,7 @@
 							<td class="editMode"><input type="checkbox" name="cb"
 								class="cb" value="0"></td>
 							<td><a href="editComputer?computerId=${computer.id}"
-								onclick="">${computer.name}</a></td>
+								onclick="">${computer.id}</a></td>
 							<th>${computer.name}</th>
 							<th>${computer.introduced}</th>
 							<!-- Table header for Discontinued Date -->
@@ -94,6 +95,13 @@
 	</section>
 
 	<footer class="navbar-fixed-bottom">
+	
+			<div class="btn-group btn-group-sm pull-right" role="group">
+			<button onclick="location.href='dashboard?nombreParPage=10'" type="button" class="btn btn-default">10</button>
+			<button onclick="location.href='dashboard?nombreParPage=50'" type="button" class="btn btn-default">50</button>
+			<button onclick="location.href='dashboard?nombreParPage=100'" type="button" class="btn btn-default">100</button>
+		</div>
+		
 		<div class="container text-center">
 			<ul class="pagination">
 				<li><a href="dashboard?numeroPage=${numeroPage-1}"
@@ -109,16 +117,12 @@
 				</a></li>
 			</ul>
 		</div>
-		<div class="btn-group btn-group-sm pull-right" role="group">
-			<button type="button" class="btn btn-default">10</button>
-			<button type="button" class="btn btn-default">50</button>
-			<button type="button" class="btn btn-default">100</button>
-		</div>
+
 
 	</footer>
-	<script src="../js/jquery.min.js"></script>
-	<script src="../js/bootstrap.min.js"></script>
-	<script src="../js/dashboard.js"></script>
+	<script src="js/jquery.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/dashboard.js"></script>
 
 </body>
 </html>

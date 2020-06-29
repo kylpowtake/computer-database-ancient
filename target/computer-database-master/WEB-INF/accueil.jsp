@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -19,7 +20,9 @@
 		<section id="main">
 		<div class="container">
 			<div class="alert alert-danger">
-			Plop
+			<c:out value="Plop"></c:out>
+			<c:out value="test"></c:out>
+			<c:out value="${test}"></c:out>
 			<%
 			String attribut = (String) request.getAttribute("test");
 			out.println(attribut);
@@ -31,11 +34,11 @@
 	</section>
 	
 		<div class="container">
-			<a class="navbar-brand" href="HTML/addComputer.html"> Envie de créer un computer ? </a>
+			<a class="navbar-brand" href="addComputer"> Envie de créer un computer ? </a>
 			<br>
-			<a class="navbar-brand" href="HTML/dashboard.html"> Envie de voir la liste de computers ? </a>
+			<a class="navbar-brand" href="dashboard"> Envie de voir la liste de computers ? </a>
 			<br>
-			<a class="navbar-brand" href="HTML/editComputer.html"> Envie de modifier un computer ? </a>
+			<a class="navbar-brand" href="editComputer"> Envie de modifier un computer ? </a>
 			<br>
 			<a class="navbar-brand" href=""> Envie de voir le vide ? </a>
 		</div>

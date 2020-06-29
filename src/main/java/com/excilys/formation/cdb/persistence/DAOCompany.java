@@ -3,6 +3,8 @@ package com.excilys.formation.cdb.persistence;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.Logger;
 
@@ -53,8 +55,8 @@ public class DAOCompany {
 	 * @return un string étant soit un message d'erreur soit la liste de companies.
 	 * @exception SQLException Si problème lorsque la base de données s'occupe de la requête.
 	 */
-	public String listerCompanies(){
-		String message = "";
+	public List<Company> listerCompanies(){
+		List<Company> listCompanies = new ArrayList<Company>();
 		try {
 			Statement statement = ConnexionSQL.getConnexion().createStatement();
 			ResultSet resultSet = statement.executeQuery(REQUETELISTECOMPANIES);
@@ -62,13 +64,13 @@ public class DAOCompany {
 				int idCompany = resultSet.getInt("company.id");
 				String nameCompany = resultSet.getString("company.name");
 				Company company = new Company(idCompany, nameCompany);
-				message += company.toString();
+				listCompanies.add(company);
 			}
 		} catch(SQLException e) {
 			logger.error("Problème lors de la requête de la liste de companies à la base de données : " + e.getLocalizedMessage());
 			System.exit(1);
 		}
-		return message;
+		return listCompanies;
 	}
 	
 	/**

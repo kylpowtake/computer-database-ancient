@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: com.excilys.formation.cdb.service.UtilTest
--------------------------------------------------------------------------------
-Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.433 s - in com.excilys.formation.cdb.service.UtilTest
