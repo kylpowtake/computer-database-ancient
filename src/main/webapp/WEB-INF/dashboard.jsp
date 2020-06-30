@@ -22,7 +22,7 @@
 
 	<section id="main">
 		<div class="container">
-			<h1 id="homeTitle">${nombreComputers} Computers found</h1>
+			<h1 id="homeTitle">${nombreComputers}Computers found</h1>
 			<div id="actions" class="form-horizontal">
 				<div class="pull-left">
 					<form id="searchForm" action="#" method="GET" class="form-inline">
@@ -95,13 +95,16 @@
 	</section>
 
 	<footer class="navbar-fixed-bottom">
-	
-			<div class="btn-group btn-group-sm pull-right" role="group">
-			<button onclick="location.href='dashboard?nombreParPage=10'" type="button" class="btn btn-default">10</button>
-			<button onclick="location.href='dashboard?nombreParPage=50'" type="button" class="btn btn-default">50</button>
-			<button onclick="location.href='dashboard?nombreParPage=100'" type="button" class="btn btn-default">100</button>
+
+		<div class="btn-group btn-group-sm pull-right" role="group">
+			<button onclick="location.href='dashboard?nombreParPage=10'"
+				type="button" class="btn btn-default">10</button>
+			<button onclick="location.href='dashboard?nombreParPage=50'"
+				type="button" class="btn btn-default">50</button>
+			<button onclick="location.href='dashboard?nombreParPage=100'"
+				type="button" class="btn btn-default">100</button>
 		</div>
-		
+
 		<div class="container text-center">
 			<ul class="pagination">
 				<li><a href="dashboard?numeroPage=${numeroPage-1}"

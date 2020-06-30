@@ -1,9 +1,7 @@
 package com.excilys.formation.cdb.servlets;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -40,7 +38,6 @@ public class DashBoard extends HttpServlet {
 		System.out.println("plop :  " + Page.getPage().getNomRecherche() + "  " + nomRecherche);
 		String previous = req.getParameter(VALEUR_PREVIOUS);
 		String next = req.getParameter(VALEUR_NEXT);
-		Map<String, String> erreurs = new HashMap<String, String>();
 		Page page = Page.getPage();
 		try {
 			this.validationNombreParPage(nombreParPage);

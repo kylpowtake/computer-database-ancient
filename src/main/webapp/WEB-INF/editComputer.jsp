@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-pageEncoding="UTF-8" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+	pageEncoding="UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 
 <html>
@@ -15,7 +15,7 @@ pageEncoding="UTF-8" %>
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="dashboard.html"> Application -
+			<a class="navbar-brand" href="dashboard"> Application -
 				Computer Database </a>
 		</div>
 	</header>
@@ -23,32 +23,36 @@ pageEncoding="UTF-8" %>
 		<div class="container">
 			<div class="row">
 				<div class="col-xs-8 col-xs-offset-2 box">
-					<div class="label label-default pull-right">id: ${computerId}</div>
+					<div class="label label-default pull-right">id: ${computer.id}</div>
 					<h1>Edit Computer</h1>
-
+					"${computer}"
 					<form action="editComputer" method="POST">
-						<input type="hidden" value="0" id="id" />
-						<!-- TODO: Change this value with the computer id -->
+						<input type="hidden" value="${computerId}" id="id" />
 						<fieldset>
 							<div class="form-group">
 								<label for="computerName">Computer name</label> <input
 									type="text" class="form-control" id="computerName"
-									placeholder="Computer name">
+									value="${computer.name}" placeholder="Computer name">
 							</div>
 							<div class="form-group">
 								<label for="introduced">Introduced date</label> <input
 									type="date" class="form-control" id="introduced"
+									value="${computer.introduced}" pattern="\d{4}-\d{2}-\d{2}"
 									placeholder="Introduced date">
 							</div>
 							<div class="form-group">
 								<label for="discontinued">Discontinued date</label> <input
 									type="date" class="form-control" id="discontinued"
+									value="${computer.discontinued}" pattern="\d{4}-\d{2}-\d{2}"
 									placeholder="Discontinued date">
 							</div>
 							<div class="form-group">
 								<label for="companyId">Company</label> <select
 									class="form-control" id="companyId">
 									<option value="0">--</option>
+									<c:forEach items="${listcompanies}" var="company">
+										<option value="${company.id}">${company.name}</option>
+									</c:forEach>
 								</select>
 							</div>
 						</fieldset>

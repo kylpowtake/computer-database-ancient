@@ -79,7 +79,7 @@ public class MapperComputer {
 			if("null".equals(companyName)) {
 				companyName = "";
 			}
-			company = new Company(companyId, companyName);
+			company = new Company.BuilderCompany(companyId).withName(companyName).build();
 		}
 		if(name == null || "".equals(name)) {
 			logger.error("Problème causé par le nom d'un computer étant soit vide soit null.");
@@ -93,11 +93,7 @@ public class MapperComputer {
 		if(discontinuedDate != null) {
 			discontinued = discontinuedDate.toLocalDate();
 		}	
-		computer = new Computer(id,
-				name,
-				introduced,
-				discontinued,
-				company);
+		computer = new Computer.BuilderComputer(name).withId(id).introducedThe(introduced).discontinuedThe(discontinued).byCompany(company).build();
 		return computer;
 	}
 	
@@ -138,7 +134,7 @@ public class MapperComputer {
 			throw new ParametresException("Le paramètre pour l'indice de la company est invalide.");
 		}			 
 		if(discontinued == null || introduced.isBefore(discontinued)) {
-		Computer computer = new Computer(0, name, introduced, discontinued, null);
+			Computer computer = new Computer.BuilderComputer(name).introducedThe(introduced).discontinuedThe(discontinued).build();
 		return computer;
 		} else {
 			logger.error("Problème causé par une date discontinued étant plus vieille que la date introduced.");

@@ -61,9 +61,9 @@ public class DAOCompany {
 			Statement statement = ConnexionSQL.getConnexion().createStatement();
 			ResultSet resultSet = statement.executeQuery(REQUETELISTECOMPANIES);
 			while(resultSet.next()) {
-				int idCompany = resultSet.getInt("company.id");
-				String nameCompany = resultSet.getString("company.name");
-				Company company = new Company(idCompany, nameCompany);
+				int id = resultSet.getInt("company.id");
+				String name = resultSet.getString("company.name");
+				Company company = new Company.BuilderCompany(id).withName(name).build();
 				listCompanies.add(company);
 			}
 		} catch(SQLException e) {

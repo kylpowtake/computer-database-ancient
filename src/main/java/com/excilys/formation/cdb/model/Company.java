@@ -18,19 +18,25 @@ public class Company {
 	/**
 	 * Constructeur vide d'une company.
 	 */
-	public Company() {}
+	private Company() {}
 	
-	/**
-	 * Constructeur avec tous les paramètres d'une company.
-	 * @param id L'id de la company.
-	 * @param name Le nom de la company.
-	 */
-	public Company(int id, String name) {
-		this.setId(id);
-		if(name == "null") {
-			this.setName("");
-		} else {
-			this.setName(name);
+	public static class BuilderCompany {
+		private int id;
+		private String name;
+		public BuilderCompany(int id) {
+			this.id = id;
+		}
+		
+		public BuilderCompany withName(String name) {
+			this.name = name;
+			return this;
+		}
+		
+		public Company build(){
+			Company company = new Company();
+			company.id = this.id;
+			company.name = this.name;
+			return company;
 		}
 	}
 

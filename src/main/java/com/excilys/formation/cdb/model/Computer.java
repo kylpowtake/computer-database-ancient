@@ -34,24 +34,50 @@ public class Computer {
 	 * Constructeur minimal avec seulement le nom du computer.
 	 * @param name
 	 */
-	public Computer(String name) {
-		this.setName(name);
+	private Computer() {
 	}
 	
-	/**
-	 * Constructeur maxial avec toutes ses valeurs.
-	 * @param id L'id du computer.
-	 * @param name Le nom du computer.
-	 * @param introduced La date d'introduction du computer.
-	 * @param discontinued La date d'arrêt du computer.
-	 * @param company La company du computer.
-	 */
-	public Computer(int id, String name, LocalDate introduced, LocalDate discontinued, Company company) {
-		this.setId(id);
-		this.setName(name);
-		this.setIntroduced(introduced);
-		this.setDiscontinued(discontinued);
-		this.setCompany(company);
+	public static class BuilderComputer {
+		private int id;
+		private String name;
+		private LocalDate introduced;
+		private LocalDate discontinued;
+		private Company company;
+		
+		public BuilderComputer(String name) {
+			this.name = name;
+		}
+		
+		public BuilderComputer withId(int id) {
+			this.id = id;
+			return this;
+		}
+		
+		public BuilderComputer introducedThe(LocalDate introduced) {
+			this.introduced = introduced;
+			return this;
+		}
+		
+		public BuilderComputer discontinuedThe(LocalDate discontinued) {
+			this.discontinued = discontinued;
+			return this;
+		}
+		
+		public BuilderComputer byCompany(Company company) {
+			this.company = company;
+			return this;
+		}
+		
+		public Computer build() {
+			Computer computer = new Computer();
+			computer.id = this.id;
+			computer.name = this.name;
+			computer.introduced = this.introduced;
+			computer.discontinued = this.discontinued;
+			computer.company = this.company;
+			
+			return computer;
+		}
 	}
 	
 	public int getId() {
