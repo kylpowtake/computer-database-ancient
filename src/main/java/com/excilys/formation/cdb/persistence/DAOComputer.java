@@ -1,5 +1,7 @@
 package com.excilys.formation.cdb.persistence;
 
+import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import java.sql.SQLException;
@@ -64,6 +66,9 @@ public class DAOComputer {
 	private static final String REQUETEDELETECOMPUTERBYID = "DELETE FROM computer WHERE computer.id = ";
 
 	private static Logger logger = Logging.getLogger();
+
+	private static final String REQUETEUPDATE = "update computer set computer.name = ?, computer.introduced = ?,"
+			+ " computer.discontinued = ?";
 
 	/**
 	 * Méthode permettant d'obtenir l'instance unique de la classe. Si l'instance
@@ -243,7 +248,7 @@ public class DAOComputer {
 		try {
 			listComputers = MapperComputer
 					.mapResultSetToListComputer(this.faireRequeteAvecResultat(REQUETENOMBRECOMPUTERSDEPUIS
-							+ "WHERE computer.name LIKE '%" + motRecherche + "%' LIMIT " + page.getNombreParPage()
+							+ "WHERE ((computer.name LIKE '%" + motRecherche + "%') OR (company.name LIKE '%" + motRecherche + "%')) LIMIT " + page.getNombreParPage()
 							+ " OFFSET " + (page.getNumeroPage()) * page.getNombreParPage() + ";"));
 		} catch (ParametresException e) {
 			throw e;
@@ -356,6 +361,8 @@ public class DAOComputer {
 	 */
 	public String modifier(Computer computer, int companyId) {
 		String message = "";
+		int nombreLignes = 0;
+		String requeteUpdate = "";
 		try {
 			ResultSet resultSet = this.findcomputerById(computer.getId());
 			if (!resultSet.next()) {
@@ -367,20 +374,72 @@ public class DAOComputer {
 					+ e.getLocalizedMessage());
 			System.exit(1);
 		}
-		ResultSet resultSet = DAOCompany.getDAOCompany().findCompanybyId(companyId);
-		try {
-			if (resultSet == null || !resultSet.next()) {
-				message = "L'indice de la company passé en paramètre n'est pas celui d'une company existante.";
-				return message;
+		System.out.println("companyId : " + companyId);
+		if (companyId != 0) {
+			ResultSet resultSet = DAOCompany.getDAOCompany().findCompanybyId(companyId);
+			try {
+				if (resultSet == null || !resultSet.next()) {
+					message = "L'indice de la company passé en paramètre n'est pas celui d'une company existante.";
+					return message;
+				}
+			} catch (SQLException e) {
+				logger.error("Problème lors de la requête pour modifier un computer : " + e.getLocalizedMessage());
+				System.exit(1);
 			}
-		} catch (SQLException e) {
-			logger.error("Problème lors de la requête pour modifier un computer : " + e.getLocalizedMessage());
-			System.exit(1);
+			requeteUpdate = REQUETEUPDATE + ", computer.company_id = ? where computer.id = ?;";
+			try {
+				ConnexionSQL.getConnexion().setAutoCommit(false);
+				PreparedStatement preparedStatement = ConnexionSQL.getConnexion().prepareStatement(requeteUpdate);
+				preparedStatement.setString(1, computer.getName());
+				preparedStatement.setDate(2, Date.valueOf(computer.getIntroduced()));
+				preparedStatement.setDate(3, Date.valueOf(computer.getDiscontinued()));
+				preparedStatement.setInt(4, computer.getCompany().getId());
+				preparedStatement.setInt(5, computer.getId());
+				preparedStatement.executeUpdate();
+				ConnexionSQL.getConnexion().commit();
+			} catch (SQLException e) {
+				try {
+					ConnexionSQL.getConnexion().rollback();
+				} catch (SQLException e1) {
+					System.out.println(e1.getLocalizedMessage());
+				}
+			} finally {
+				try {
+					ConnexionSQL.getConnexion().setAutoCommit(true);
+				} catch (SQLException e) {
+					System.out.println(e.getLocalizedMessage());
+				}
+			}
+		} else {
+			System.out.println("données : " + computer.getId() + "   " + computer.getName() + "   "
+					+ computer.getIntroduced() + "   " + computer.getDiscontinued());
+			requeteUpdate = REQUETEUPDATE + " where computer.id = ?;";
+			try {
+				ConnexionSQL.getConnexion().setAutoCommit(false);
+				PreparedStatement preparedStatement = ConnexionSQL.getConnexion().prepareStatement(requeteUpdate);
+				preparedStatement.setString(1, computer.getName());
+				preparedStatement.setDate(2, Date.valueOf(computer.getIntroduced()));
+				preparedStatement.setDate(3, Date.valueOf(computer.getDiscontinued()));
+				preparedStatement.setInt(4, computer.getId());
+				System.out.println(preparedStatement.toString());
+				preparedStatement.executeUpdate();
+				ConnexionSQL.getConnexion().commit();
+			} catch (SQLException e) {
+				System.out.println(e.getLocalizedMessage());
+				try {
+					ConnexionSQL.getConnexion().rollback();
+				} catch (SQLException e1) {
+					System.out.println(e1.getLocalizedMessage());
+				}
+			} finally {
+				try {
+					ConnexionSQL.getConnexion().setAutoCommit(true);
+				} catch (SQLException e) {
+					System.out.println(e.getLocalizedMessage());
+				}
+			}
 		}
-		int nombreLignes = this.faireRequeteSansResultat(
-				"update computer set computer.name = '" + computer.getName() + "', computer.introduced = '"
-						+ computer.getIntroduced() + "', computer.discontinued = '" + computer.getDiscontinued()
-						+ "', computer.company_id = " + companyId + " where computer.id = " + computer.getId() + ";");
+
 		message = this.verificationFonctionnementRequêteNonSelectUnique(nombreLignes);
 		return message;
 	}
@@ -410,7 +469,6 @@ public class DAOComputer {
 	 *                         requêtes.
 	 */
 	public Computer computerDetails(int computerId) throws ParametresException {
-		String message = "";
 		List<Computer> listeComputers = null;
 		try {
 			listeComputers = MapperComputer.mapResultSetToListComputer(
@@ -418,7 +476,7 @@ public class DAOComputer {
 		} catch (ParametresException e) {
 			throw e;
 		}
-		 if (listeComputers.get(0) != null) {
+		if (listeComputers.get(0) != null) {
 			return listeComputers.get(0);
 		}
 		return null;

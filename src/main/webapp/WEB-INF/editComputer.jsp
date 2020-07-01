@@ -25,35 +25,43 @@
 				<div class="col-xs-8 col-xs-offset-2 box">
 					<div class="label label-default pull-right">id: ${computer.id}</div>
 					<h1>Edit Computer</h1>
-					"${computer}"
 					<form action="editComputer" method="POST">
-						<input type="hidden" value="${computerId}" id="id" />
+						<input type="hidden" value="${computer.id}" id="computerId"
+						name="computerId" />
+						<span class="erreur">${erreurs['computerId']}</span>
 						<fieldset>
 							<div class="form-group">
-								<label for="computerName">Computer name</label> <input
-									type="text" class="form-control" id="computerName"
-									value="${computer.name}" placeholder="Computer name">
+								<label for="name">Computer name</label> <input
+									type="text" class="form-control" id="name"
+									name="name"
+									value="${name}" placeholder="Computer name">
 							</div>
 							<div class="form-group">
 								<label for="introduced">Introduced date</label> <input
 									type="date" class="form-control" id="introduced"
-									value="${computer.introduced}" pattern="\d{4}-\d{2}-\d{2}"
+									name="introduced"
+									value="${introduced}" pattern="\d{4}-\d{2}-\d{2}"
 									placeholder="Introduced date">
+									<span class="erreur">${erreurs['introduced']}</span>
 							</div>
 							<div class="form-group">
 								<label for="discontinued">Discontinued date</label> <input
 									type="date" class="form-control" id="discontinued"
-									value="${computer.discontinued}" pattern="\d{4}-\d{2}-\d{2}"
+									name="discontinued"
+									value="${discontinued}" pattern="\d{4}-\d{2}-\d{2}"
 									placeholder="Discontinued date">
+									<span class="erreur">${erreurs['discontinued']}</span>
+									<span class="erreur">${erreurs['erreurChronologie']}</span>
 							</div>
 							<div class="form-group">
 								<label for="companyId">Company</label> <select
-									class="form-control" id="companyId">
+									class="form-control" id="companyId" name="companyId">
 									<option value="0">--</option>
 									<c:forEach items="${listcompanies}" var="company">
 										<option value="${company.id}">${company.name}</option>
 									</c:forEach>
 								</select>
+								<span class="erreur">${erreurs['companyId']}</span>
 							</div>
 						</fieldset>
 						<div class="actions pull-right">
