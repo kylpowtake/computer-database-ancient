@@ -36,7 +36,7 @@ public class EditComputer extends HttpServlet {
 	public static final String ATT_COMPUTER = "computer";
 	public static final String ATT_ERREURS = "erreurs";
 	public static final String ATT_LIST_COMPANIES = "listcompanies";
-
+	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String computerId = req.getParameter(COMPUTER_ID);
@@ -47,7 +47,7 @@ public class EditComputer extends HttpServlet {
 		} catch (NumberFormatException e) {
 		} catch (ParametresException e) {
 		}
-		List<Company> listCompanies = DAOCompany.getDAOCompany().listerCompanies();
+		List<Company> listCompanies = DAOCompany.getDAOCompany().listerCompanies("");
 		req.setAttribute(COMPUTER_ID, computerId);
 		req.setAttribute(COMPUTER_NAME, computer.getName());
 		if(computer.getIntroduced() != null) {

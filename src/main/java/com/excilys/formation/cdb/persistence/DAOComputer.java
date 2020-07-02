@@ -210,16 +210,17 @@ public class DAOComputer {
 	 *                         requêtes.
 	 * @see Page
 	 */
-	public List<Computer> listerComputersPage() throws ParametresException {
+	public List<Computer> listerComputersPage(String pOrderBy) throws ParametresException {
 //		String message = "";
+		String orderBy = this.modificationOrderBy(pOrderBy);
 		Page page = Page.getPage();
 		int nombreComputers = DemandeNombreComputers();
 		page.setPeutAllerAncienneEtNouvellePage(nombreComputers);
 		List<Computer> listComputers = null;
 		// Requête pour obtenir les computers de la page actuelle.
 		try {
-			listComputers = MapperComputer.mapResultSetToListComputer(
-					this.faireRequeteAvecResultat(REQUETENOMBRECOMPUTERSDEPUIS + "LIMIT " + page.getNombreParPage()
+			listComputers = MapperComputer.mapResultSetToListComputer(this.faireRequeteAvecResultat(
+					REQUETENOMBRECOMPUTERSDEPUIS + " ORDER BY " + orderBy + " LIMIT " + page.getNombreParPage()
 							+ " OFFSET " + (page.getNumeroPage()) * page.getNombreParPage() + ";"));
 		} catch (ParametresException e) {
 			throw e;
@@ -238,8 +239,10 @@ public class DAOComputer {
 	 *                         requêtes.
 	 * @see Page
 	 */
-	public List<Computer> listerComputersPageRecherche(String motRecherche) throws ParametresException {
+	public List<Computer> listerComputersPageRecherche(String motRecherche, String pOrderBy)
+			throws ParametresException {
 //		String message = "";
+		String orderBy = this.modificationOrderBy(pOrderBy);
 		Page page = Page.getPage();
 		int nombreComputers = DemandeNombreComputers();
 		page.setPeutAllerAncienneEtNouvellePage(nombreComputers);
@@ -248,7 +251,8 @@ public class DAOComputer {
 		try {
 			listComputers = MapperComputer
 					.mapResultSetToListComputer(this.faireRequeteAvecResultat(REQUETENOMBRECOMPUTERSDEPUIS
-							+ "WHERE ((computer.name LIKE '%" + motRecherche + "%') OR (company.name LIKE '%" + motRecherche + "%')) LIMIT " + page.getNombreParPage()
+							+ "WHERE ((computer.name LIKE '%" + motRecherche + "%') OR (company.name LIKE '%"
+							+ motRecherche + "%')) ORDER BY " + orderBy + " LIMIT " + page.getNombreParPage()
 							+ " OFFSET " + (page.getNumeroPage()) * page.getNombreParPage() + ";"));
 		} catch (ParametresException e) {
 			throw e;
@@ -480,5 +484,27 @@ public class DAOComputer {
 			return listeComputers.get(0);
 		}
 		return null;
+	}
+
+	public String modificationOrderBy(String orderBy) {
+		String message = "";
+		String[] orderBies = orderBy.split(" ");
+		if(orderBies.length == 2) {
+			message = " " + orderBies[1];
+		}
+		switch (orderBies[0]) {
+		case "id":
+			return "computer.id" + message;
+		case "name":
+			return "computer.name" + message;
+		case "introduced":
+			return "computer.introduced" + message;
+		case "discontinued":
+			return "computer.discontinued" + message;
+		case "company":
+			return "company.name" + message;
+		default:
+			return "computer.id" + message;
+		}
 	}
 }

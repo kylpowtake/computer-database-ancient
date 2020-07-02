@@ -83,7 +83,7 @@ public class AddComputer extends HttpServlet {
 			erreurs.put(CHAMP_COMPANY_ID, e.getLocalizedMessage());
 		}
 		
-		listCompanies = DAOCompany.getDAOCompany().listerCompanies();
+		listCompanies = DAOCompany.getDAOCompany().listerCompanies("");
 		
 		req.setAttribute(ATT_LIST_COMPANIES, listCompanies);
 		req.setAttribute(CHAMP_NAME, computerName);

@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Computer Database</title>
+<title>Delete Compannies</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta charset="utf-8">
 <!-- Bootstrap -->
@@ -22,7 +22,7 @@
 
 	<section id="main">
 		<div class="container">
-			<h1 id="homeTitle">${page.getNombreComputers()} Computersfound</h1>
+			<h1 id="homeTitle">${nombreCompanies}Companies found</h1>
 			<div id="actions" class="form-horizontal">
 				<div class="pull-left">
 					<form id="searchForm" action="#" method="GET" class="form-inline">
@@ -59,29 +59,19 @@
 									class="fa fa-trash-o fa-lg"></i>
 							</a>
 						</span></th>
-						<th><a href="dashboard?orderby=id">Computer id</a></th>
-						<th><a href="dashboard?orderby=name">Computer name</a></th>
-						<th><a href="dashboard?orderby=introduced">Introduced date</a></th>
-						<th><a href="dashboard?orderby=discontinued">Discontinued date</a></th>
-						<th><a href="dashboard?orderby=company">Company</a></th>
-
-
+						<th><a href="deleteCompanies?orderby=id">Company id</a></th>
+						<th><a href="deleteCompanies?orderby=name">Company name</a></th>
 					</tr>
 				</thead>
 				<!-- Browse attribute computers -->
 				<tbody id="results">
-					<c:forEach items="${page.getComputers()}" var="computer" varStatus="loop">
+					<c:forEach items="${listCompanies}" var="company" varStatus="loop">
 						<tr>
-							<td class="editMode"><input type="checkbox" name="${loop.index}" form="deleteForm"
-								class="cb" value="${computer.id}"></td>
-							<td><a href="editComputer?computerId=${computer.id}"
-								onclick="">${computer.id}</a></td>
-							<th>${computer.name}</th>
-							<th>${computer.introduced}</th>
-							<!-- Table header for Discontinued Date -->
-							<th>${computer.discontinued}</th>
-							<!-- Table header for Company -->
-							<th>${computer.company.name}</th>
+							<td class="editMode"><input type="checkbox"
+								name="${loop.index}" form="deleteForm" class="cb"
+								value="${company.id}"></td>
+							<th>${company.id}</th>
+							<th>${company.name}</th>
 
 						</tr>
 					</c:forEach>
@@ -90,38 +80,10 @@
 		</div>
 	</section>
 
-	<footer class="navbar-fixed-bottom">
-
-		<div class="btn-group btn-group-sm pull-right" role="group">
-			<button onclick="location.href='dashboard?nombreParPage=10'"
-				type="button" class="btn btn-default">10</button>
-			<button onclick="location.href='dashboard?nombreParPage=50'"
-				type="button" class="btn btn-default">50</button>
-			<button onclick="location.href='dashboard?nombreParPage=100'"
-				type="button" class="btn btn-default">100</button>
-		</div>
-
-		<div class="container text-center">
-			<ul class="pagination">
-				<li><a href="dashboard?previous=true"
-					aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
-				</a></li>
-				<li><a href="dashboard?numeroPage=0">1</a></li>
-				<li><a href="dashboard?numeroPage=1">2</a></li>
-				<li><a href="dashboard?numeroPage=2">3</a></li>
-				<li><a href="dashboard?numeroPage=3">4</a></li>
-				<li><a href="dashboard?numeroPage=4">5</a></li>
-				<li><a href="dashboard?next=true"
-					aria-label="Next"> <span aria-hidden="true">&raquo;</span>
-				</a></li>
-			</ul>
-		</div>
-
-
-	</footer>
+	<footer class="navbar-fixed-bottom"> </footer>
 	<script src="js/jquery.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
-	<script src="js/dashboard.js"></script>
+	<script src="js/deleteCompanies.js"></script>
 
 </body>
 </html>

@@ -6,10 +6,11 @@ import com.excilys.formation.cdb.model.Computer;
 
 /**
  * Classe singleton représentant une page de Computer.
+ * 
  * @author kylian
  *
  */
-public class Page{
+public class Page {
 	/**
 	 * La page singleton.
 	 */
@@ -19,8 +20,7 @@ public class Page{
 	 */
 	private static ArrayList<Computer> computers;
 	/**
-	 * Nombre de computer maximum pour la page.
-	 * {@value}
+	 * Nombre de computer maximum pour la page. {@value}
 	 */
 	private static int nombreParPage = 10;
 	/**
@@ -31,6 +31,8 @@ public class Page{
 	 * Le nom recherché pour chaque computer.
 	 */
 	private static String nomRecherche = "";
+
+	private static int nombreComputers = 0;
 	/**
 	 * Booléan donnant la présence de page antérieure.
 	 */
@@ -39,7 +41,7 @@ public class Page{
 	 * Booléan donnant la précense de page postérieure.
 	 */
 	private boolean peutAllerAnciennePage;
-	
+
 	/**
 	 * Constructeur privée de la classe sans paramètre.
 	 */
@@ -50,13 +52,14 @@ public class Page{
 		peutAllerAnciennePage = false;
 		peutAllerNouvellePage = false;
 	}
-	
+
 	/**
 	 * Méthode donnant la page et si elle n'existe pas la créant avant.
+	 * 
 	 * @return la page
 	 */
 	public static Page getPage() {
-		if(page == null) {
+		if (page == null) {
 			page = new Page();
 		}
 		return page;
@@ -73,7 +76,7 @@ public class Page{
 	public int getNombreParPage() {
 		return nombreParPage;
 	}
-	
+
 	public void setNombreParPage(int pNombreParPage) {
 		nombreParPage = pNombreParPage;
 	}
@@ -83,7 +86,11 @@ public class Page{
 	}
 
 	public void setNumeroPage(int pNumeroPage) {
-		numeroPage = pNumeroPage;
+		if (pNumeroPage < 0) {
+			numeroPage = 0;
+		} else if (pNumeroPage * this.getNombreParPage() < this.getNombreComputers()) {
+			numeroPage = pNumeroPage;
+		}
 	}
 
 	public String getNomRecherche() {
@@ -98,6 +105,14 @@ public class Page{
 		return peutAllerNouvellePage;
 	}
 
+	public int getNombreComputers() {
+		return nombreComputers;
+	}
+
+	public static void setNombreComputers(int nombreComputers) {
+		Page.nombreComputers = nombreComputers;
+	}
+
 	public void setPeutAllerNouvellePage(boolean peutAllerNouvellePage) {
 		this.peutAllerNouvellePage = peutAllerNouvellePage;
 	}
@@ -109,10 +124,10 @@ public class Page{
 	public void setPeutAllerAnciennePage(boolean peutAlleranciennePage) {
 		this.peutAllerAnciennePage = peutAlleranciennePage;
 	}
-	
+
 	public void setPeutAllerAncienneEtNouvellePage(int nombreComputers) {
 		this.setPeutAllerNouvellePage(nombreComputers > this.getNumeroPage() * this.getNombreParPage());
 		this.setPeutAllerAnciennePage(this.getNumeroPage() != 1);
 	}
-	
+
 }
