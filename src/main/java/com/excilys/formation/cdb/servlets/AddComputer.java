@@ -1,8 +1,6 @@
 package com.excilys.formation.cdb.servlets;
 
 import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -13,9 +11,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+
 import com.excilys.formation.cdb.connectiviteSQL.ConnexionSQL;
+import com.excilys.formation.cdb.enumeration.Resultat;
 import com.excilys.formation.cdb.exception.ParametresException;
 import com.excilys.formation.cdb.exception.ValidationException;
+import com.excilys.formation.cdb.logging.Logging;
 import com.excilys.formation.cdb.mapper.MapperComputer;
 import com.excilys.formation.cdb.mapper.MapperDate;
 import com.excilys.formation.cdb.model.Company;
@@ -34,6 +36,8 @@ public class AddComputer extends HttpServlet {
 	private static final String ATT_ERREURS = "erreurs";
 	private static final String ATT_LIST_COMPANIES = "listcompanies";
 
+	private static Logger logger = Logging.getLogger();
+
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		List<Company> listCompanies = null;
@@ -44,7 +48,7 @@ public class AddComputer extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String resultat = "";
+		Resultat resultat = Resultat.ECHOUE;
 		List<Company> listCompanies = null;
 		Map<String, String> erreurs = new HashMap<String, String>();
 		// On prend les paramètres pour la création du computer.
@@ -53,7 +57,7 @@ public class AddComputer extends HttpServlet {
 		String computerDiscontinued = (String) req.getParameter(CHAMP_DISCONTINUED);
 		String companyId = req.getParameter(CHAMP_COMPANY_ID);
 		
-		ConnexionSQL.getConnexion();
+		ConnexionSQL.getConnection();
 
 		try {
 			this.validationName(computerName);
@@ -77,7 +81,7 @@ public class AddComputer extends HttpServlet {
 		}
 		try {
 			this.validationCompanyId(companyId);
-		} catch (ValidationException e) {
+		} catch (Exception e) {
 			erreurs.put(CHAMP_COMPANY_ID, e.getLocalizedMessage());
 		}
 		
@@ -91,22 +95,21 @@ public class AddComputer extends HttpServlet {
 		req.setAttribute(ATT_ERREURS, erreurs);
 		
 		if (!erreurs.isEmpty()) {
-			resultat = "La création du computer n'a pas été autorisé.";
+			resultat = Resultat.ECHOUE;
 		} else {
 			Computer computer = null;
 			try {
 				computer = MapperComputer.stringToComputer(computerName, computerIntroduced, computerDiscontinued,
 						companyId);
-				String message = DAOComputer.getDAOComputer().ajouter(computer, Integer.parseInt(companyId));
-				if (message.equals("L'opération a été effectué")) {
-					// en cas d'échouage de la création du computer on renvoie les données déjà
-					// remplies.
-					resultat = "Création du computer réussie.";
-				} else {
-					resultat = "Création du computer échouée.";
+				try {
+					resultat = DAOComputer.getDAOComputer().ajouter(computer, Integer.parseInt(companyId));
+				} catch (NumberFormatException e) {
+					logger.error(e.getLocalizedMessage() + " doPost : AddComputer");
+				} catch (Exception e) {
+					logger.error(e.getLocalizedMessage() + " doPost : AddComputer");
 				}
 			} catch (ParametresException e) {
-				resultat = "Création du computer échouée.";
+				logger.error(e.getLocalizedMessage() + " doPost : AddComputer.");
 			}
 		}
 		req.setAttribute(ATT_RESULTAT, resultat);
@@ -147,18 +150,18 @@ public class AddComputer extends HttpServlet {
 		}
 	}
 
-	private void validationCompanyId(String companyId) throws ValidationException {
+	private void validationCompanyId(String companyId) throws Exception {
 		if (companyId != null && !(companyId.equals("0")) && !(companyId.equals("")) && !(companyId.equals("null"))
 				&& com.excilys.formation.cdb.service.Util.stringIsInt(companyId)) {
-			ResultSet resultSet = DAOCompany.getDAOCompany().findCompanybyId(Integer.parseInt(companyId));
 			try {
-				if (resultSet == null || !resultSet.next()) {
-					throw new ValidationException("La company n'existe pas.");
+				Company company = DAOCompany.getDAOCompany().findCompanybyId(Integer.parseInt(companyId));
+				if(company != null) {
+					throw new Exception("La company reçu selon l'id est nulle : validationCompanyId");
 				}
-			} catch (SQLException e) {
-				throw new ValidationException(
-						"Un problème a eu lieu lors la vérification de l'existance de la company : "
-								+ e.getLocalizedMessage());
+			} catch (NumberFormatException e1) {
+				throw new Exception(e1.getLocalizedMessage() + " validationCompanyId");
+			} catch (Exception e1) {
+				throw new Exception(e1.getLocalizedMessage() + " validationCompanyId");
 			}
 		}
 	}

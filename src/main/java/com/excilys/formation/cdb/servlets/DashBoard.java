@@ -9,9 +9,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+
 import com.excilys.formation.cdb.Pageable.Page;
 import com.excilys.formation.cdb.exception.ParametresException;
 import com.excilys.formation.cdb.exception.ValidationException;
+import com.excilys.formation.cdb.logging.Logging;
 import com.excilys.formation.cdb.model.Computer;
 import com.excilys.formation.cdb.persistence.DAOComputer;
 import com.excilys.formation.cdb.service.Util;
@@ -31,6 +34,8 @@ public class DashBoard extends HttpServlet {
 	public static final String ATT_DELETE = "delete";
 	public static final String PARAM_ORDER_BY = "orderby";
 	
+	private static Logger logger = Logging.getLogger();
+
 	private String orderByGeneral = "id";
 	
 	@Override
@@ -86,14 +91,23 @@ public class DashBoard extends HttpServlet {
 			Page.setNombreComputers(DAOComputer.getDAOComputer().DemandeNombreComputers());
 			List<Computer> listComputers = null;
 			if ("".equals(nomRecherche)) {
-				listComputers = DAOComputer.getDAOComputer().listerComputersPage(orderBy);
+				try {
+					listComputers = DAOComputer.getDAOComputer().listerComputersPage(orderBy);
+				} catch (Exception e) {
+					logger.error(e.getLocalizedMessage() + " doGet : DashBoard");
+				}
 			} else {
-				listComputers = DAOComputer.getDAOComputer().listerComputersPageRecherche(nomRecherche, orderBy);
+				try {
+					listComputers = DAOComputer.getDAOComputer().listerComputersPageRecherche(nomRecherche, orderBy);
+				} catch (Exception e) {
+					logger.error(e.getLocalizedMessage() + " doGet : DashBoard");
+				}
 			}
 			page.setComputers((ArrayList<Computer>) listComputers);
 			resultat = "Liste de computers obtenue.";
-		} catch (ParametresException e) {
+		} catch (Exception e) {
 			resultat = "Liste de résultat non obtenue : " + e.getLocalizedMessage();
+			System.exit(1);
 		}
 		req.setAttribute(ATT_RESULTAT, resultat);
 		req.setAttribute(ATT_PAGE, page);
@@ -111,16 +125,25 @@ public class DashBoard extends HttpServlet {
 		for (int i = 0; i < page.getNombreParPage(); i++) {
 			String valeurBox = req.getParameter("" + i);
 			if (valeurBox != null) {
-				DAOComputer.getDAOComputer().supprimer(Integer.parseInt(valeurBox));
+				try {
+					DAOComputer.getDAOComputer().supprimer(Integer.parseInt(valeurBox));
+				} catch (NumberFormatException e) {
+					logger.error(e.getLocalizedMessage() + " doPost : DashBoard.");
+				} catch (Exception e) {
+				}
 			}
 		}
 		try {
 			Page.setNombreComputers(DAOComputer.getDAOComputer().DemandeNombreComputers());
 			List<Computer> listComputers = null;
-			listComputers = DAOComputer.getDAOComputer().listerComputersPage(orderBy);
+			try {
+				listComputers = DAOComputer.getDAOComputer().listerComputersPage(orderBy);
+			} catch (Exception e) {
+				logger.error(e.getLocalizedMessage() + " doGet : DashBoard");
+			}
 			page.setComputers((ArrayList<Computer>) listComputers);
 			resultat = "Liste de computers obtenue.";
-		} catch (ParametresException e) {
+		} catch (Exception e) {
 			resultat = "Liste de résultat non obtenue : " + e.getLocalizedMessage();
 		}
 		req.setAttribute(ATT_PAGE, page);

@@ -38,8 +38,10 @@ public class MapperComputer {
 	 */
 	public static List<Computer> mapResultSetToListComputer(ResultSet resultSet) throws ParametresException{
 		List<Computer> listComputers = new ArrayList<Computer>();
+		System.out.println("PLOP pre PASSAGe");
 		try {
 			while(resultSet.next()) {
+				System.out.println("PLOP PASSAGe");
 				Computer computer = null;
 				int idCompany = resultSet.getInt("computer.company_id");
 				String nameCompany = resultSet.getString("company.name");

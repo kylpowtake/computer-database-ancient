@@ -10,8 +10,9 @@ import java.util.List;
 
 import org.slf4j.Logger;
 
-import com.excilys.formation.cdb.connectiviteSQL.ConnexionSQL;
+import com.excilys.formation.cdb.connectiviteSQL.DataSource;
 import com.excilys.formation.cdb.logging.Logging;
+import com.excilys.formation.cdb.mapper.MapperCompany;
 import com.excilys.formation.cdb.model.Company;
 
 /**
@@ -70,7 +71,8 @@ public class DAOCompany {
 		String orderBy = this.modificationOrderBy(pOrderBy);
 		List<Company> listCompanies = new ArrayList<Company>();
 		try {
-			Statement statement = ConnexionSQL.getConnexion().createStatement();
+			Connection connection = DataSource.getConnection();
+			Statement statement = connection.createStatement();
 			ResultSet resultSet = statement.executeQuery(REQUETELISTECOMPANIES + " ORDER BY " + orderBy + ";");
 			while (resultSet.next()) {
 				int id = resultSet.getInt("company.id");
@@ -78,7 +80,10 @@ public class DAOCompany {
 				Company company = new Company.BuilderCompany(id).withName(name).build();
 				listCompanies.add(company);
 			}
+			statement.close();
+			connection.close();
 		} catch (SQLException e) {
+			System.out.println("dans except");
 			logger.error("Problème lors de la requête de la liste de companies à la base de données : "
 					+ e.getLocalizedMessage());
 			System.exit(1);
@@ -98,7 +103,9 @@ public class DAOCompany {
 		String orderBy = this.modificationOrderBy(pOrderBy);
 		List<Company> listCompanies = new ArrayList<Company>();
 		try {
-			Statement statement = ConnexionSQL.getConnexion().createStatement();
+			Connection connection = DataSource.getConnection();
+			Statement statement = connection.createStatement();
+
 			ResultSet resultSet = statement.executeQuery(REQUETELISTECOMPANIES + " WHERE company.name LIKE '%"
 					+ rechercheNom + "%' ORDER BY " + orderBy + ";");
 			while (resultSet.next()) {
@@ -107,6 +114,8 @@ public class DAOCompany {
 				Company company = new Company.BuilderCompany(id).withName(name).build();
 				listCompanies.add(company);
 			}
+			statement.close();
+			connection.close();
 		} catch (SQLException e) {
 			logger.error("Problème lors de la requête de la liste de companies à la base de données : "
 					+ e.getLocalizedMessage());
@@ -124,17 +133,29 @@ public class DAOCompany {
 	 * @exception SQLException Si problème lorsque la base de données s'occupe des
 	 *                         requêtes.
 	 */
-	public ResultSet findCompanybyId(int companyId) {
+	public Company findCompanybyId(int companyId) throws Exception {
+		Company company = null;
 		try {
-			Statement statement = ConnexionSQL.getConnexion().createStatement();
+			Connection connection = DataSource.getConnection();
+			Statement statement = connection.createStatement();
 			ResultSet resultSet = statement.executeQuery(REQUETEFINDBYID + companyId + ";");
-			return resultSet;
+			if (resultSet.next()) {
+				company = MapperCompany.resultSetToCompany(resultSet);
+				if (company == null) {
+					throw new Exception("Une company reçue par ResultSet est nulle : findCompanyById");
+				}
+				if(resultSet.next()) {
+					throw new Exception("Le resultSet devant avoir une company en avait plusieurs : findCompanyById");
+				}
+			}
+			statement.close();
+			connection.close();
 		} catch (SQLException e) {
-			logger.error("Problème SQL lors de la requête de l'id d'une company à la base de données : "
-					+ e.getLocalizedMessage());
-			System.exit(1);
+			throw new Exception(e.getLocalizedMessage() + " : findCompanyById");
+		} catch (Exception e) {
+			throw new Exception(e.getLocalizedMessage() + " : findCompanyById");
 		}
-		return null;
+		return company;
 	}
 
 	public void deleteCompanyAndComputers(int id) {
@@ -142,8 +163,9 @@ public class DAOCompany {
 		String requeteRechercheEtDestructionComputers = "DELETE FROM computer WHERE computer.company_id = ?;";
 		String requeteNombreComputersAvecCompany = "SELECT computer.company_id FROM computer WHERE computer.company_id = ?;";
 		String requeteRechercheEtDestructionCompany = "DELETE FROM company WHERE company.id = ?";
-		Connection connexion = ConnexionSQL.getConnexion();
+		Connection connexion = null;
 		try {
+			connexion = DataSource.getConnection();
 			System.out.println("Le try");
 			connexion.setAutoCommit(false);
 			PreparedStatement statementDebut = connexion.prepareStatement(requeteRechercheEtDestructionComputers);
@@ -161,8 +183,6 @@ public class DAOCompany {
 			statementFin.setInt(1, id);
 			statementFin.executeUpdate();
 			System.out.println("Fin faite");
-			// 2 : détruire computers avec company
-			// 3 Detruire companie
 		} catch (SQLException e) {
 			System.out.println("Prob e : " + e.getLocalizedMessage());
 			if (connexion != null) {
@@ -174,9 +194,11 @@ public class DAOCompany {
 			}
 		} finally {
 			try {
-				connexion.commit();
-				connexion.setAutoCommit(true);
-//				connexion.close();
+				if (connexion != null) {
+					connexion.commit();
+					connexion.setAutoCommit(true);
+					connexion.close();
+				}
 			} catch (SQLException e) {
 			}
 		}
