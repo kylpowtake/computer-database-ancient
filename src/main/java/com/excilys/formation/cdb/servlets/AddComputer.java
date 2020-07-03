@@ -33,14 +33,12 @@ public class AddComputer extends HttpServlet {
 	private static final String ATT_RESULTAT = "resultat";
 	private static final String ATT_ERREURS = "erreurs";
 	private static final String ATT_LIST_COMPANIES = "listcompanies";
-	
-	@Override
-	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		super.doDelete(req, resp);
-	}
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		List<Company> listCompanies = null;
+		listCompanies = DAOCompany.getDAOCompany().listerCompanies("");
+		req.setAttribute(ATT_LIST_COMPANIES, listCompanies);
 		this.getServletContext().getRequestDispatcher("/WEB-INF/addComputer.jsp").forward(req, resp);
 	}
 

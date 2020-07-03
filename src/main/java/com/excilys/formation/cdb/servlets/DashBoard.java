@@ -42,7 +42,6 @@ public class DashBoard extends HttpServlet {
 		String orderBy = req.getParameter(PARAM_ORDER_BY);
 		
 		Page page = Page.getPage();
-		System.out.println(orderBy);
 		try {
 			this.validationOrderBy(orderBy);
 			if(orderBy.equals(orderByGeneral)) {
@@ -52,7 +51,6 @@ public class DashBoard extends HttpServlet {
 		} catch (ValidationException e) {
 			orderBy = "id";
 		}
-		System.out.println(orderBy);
 		try {
 			this.validationNombreParPage(nombreParPage);
 			page.setNombreParPage(Integer.parseInt(nombreParPage));

@@ -33,7 +33,6 @@ public class DeleteCompanies extends HttpServlet {
 		String nomRecherche = req.getParameter(CHAMP_SEARCH);
 		String orderBy = req.getParameter(PARAM_ORDER_BY);
 		List<Company> listCompanies = null;
-		System.out.println(orderBy);
 		try {
 			this.validationOrderBy(orderBy);
 			if (orderBy.equals(orderByGeneral)) {
@@ -43,7 +42,6 @@ public class DeleteCompanies extends HttpServlet {
 		} catch (ValidationException e) {
 			orderBy = "id";
 		}
-		System.out.println(orderBy);
 		try {
 			this.validationSearch(nomRecherche);
 			nomRechercheGeneral = nomRecherche;
