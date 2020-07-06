@@ -102,7 +102,7 @@ public class Computer {
 		return discontinued;
 	}
 	public void setDiscontinued(LocalDate discontinued) {
-		if(this.introduced == null || this.discontinued == null || this.introduced.compareTo(discontinued) >= 0) {
+		if(this.introduced == null || this.introduced.compareTo(discontinued) <= 0) {
 			this.discontinued = discontinued;
 		}
 	}

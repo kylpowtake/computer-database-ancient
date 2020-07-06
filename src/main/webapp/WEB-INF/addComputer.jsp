@@ -61,6 +61,7 @@
 									<option value="${company.id}"> ${company.name} </option>
 									</c:forEach>
 								</select>
+								<span class="erreur">${erreurs['companyId']}</span>
 							</div>
 						</fieldset>
 						<div class="actions pull-right">

@@ -53,7 +53,7 @@ public class ConnexionSQL {
 	 * 
 	 * @return la connexion à la base de données.
 	 */
-	public static Connection getConnexion() {
+	public static Connection getConnection() {
 		if (connexion == null) {
 			connexionSQL();
 		}
@@ -63,7 +63,7 @@ public class ConnexionSQL {
 	/**
 	 * Méthode terminant la connexion à la base de données.
 	 */
-	public static void finirConnexion() {
+	public static void finirConnection() {
 		try {
 			connexion.close();
 		} catch (SQLException e) {

@@ -36,7 +36,7 @@ public class MapperComputer {
 	 * @param resultSet Le resultSet à passé en Computers.
 	 * @return Liste de Computers venant du ResultSet.
 	 */
-	public static List<Computer> mapResultSetToListComputer(ResultSet resultSet) throws ParametresException{
+	public static List<Computer> mapResultSetToListComputer(ResultSet resultSet) throws Exception{
 		List<Computer> listComputers = new ArrayList<Computer>();
 		try {
 			while(resultSet.next()) {
@@ -56,7 +56,7 @@ public class MapperComputer {
 				
 			}
 		} catch (SQLException e) {
-			System.out.println("Il y a une erreur avec le retour d'une requête à la base de données : " + e.getLocalizedMessage());
+			throw new Exception("Il y a une erreur lors du passage de ResultSet en Computer : " + e.getLocalizedMessage());
 		}
 		return listComputers;	
 	}

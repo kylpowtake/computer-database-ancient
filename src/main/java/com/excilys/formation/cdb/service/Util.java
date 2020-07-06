@@ -30,4 +30,12 @@ public class Util {
 		}
 		return false;
 	}
+	
+	public static boolean stringIsSomething(String string) {
+		if(string != null && !string.equals("")) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 }

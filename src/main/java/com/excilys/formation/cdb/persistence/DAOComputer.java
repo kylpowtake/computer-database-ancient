@@ -1,5 +1,8 @@
 package com.excilys.formation.cdb.persistence;
 
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import java.sql.SQLException;
@@ -9,11 +12,14 @@ import java.util.List;
 import org.slf4j.Logger;
 
 import com.excilys.formation.cdb.Pageable.Page;
-import com.excilys.formation.cdb.connectiviteSQL.ConnexionSQL;
+import com.excilys.formation.cdb.connectiviteSQL.DataSource;
+import com.excilys.formation.cdb.enumeration.Resultat;
 import com.excilys.formation.cdb.exception.ParametresException;
 import com.excilys.formation.cdb.logging.Logging;
 import com.excilys.formation.cdb.mapper.MapperComputer;
+import com.excilys.formation.cdb.model.Company;
 import com.excilys.formation.cdb.model.Computer;
+import com.excilys.formation.cdb.service.Util;
 
 /**
  * Classe comprenant les méthodes permettant de faire des requêtes à la base de
@@ -65,6 +71,8 @@ public class DAOComputer {
 
 	private static Logger logger = Logging.getLogger();
 
+	private static final String REQUETEUPDATE = "update computer set computer.name = ?";
+
 	/**
 	 * Méthode permettant d'obtenir l'instance unique de la classe. Si l'instance
 	 * existe déjà elle est renvoyée, sinon elle est créée puis renvoyée.
@@ -88,12 +96,16 @@ public class DAOComputer {
 	public int DemandeNombreComputers() {
 		int nombreComputers = 0;
 		try {
-			Statement statement = ConnexionSQL.getConnexion().createStatement();
+			Connection connection = DataSource.getConnection();
+			Statement statement = connection.createStatement();
 			ResultSet resultSet = statement.executeQuery(REQUETENOMBRECOMPUTERS);
 			if (resultSet.next()) {
 				// La première colonne est le count de l'id des computers.
 				nombreComputers = resultSet.getInt(1);
 			}
+			resultSet.close();
+			statement.close();
+			connection.close();
 		} catch (SQLException e) {
 			logger.error("Problème lors de la requête du nombre de computers à la base de données : "
 					+ e.getLocalizedMessage());
@@ -111,38 +123,31 @@ public class DAOComputer {
 	 * @exception SQLException Si problème lorsque la base de données s'occupe des
 	 *                         requêtes.
 	 */
-	private ResultSet findcomputerById(int computerId) {
+	private boolean findcomputerById(int computerId) throws Exception {
+		boolean resultat = false;
+		Connection connection = DataSource.getConnection();
+		Statement statement = connection.createStatement();
+		ResultSet resultSet = statement.executeQuery(REQUETEFINDCOMPUTERBYID + computerId + ";");
 		try {
-			Statement statement = ConnexionSQL.getConnexion().createStatement();
-			ResultSet resultSet = statement.executeQuery(REQUETEFINDCOMPUTERBYID + computerId + ";");
-			return resultSet;
+			if (!resultSet.next()) {
+				resultat = false;
+			} else {
+				resultat = true;
+			}
 		} catch (SQLException e) {
-			logger.error("Problème lors de la requête de l'id d'un computer à la base de données : "
-					+ e.getLocalizedMessage());
-			System.exit(1);
+			throw new Exception(e.getLocalizedMessage() + " : findComputerById");
+		} finally {
+			resultSet.close();
+			statement.close();
+			connection.close();
 		}
-		return null;
-	}
-
-	/**
-	 * Méthode appliquant la requête (seulement SELECT) passé en paramètre à la base
-	 * de données et retournant le résultat.
-	 * 
-	 * @param requete Requête pour la base de données, forcément SELECT.
-	 * @return ResultSet comprenant les résultats de la requête.
-	 * @exception SQLException Si problème lorsque la base de données s'occupe des
-	 *                         requêtes.
-	 */
-	private ResultSet faireRequeteAvecResultat(String requete) {
-		try {
-			Statement statement = ConnexionSQL.getConnexion().createStatement();
-			ResultSet resultSet = statement.executeQuery(requete);
-			return resultSet;
-		} catch (SQLException e) {
-			logger.error("Problème lors d'une requête concernant les computers : " + e.getLocalizedMessage());
-			System.exit(1);
-		}
-		return null;
+		return true;
+//	} catch( SQLException e)
+//	{
+//			logger.error("Problème lors de la requête de l'id d'un computer à la base de données : "
+//					+ e.getLocalizedMessage());
+//			System.exit(1);
+//		}
 	}
 
 	/**
@@ -159,8 +164,11 @@ public class DAOComputer {
 	 */
 	private int faireRequeteSansResultat(String requete) {
 		try {
-			Statement statement = ConnexionSQL.getConnexion().createStatement();
+			Connection connection = DataSource.getConnection();
+			Statement statement = connection.createStatement();
 			int nombreLignes = statement.executeUpdate(requete);
+			statement.close();
+			connection.close();
 			return nombreLignes;
 		} catch (SQLException e) {
 			logger.error("Problème lors d'une requête concernant les computers : " + e.getLocalizedMessage());
@@ -178,19 +186,25 @@ public class DAOComputer {
 	 *                         requêtes.
 	 * @see Page
 	 */
-	public String listerComputersEnd() throws ParametresException {
+	public String listerComputersEnd() throws Exception {
 		String message = "";
 		Page page = Page.getPage();
 		int nombreComputers = DemandeNombreComputers();
 		page.setNumeroPage(((nombreComputers - (nombreComputers % 10)) / 10) + 1);
 		page.setPeutAllerAncienneEtNouvellePage(nombreComputers);
 		List<Computer> listComputers = null;
+		Connection connection = DataSource.getConnection();
+		Statement statement = connection.createStatement();
+		ResultSet resultSet = statement.executeQuery(REQUETENOMBRECOMPUTERSDEPUIS + "LIMIT " + page.getNombreParPage()
+				+ " OFFSET " + (page.getNumeroPage() - 1) * page.getNombreParPage() + ";");
 		try {
-			listComputers = MapperComputer.mapResultSetToListComputer(
-					faireRequeteAvecResultat(REQUETENOMBRECOMPUTERSDEPUIS + "LIMIT " + page.getNombreParPage()
-							+ " OFFSET " + (page.getNumeroPage() - 1) * page.getNombreParPage() + ";"));
-		} catch (ParametresException e) {
-			throw e;
+			listComputers = MapperComputer.mapResultSetToListComputer(resultSet);
+		} catch (Exception e) {
+			throw new Exception(e.getLocalizedMessage() + " listerComputerEnd");
+		} finally {
+			statement.close();
+			connection.close();
+			resultSet.close();
 		}
 		message = listComputers.toString();
 		return message;
@@ -205,19 +219,26 @@ public class DAOComputer {
 	 *                         requêtes.
 	 * @see Page
 	 */
-	public List<Computer> listerComputersPage() throws ParametresException {
+	public List<Computer> listerComputersPage(String pOrderBy) throws Exception {
 //		String message = "";
+		String orderBy = this.modificationOrderBy(pOrderBy);
 		Page page = Page.getPage();
 		int nombreComputers = DemandeNombreComputers();
 		page.setPeutAllerAncienneEtNouvellePage(nombreComputers);
 		List<Computer> listComputers = null;
 		// Requête pour obtenir les computers de la page actuelle.
+		Connection connection = DataSource.getConnection();
+		Statement statement = connection.createStatement();
+		ResultSet resultSet = statement.executeQuery(REQUETENOMBRECOMPUTERSDEPUIS + " ORDER BY " + orderBy + " LIMIT "
+				+ page.getNombreParPage() + " OFFSET " + (page.getNumeroPage()) * page.getNombreParPage() + ";");
 		try {
-			listComputers = MapperComputer.mapResultSetToListComputer(
-					this.faireRequeteAvecResultat(REQUETENOMBRECOMPUTERSDEPUIS + "LIMIT " + page.getNombreParPage()
-							+ " OFFSET " + (page.getNumeroPage()) * page.getNombreParPage() + ";"));
-		} catch (ParametresException e) {
-			throw e;
+			listComputers = MapperComputer.mapResultSetToListComputer(resultSet);
+		} catch (Exception e) {
+			throw new Exception(e.getLocalizedMessage() + " listerComputerPage");
+		} finally {
+			statement.close();
+			connection.close();
+			resultSet.close();
 		}
 //		message = listComputers.toString();
 		return listComputers;
@@ -233,20 +254,27 @@ public class DAOComputer {
 	 *                         requêtes.
 	 * @see Page
 	 */
-	public List<Computer> listerComputersPageRecherche(String motRecherche) throws ParametresException {
+	public List<Computer> listerComputersPageRecherche(String motRecherche, String pOrderBy) throws Exception {
 //		String message = "";
+		String orderBy = this.modificationOrderBy(pOrderBy);
 		Page page = Page.getPage();
 		int nombreComputers = DemandeNombreComputers();
 		page.setPeutAllerAncienneEtNouvellePage(nombreComputers);
 		List<Computer> listComputers = null;
 		// Requête pour obtenir les computers de la page actuelle.
+		Connection connection = DataSource.getConnection();
+		Statement statement = connection.createStatement();
+		ResultSet resultSet = statement.executeQuery(REQUETENOMBRECOMPUTERSDEPUIS + "WHERE ((computer.name LIKE '%"
+				+ motRecherche + "%') OR (company.name LIKE '%" + motRecherche + "%')) ORDER BY " + orderBy + " LIMIT "
+				+ page.getNombreParPage() + " OFFSET " + (page.getNumeroPage()) * page.getNombreParPage() + ";");
 		try {
-			listComputers = MapperComputer
-					.mapResultSetToListComputer(this.faireRequeteAvecResultat(REQUETENOMBRECOMPUTERSDEPUIS
-							+ "WHERE computer.name LIKE '%" + motRecherche + "%' LIMIT " + page.getNombreParPage()
-							+ " OFFSET " + (page.getNumeroPage()) * page.getNombreParPage() + ";"));
-		} catch (ParametresException e) {
-			throw e;
+			listComputers = MapperComputer.mapResultSetToListComputer(resultSet);
+		} catch (Exception e) {
+			throw new Exception(e.getLocalizedMessage() + " listerComputerPageRecherche");
+		} finally {
+			resultSet.close();
+			statement.close();
+			connection.close();
 		}
 //		message = listComputers.toString();
 		return listComputers;
@@ -260,14 +288,20 @@ public class DAOComputer {
 	 * @exception SQLException Si problème lorsque la base de données s'occupe des
 	 *                         requêtes.
 	 */
-	public String listerComputers() throws ParametresException {
+	public String listerComputers() throws Exception {
 		String message = "";
 		List<Computer> listeComputers = null;
+		Connection connection = DataSource.getConnection();
+		Statement statement = connection.createStatement();
+		ResultSet resultSet = statement.executeQuery(REQUETELISTECOMPLETECOMPUTERS);
 		try {
-			listeComputers = MapperComputer
-					.mapResultSetToListComputer(this.faireRequeteAvecResultat(REQUETELISTECOMPLETECOMPUTERS));
+			listeComputers = MapperComputer.mapResultSetToListComputer(resultSet);
 		} catch (ParametresException e) {
-			throw e;
+			throw new Exception(e.getLocalizedMessage() + " listerComputers");
+		} finally {
+			resultSet.close();
+			statement.close();
+			connection.close();
 		}
 		message = listeComputers.toString();
 		return message;
@@ -282,16 +316,15 @@ public class DAOComputer {
 	 * @return String représentant le rapport nombre de ligne affectées et le nombre
 	 *         attendu (1).
 	 */
-	private String verificationFonctionnementRequêteNonSelectUnique(int nombreLignes) {
-		String message = "";
+	private Resultat verificationFonctionnementRequêteNonSelectUnique(int nombreLignes) throws Exception {
 		if (nombreLignes == 1) {
-			message = "L'opération a été effectué";
+			return Resultat.REUSSI;
 		} else if (nombreLignes == 0) {
-			message = "Un problème a occuré, l'opération n'a pas été effectué.";
+			throw new Exception("Un problème a occuré, l'opération de création de computer n'a pas été effectué.");
 		} else {
-			message = "Un problème a occuré, l'opération a été efectué trop de fois (" + nombreLignes + ").";
+			throw new Exception("Un problème a occuré, l'opération de création de computer a été efectué trop de fois ("
+					+ nombreLignes + ").");
 		}
-		return message;
 	}
 
 	/**
@@ -304,11 +337,15 @@ public class DAOComputer {
 	 * @exception SQLException Si problème lorsque la base de données s'occupe des
 	 *                         requêtes.
 	 */
-	public String ajouter(Computer computer, int companyId) {
-		String message = "";
+	public Resultat ajouter(Computer computer, int companyId) throws Exception {
+		Resultat resultat = Resultat.ECHOUE;
 		String requete = "";
-		ResultSet resultSet = DAOCompany.getDAOCompany().findCompanybyId(companyId);
-		System.out.println(computer.getIntroduced());
+		Company company;
+		try {
+			company = DAOCompany.getDAOCompany().findCompanybyId(companyId);
+		} catch (Exception e) {
+			throw new Exception(e.getLocalizedMessage() + " ajouter");
+		}
 		int nombreLignes = 0;
 		requete += "INSERT INTO computer (name, introduced, discontinued, company_id) VALUES ('" + computer.getName()
 				+ "', ";
@@ -323,25 +360,13 @@ public class DAOComputer {
 			requete += "NULL, ";
 		}
 		if (companyId != 0) {
-			try {
-				if (resultSet == null || !resultSet.next()) {
-					message = "L'indice de la company passé en paramètre n'est pas celui d'une company existante.";
-					return message;
-				}
-			} catch (SQLException e) {
-				logger.error(
-						"Problème lors de la requête de l'id d'une company lors de l'ajout d'un computer à la base de données : "
-								+ e.getLocalizedMessage());
-				System.exit(1);
-			}
-			requete += "'" + companyId + "');";
+			requete += "'" + company.getId() + "');";
 		} else {
 			requete += "NULL" + ");";
 		}
-		System.out.println(requete);
 		nombreLignes = this.faireRequeteSansResultat(requete);
-		message = this.verificationFonctionnementRequêteNonSelectUnique(nombreLignes);
-		return message;
+		resultat = this.verificationFonctionnementRequêteNonSelectUnique(nombreLignes);
+		return resultat;
 	}
 
 	/**
@@ -354,35 +379,71 @@ public class DAOComputer {
 	 * @exception SQLException Si problème lorsque la base de données s'occupe des
 	 *                         requêtes.
 	 */
-	public String modifier(Computer computer, int companyId) {
-		String message = "";
-		try {
-			ResultSet resultSet = this.findcomputerById(computer.getId());
-			if (!resultSet.next()) {
-				message = "L'indice du computer à modifier n'est pas celui d'un computer existant.";
-				return message;
-			}
-		} catch (SQLException e) {
-			logger.error("Problème lors de la requête de l'id d'une company à la base de données : "
-					+ e.getLocalizedMessage());
-			System.exit(1);
+	public Resultat modifier(Computer computer, int companyId) throws Exception {
+		Resultat resultat = Resultat.ECHOUE;
+		int nombreLignes = 0;
+		String requeteUpdate = REQUETEUPDATE;
+		Company company = null;
+		if (!this.findcomputerById(computer.getId())) {
+			throw new Exception("L'id du computer a modifié n'est pas celui d'un computer existant : modifier");
 		}
-		ResultSet resultSet = DAOCompany.getDAOCompany().findCompanybyId(companyId);
-		try {
-			if (resultSet == null || !resultSet.next()) {
-				message = "L'indice de la company passé en paramètre n'est pas celui d'une company existante.";
-				return message;
+		if (companyId != 0) {
+			try {
+				company = DAOCompany.getDAOCompany().findCompanybyId(companyId);
+			} catch (Exception e2) {
+				throw new Exception(e2.getLocalizedMessage() + " : modifier");
 			}
-		} catch (SQLException e) {
-			logger.error("Problème lors de la requête pour modifier un computer : " + e.getLocalizedMessage());
-			System.exit(1);
 		}
-		int nombreLignes = this.faireRequeteSansResultat(
-				"update computer set computer.name = '" + computer.getName() + "', computer.introduced = '"
-						+ computer.getIntroduced() + "', computer.discontinued = '" + computer.getDiscontinued()
-						+ "', computer.company_id = " + companyId + " where computer.id = " + computer.getId() + ";");
-		message = this.verificationFonctionnementRequêteNonSelectUnique(nombreLignes);
-		return message;
+		Connection connection = DataSource.getConnection();
+		connection.setAutoCommit(false);
+		if (computer.getIntroduced() != null) {
+			requeteUpdate += ", computer.introduced = ?";
+		}
+		if (computer.getDiscontinued() != null) {
+			requeteUpdate += ", computer.discontinued = ?";
+		}
+		if (companyId != 0) {
+			requeteUpdate = requeteUpdate + ", computer.company_id = ? where computer.id = ?;";
+		} else {
+			requeteUpdate = requeteUpdate + " where computer.id = ?;";
+		}
+		PreparedStatement preparedStatement = connection.prepareStatement(requeteUpdate);
+		System.out.println(computer.getDiscontinued());
+		try {
+			int indice = 1;
+			preparedStatement.setString(indice++, computer.getName());
+			if (computer.getIntroduced() != null) {
+				preparedStatement.setDate(indice++, Date.valueOf(computer.getIntroduced()));
+			}
+			if (computer.getDiscontinued() != null) {
+				preparedStatement.setDate(indice++, Date.valueOf(computer.getDiscontinued()));
+			}
+			if (companyId != 0) {
+				preparedStatement.setInt(indice++, company.getId());
+			}
+			preparedStatement.setInt(indice, computer.getId());
+			preparedStatement.executeUpdate();
+			connection.commit();
+		} catch (SQLException e) {
+			try {
+				connection.rollback();
+			} catch (SQLException e1) {
+				throw new Exception(e1.getLocalizedMessage() + " 1modifier");
+			}
+			throw new Exception(e.getLocalizedMessage() + " 2modifier");
+		} finally {
+			try {
+				connection.setAutoCommit(true);
+			} catch (SQLException e) {
+				throw new Exception(e.getLocalizedMessage() + " 3modifier");
+			}
+			connection.close();
+			preparedStatement.close();
+		}
+
+		resultat = this.verificationFonctionnementRequêteNonSelectUnique(nombreLignes);
+		return resultat;
+
 	}
 
 	/**
@@ -393,11 +454,15 @@ public class DAOComputer {
 	 * @exception SQLException Si problème lorsque la base de données s'occupe des
 	 *                         requêtes.
 	 */
-	public String supprimer(int computerId) {
-		String message = "";
+	public Resultat supprimer(int computerId) throws Exception {
+		Resultat resultat = Resultat.ECHOUE;
 		int nombreLignes = this.faireRequeteSansResultat(REQUETEDELETECOMPUTERBYID + computerId + ";");
-		message = this.verificationFonctionnementRequêteNonSelectUnique(nombreLignes);
-		return message;
+		try {
+			resultat = this.verificationFonctionnementRequêteNonSelectUnique(nombreLignes);
+		} catch (Exception e) {
+			throw new Exception(e.getLocalizedMessage() + " supprimer");
+		}
+		return resultat;
 	}
 
 	/**
@@ -409,18 +474,45 @@ public class DAOComputer {
 	 * @exception SQLException Si problème lorsque la base de données s'occupe des
 	 *                         requêtes.
 	 */
-	public Computer computerDetails(int computerId) throws ParametresException {
-		String message = "";
+	public Computer computerDetails(int computerId) throws Exception {
 		List<Computer> listeComputers = null;
+		Connection connection = DataSource.getConnection();
+		Statement statement = connection.createStatement();
+		ResultSet resultSet = statement.executeQuery(REQUETEFINDCOMPUTERBYID + computerId + ";");
 		try {
-			listeComputers = MapperComputer.mapResultSetToListComputer(
-					this.faireRequeteAvecResultat(REQUETEFINDCOMPUTERBYID + computerId + ";"));
+			listeComputers = MapperComputer.mapResultSetToListComputer(resultSet);
 		} catch (ParametresException e) {
-			throw e;
+			throw new Exception(e.getLocalizedMessage() + " computerDetails");
+		} finally {
+			resultSet.close();
+			statement.close();
+			connection.close();
 		}
-		 if (listeComputers.get(0) != null) {
+		if (listeComputers.get(0) != null) {
 			return listeComputers.get(0);
 		}
 		return null;
+	}
+
+	public String modificationOrderBy(String orderBy) {
+		String message = "";
+		String[] orderBies = orderBy.split(" ");
+		if (orderBies.length == 2) {
+			message = " " + orderBies[1];
+		}
+		switch (orderBies[0]) {
+		case "id":
+			return "computer.id" + message;
+		case "name":
+			return "computer.name" + message;
+		case "introduced":
+			return "computer.introduced" + message;
+		case "discontinued":
+			return "computer.discontinued" + message;
+		case "company":
+			return "company.name" + message;
+		default:
+			return "computer.id" + message;
+		}
 	}
 }
