@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app> 
+  <display-name>Archetype Created Web Application</display-name>
+  xmlns="http://java.sun.com/xml/ns/javaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_4_0.xsd"
+  version="4.0">
+
+<servlet>
+	<description>Servlet s'occupant de l'accueil.</description>
+	<servlet-name>Accueil</servlet-name>
+	<servlet-class>com.excilys.formation.cdb.servlets.Accueil</servlet-class>
+	<init-param>
+		<param-name>auteur</param-name> 
+		<param-value>Kylian</param-value> 
+	</init-param>
+</servlet>
+
+<servlet>
+	<description>Servlet s'occupant de l'ajout d'un computer.</description>
+	<servlet-name>AddComputer</servlet-name>
+	<servlet-class>com.excilys.formation.cdb.servlets.AddComputer</servlet-class>
+	<init-param>
+		<param-name>auteur</param-name> 
+		<param-value>Kylian</param-value> 
+	</init-param>
+</servlet>
+
+<servlet-mapping>
+	<servlet-name>Accueil</servlet-name>
+	<url-pattern>/accueil</url-pattern>
+</servlet-mapping>
+<servlet-mapping>
+	<servlet-name>AddComputer</servlet-name>
+	<url-pattern>/addComputer</url-pattern>
+</servlet-mapping>
+
+</web-app>
