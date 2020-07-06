@@ -105,11 +105,14 @@ public class AddComputer extends HttpServlet {
 					resultat = DAOComputer.getDAOComputer().ajouter(computer, Integer.parseInt(companyId));
 				} catch (NumberFormatException e) {
 					logger.error(e.getLocalizedMessage() + " doPost : AddComputer");
+					System.exit(1);
 				} catch (Exception e) {
 					logger.error(e.getLocalizedMessage() + " doPost : AddComputer");
+					System.exit(1);
 				}
 			} catch (ParametresException e) {
 				logger.error(e.getLocalizedMessage() + " doPost : AddComputer.");
+				System.exit(1);
 			}
 		}
 		req.setAttribute(ATT_RESULTAT, resultat);
@@ -155,7 +158,7 @@ public class AddComputer extends HttpServlet {
 				&& com.excilys.formation.cdb.service.Util.stringIsInt(companyId)) {
 			try {
 				Company company = DAOCompany.getDAOCompany().findCompanybyId(Integer.parseInt(companyId));
-				if(company != null) {
+				if(company == null) {
 					throw new Exception("La company reçu selon l'id est nulle : validationCompanyId");
 				}
 			} catch (NumberFormatException e1) {

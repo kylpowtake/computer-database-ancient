@@ -36,12 +36,10 @@ public class MapperComputer {
 	 * @param resultSet Le resultSet à passé en Computers.
 	 * @return Liste de Computers venant du ResultSet.
 	 */
-	public static List<Computer> mapResultSetToListComputer(ResultSet resultSet) throws ParametresException{
+	public static List<Computer> mapResultSetToListComputer(ResultSet resultSet) throws Exception{
 		List<Computer> listComputers = new ArrayList<Computer>();
-		System.out.println("PLOP pre PASSAGe");
 		try {
 			while(resultSet.next()) {
-				System.out.println("PLOP PASSAGe");
 				Computer computer = null;
 				int idCompany = resultSet.getInt("computer.company_id");
 				String nameCompany = resultSet.getString("company.name");
@@ -58,7 +56,7 @@ public class MapperComputer {
 				
 			}
 		} catch (SQLException e) {
-			System.out.println("Il y a une erreur avec le retour d'une requête à la base de données : " + e.getLocalizedMessage());
+			throw new Exception("Il y a une erreur lors du passage de ResultSet en Computer : " + e.getLocalizedMessage());
 		}
 		return listComputers;	
 	}

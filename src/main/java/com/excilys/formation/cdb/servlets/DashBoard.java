@@ -54,7 +54,11 @@ public class DashBoard extends HttpServlet {
 			}
 			orderByGeneral = orderBy;
 		} catch (ValidationException e) {
-			orderBy = "id";
+			if(orderByGeneral != null) {
+				orderBy = orderByGeneral;
+			} else {
+				orderBy = "id";
+			}
 		}
 		try {
 			this.validationNombreParPage(nombreParPage);

@@ -159,30 +159,25 @@ public class DAOCompany {
 	}
 
 	public void deleteCompanyAndComputers(int id) {
-		System.out.println("Au début");
 		String requeteRechercheEtDestructionComputers = "DELETE FROM computer WHERE computer.company_id = ?;";
 		String requeteNombreComputersAvecCompany = "SELECT computer.company_id FROM computer WHERE computer.company_id = ?;";
 		String requeteRechercheEtDestructionCompany = "DELETE FROM company WHERE company.id = ?";
 		Connection connexion = null;
 		try {
 			connexion = DataSource.getConnection();
-			System.out.println("Le try");
 			connexion.setAutoCommit(false);
 			PreparedStatement statementDebut = connexion.prepareStatement(requeteRechercheEtDestructionComputers);
 			PreparedStatement statementMilieu = connexion.prepareStatement(requeteNombreComputersAvecCompany);
 			PreparedStatement statementFin = connexion.prepareStatement(requeteRechercheEtDestructionCompany);
 			statementDebut.setInt(1, id);
 			statementDebut.executeUpdate();
-			System.out.println("Debut fait");
 			statementMilieu.setInt(1, id);
 			ResultSet resultSet = statementMilieu.executeQuery();
 			if (resultSet.next()) {
 				throw new SQLException();
 			}
-			System.out.println("milieu fait");
 			statementFin.setInt(1, id);
 			statementFin.executeUpdate();
-			System.out.println("Fin faite");
 		} catch (SQLException e) {
 			System.out.println("Prob e : " + e.getLocalizedMessage());
 			if (connexion != null) {

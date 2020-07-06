@@ -36,6 +36,7 @@ public class EditComputer extends HttpServlet {
 	public static final String ATT_COMPUTER = "computer";
 	public static final String ATT_ERREURS = "erreurs";
 	public static final String ATT_LIST_COMPANIES = "listcompanies";
+	public static final String ATT_ORDER_BY = "orderby";
 
 	private static Logger logger = Logging.getLogger();
 
@@ -75,8 +76,8 @@ public class EditComputer extends HttpServlet {
 		String name = (String) req.getParameter(COMPUTER_NAME);
 		String introduced = req.getParameter(COMPUTER_INTRODUCED);
 		String discontinued = req.getParameter(COMPUTER_DISCONTINUED);
-		String companyId = req.getParameter(COMPANY_ID);
-
+		String companyId = req.getParameter(COMPANY_ID);		
+		
 		Map<String, String> erreurs = new HashMap<String, String>();
 		ConnexionSQL.getConnection();
 		Computer computer = null;
@@ -85,6 +86,9 @@ public class EditComputer extends HttpServlet {
 		} catch (NumberFormatException e) {
 			erreurs.put(COMPUTER_ID, "L'id du computer n'est pas valide");
 		} catch (Exception e) {
+			erreurs.put(COMPUTER_ID, "L'id du computer n'est pas valide");
+		}
+		if (computer == null) {
 			erreurs.put(COMPUTER_ID, "L'id du computer n'est pas valide");
 		}
 		try {
@@ -97,29 +101,33 @@ public class EditComputer extends HttpServlet {
 		} catch (ValidationException e) {
 			erreurs.put(COMPUTER_DISCONTINUED, "Discontinued n'est pas valide.");
 		}
-		try {
-			System.out.println("discontinued : " + discontinued);
-			if (introduced != null && !introduced.equals("") && discontinued != null && !discontinued.equals("")) {
-				validationChronologieDates(introduced, discontinued);
-			} else if (discontinued != null && !discontinued.equals("") && computer.getIntroduced() != null
-					&& !computer.getIntroduced().toString().equals("")) {
-				validationChronologieDates(computer.getIntroduced().toString(), discontinued);
-			} else if (introduced != null && !introduced.equals("") && computer.getDiscontinued() != null
-					&& !computer.getDiscontinued().toString().equals("")) {
-				validationChronologieDates(introduced, computer.getDiscontinued().toString());
+		if (computer != null) {
+			try {
+				if (introduced != null && !introduced.equals("") && discontinued != null && !discontinued.equals("")) {
+					validationChronologieDates(introduced, discontinued);
+				} else if (discontinued != null && !discontinued.equals("") && computer.getIntroduced() != null
+						&& !computer.getIntroduced().toString().equals("")) {
+					validationChronologieDates(computer.getIntroduced().toString(), discontinued);
+				} else if (introduced != null && !introduced.equals("") && computer.getDiscontinued() != null
+						&& !computer.getDiscontinued().toString().equals("")) {
+					validationChronologieDates(introduced, computer.getDiscontinued().toString());
+				}
+			} catch (ValidationException e) {
+				erreurs.put(ATT_ERREUR_CHRONOLOGIE,
+						"Le résultat de cette édition donnerait une date introduced plus récente que la date discontinued.");
 			}
-		} catch (ValidationException e) {
-			erreurs.put(ATT_ERREUR_CHRONOLOGIE,
-					"Le résultat de cette édition donnerait une date introduced plus récente que la date discontinued.");
 		}
 		try {
 			validationCompanyId(companyId);
+		} catch (ValidationException e) {
+			erreurs.put(COMPANY_ID, "L'id de la companie n'est pas valide.");
 		} catch (Exception e) {
-			logger.error(e.getLocalizedMessage() + " doPost : Editcomputer");
+			logger.error(e.getLocalizedMessage() + " validationCompanyId/doPost/Editcomputer");
+			this.getServletContext().getRequestDispatcher("/WEB-INF/editComputer.jsp").forward(req, resp);
 		}
-
-		System.out.println(erreurs.size());
-
+		if (companyId == null) {
+			companyId = "0";
+		}
 		req.setAttribute(COMPUTER_ID, computerId);
 		req.setAttribute(COMPUTER_NAME, name);
 		req.setAttribute(COMPUTER_INTRODUCED, introduced);
@@ -131,22 +139,26 @@ public class EditComputer extends HttpServlet {
 				computer.setName(name);
 			}
 			if (introduced != null && !introduced.equals("")) {
-
 				computer.setIntroduced(MapperDate.StringToLocalDate(introduced));
 			}
+			System.out.println(discontinued);
 			if (discontinued != null && !discontinued.equals("")) {
 				computer.setDiscontinued(MapperDate.StringToLocalDate(discontinued));
 			}
+			System.out.println(discontinued + "4");
+
+			System.out.println(computer.getDiscontinued() + "5");
+
 			try {
 				DAOComputer.getDAOComputer().modifier(computer, Integer.parseInt(companyId));
 			} catch (NumberFormatException e) {
-				logger.error(e.getLocalizedMessage() + " doPost : EditComputer.");
+				logger.error(e.getLocalizedMessage() + " modifierComputer/modifierComputer/doPost/EditComputer.");
 			} catch (Exception e) {
-				logger.error(e.getLocalizedMessage() + " doPost : EditComputer.");
+				logger.error(
+						e.getLocalizedMessage() + "   " + " modifierComputer/modifierComputer/doPost/EditComputer.");
 			}
-		} else {
-
 		}
+		logger.debug("Fin du doPost de EditComputer");
 		this.getServletContext().getRequestDispatcher("/WEB-INF/editComputer.jsp").forward(req, resp);
 	}
 
@@ -197,7 +209,7 @@ public class EditComputer extends HttpServlet {
 		}
 	}
 
-	private void validationCompanyId(String companyId) throws Exception {
+	private void validationCompanyId(String companyId) throws Exception, ValidationException {
 		if (companyId != null && !(companyId.equals("0")) && !(companyId.equals("")) && !(companyId.equals("null"))
 				&& com.excilys.formation.cdb.service.Util.stringIsInt(companyId)) {
 			Company company;
@@ -209,7 +221,7 @@ public class EditComputer extends HttpServlet {
 				throw new Exception(e.getLocalizedMessage() + " validationCompanyId");
 			}
 			if (company == null) {
-				throw new Exception("La company selon l'id donné n'existe pas : validationCompanyId");
+				throw new ValidationException("La company selon l'id donné n'existe pas : validationCompanyId");
 			}
 		}
 	}
