@@ -1,14 +1,14 @@
 package com.excilys.formation.cdb.service;
 
 import com.excilys.formation.cdb.Pageable.Page;
-import com.excilys.formation.cdb.persistence.DAOCompany;
-import com.excilys.formation.cdb.persistence.DAOComputer;
+import com.excilys.formation.cdb.persistence.CompanyDAO;
+import com.excilys.formation.cdb.persistence.ComputerDAO;
 
 /**
  * Classe s'occupant de la gestion des messages de l'utilisateur et appelant les méthodes nécessaires pour y répondre.
  * @author kylian
- * @see DAOComputer
- * @see DAOCompany
+ * @see ComputerDAO
+ * @see CompanyDAO
  * @see Page
  */
 public class Util {

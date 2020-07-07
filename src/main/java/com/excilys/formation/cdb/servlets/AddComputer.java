@@ -22,8 +22,9 @@ import com.excilys.formation.cdb.mapper.MapperComputer;
 import com.excilys.formation.cdb.mapper.MapperDate;
 import com.excilys.formation.cdb.model.Company;
 import com.excilys.formation.cdb.model.Computer;
-import com.excilys.formation.cdb.persistence.DAOCompany;
-import com.excilys.formation.cdb.persistence.DAOComputer;
+import com.excilys.formation.cdb.persistence.CompanyDAO;
+import com.excilys.formation.cdb.persistence.ComputerDAO;
+import com.excilys.formation.cdb.validation.Validation;
 
 @SuppressWarnings("serial")
 public class AddComputer extends HttpServlet {
@@ -41,13 +42,15 @@ public class AddComputer extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		List<Company> listCompanies = null;
-		listCompanies = DAOCompany.getDAOCompany().listerCompanies("");
+		listCompanies = CompanyDAO.getDAOCompany().all("");
 		req.setAttribute(ATT_LIST_COMPANIES, listCompanies);
 		this.getServletContext().getRequestDispatcher("/WEB-INF/addComputer.jsp").forward(req, resp);
 	}
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		logger.debug("Début doPost de AddComputer");
+		Validation validation = Validation.getValidation();
 		Resultat resultat = Resultat.ECHOUE;
 		List<Company> listCompanies = null;
 		Map<String, String> erreurs = new HashMap<String, String>();
@@ -59,33 +62,40 @@ public class AddComputer extends HttpServlet {
 		
 		ConnexionSQL.getConnection();
 
+		logger.debug("Début validation de doPost de AddComputer");
 		try {
-			this.validationName(computerName);
+			Validation.validationName(computerName);
 		} catch (ValidationException e) {
 			erreurs.put(CHAMP_NAME, e.getLocalizedMessage());
 		}
 		try {
-			this.validationIntroduced(computerIntroduced);
+			Validation.validationIntroduced(computerIntroduced);
 		} catch (ValidationException e) {
 			erreurs.put(CHAMP_INTRODUCED, e.getLocalizedMessage());
 		}
 		try {
-			this.validationDiscontinued(computerDiscontinued);
+			Validation.validationDiscontinued(computerDiscontinued);
 		} catch (ValidationException e) {
 			erreurs.put(CHAMP_DISCONTINUED, e.getLocalizedMessage());
 		}
 		try {
-			this.validationChronologieDates(computerIntroduced, computerDiscontinued);
+			Validation.validationChronologieDates(computerIntroduced, computerDiscontinued);
 		} catch (ValidationException e) {
 			erreurs.put(CHAMP_CHRONOLOGY, e.getLocalizedMessage());
 		}
+		Company company = null;
+		Computer computer = null;
 		try {
-			this.validationCompanyId(companyId);
+			Validation.validationCompanyId(companyId);
+			company = (Company) CompanyDAO.getDAOCompany().find(Integer.parseInt(companyId));
 		} catch (Exception e) {
 			erreurs.put(CHAMP_COMPANY_ID, e.getLocalizedMessage());
 		}
 		
-		listCompanies = DAOCompany.getDAOCompany().listerCompanies("");
+		logger.debug("Fin validation de doPost de AddComputer");
+
+		
+		listCompanies = CompanyDAO.getDAOCompany().all("");
 		
 		req.setAttribute(ATT_LIST_COMPANIES, listCompanies);
 		req.setAttribute(CHAMP_NAME, computerName);
@@ -97,12 +107,15 @@ public class AddComputer extends HttpServlet {
 		if (!erreurs.isEmpty()) {
 			resultat = Resultat.ECHOUE;
 		} else {
-			Computer computer = null;
 			try {
 				computer = MapperComputer.stringToComputer(computerName, computerIntroduced, computerDiscontinued,
 						companyId);
+				if(company != null) {
+					computer.setCompany(company);
+				}
 				try {
-					resultat = DAOComputer.getDAOComputer().ajouter(computer, Integer.parseInt(companyId));
+					logger.debug("Création de doPost de AddComputer");
+					resultat = ComputerDAO.getDAOComputer().create(computer);
 				} catch (NumberFormatException e) {
 					logger.error(e.getLocalizedMessage() + " doPost : AddComputer");
 					System.exit(1);
@@ -116,56 +129,12 @@ public class AddComputer extends HttpServlet {
 			}
 		}
 		req.setAttribute(ATT_RESULTAT, resultat);
-		
+		logger.debug("Fin doPost de AddComputer");
 		this.getServletContext().getRequestDispatcher("/WEB-INF/addComputer.jsp").forward(req, resp);
 	}
 
 	@Override
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		super.doPut(req, resp);
-	}
-
-	private void validationName(String name) throws ValidationException {
-		if (name == null || name.equals("")) {
-			throw new ValidationException("Le computer doit nécessairement avoir un nom.");
-		}
-	}
-
-	private void validationIntroduced(String introduced) throws ValidationException {
-		if (introduced != null && !(introduced.equals("")) && !(introduced.equals("null")) && !MapperDate.validatorStringIsDate(introduced)) {
-			throw new ValidationException("La date 'introduced' n'est pas constitué selon le format d'une date : YYYY-MM-JJ");
-		}
-	}
-
-	private void validationDiscontinued(String discontinued) throws ValidationException {
-		if (discontinued != null && !(discontinued.equals("")) && !(discontinued.equals("null")) && !MapperDate.validatorStringIsDate(discontinued)) {
-			throw new ValidationException("La date 'discontinued' n'est pas constitué selon le format d'une date : YYYY-MM-JJ");
-		}
-	}
-
-	private void validationChronologieDates(String introduced, String discontinued) throws ValidationException {
-		if (introduced != null && discontinued != null) {
-			LocalDate introducedDate = MapperDate.StringToLocalDate(introduced);
-			LocalDate discontinuedDate = MapperDate.StringToLocalDate(discontinued);
-			if (introducedDate != null && discontinuedDate != null && introducedDate.isAfter(discontinuedDate)) {
-				throw new ValidationException("La date 'discontinued' est moins récente que la date 'introduced'.");
-			}
-		}
-	}
-
-	private void validationCompanyId(String companyId) throws Exception {
-		if (companyId != null && !(companyId.equals("0")) && !(companyId.equals("")) && !(companyId.equals("null"))
-				&& com.excilys.formation.cdb.service.Util.stringIsInt(companyId)) {
-			try {
-				Company company = DAOCompany.getDAOCompany().findCompanybyId(Integer.parseInt(companyId));
-				if(company == null) {
-					throw new Exception("La company reçu selon l'id est nulle : validationCompanyId");
-				}
-			} catch (NumberFormatException e1) {
-				throw new Exception(e1.getLocalizedMessage() + " validationCompanyId");
-			} catch (Exception e1) {
-				throw new Exception(e1.getLocalizedMessage() + " validationCompanyId");
-			}
-		}
 	}
 }

@@ -12,11 +12,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 
 import com.excilys.formation.cdb.Pageable.Page;
-import com.excilys.formation.cdb.exception.ParametresException;
 import com.excilys.formation.cdb.exception.ValidationException;
 import com.excilys.formation.cdb.logging.Logging;
 import com.excilys.formation.cdb.model.Computer;
-import com.excilys.formation.cdb.persistence.DAOComputer;
+import com.excilys.formation.cdb.persistence.ComputerDAO;
 import com.excilys.formation.cdb.service.Util;
 
 @SuppressWarnings("serial")
@@ -92,22 +91,22 @@ public class DashBoard extends HttpServlet {
 		}
 
 		try {
-			Page.setNombreComputers(DAOComputer.getDAOComputer().DemandeNombreComputers());
+			Page.setNombreComputers(ComputerDAO.getDAOComputer().DemandeNombreComputers());
 			List<Computer> listComputers = null;
 			if ("".equals(nomRecherche)) {
 				try {
-					listComputers = DAOComputer.getDAOComputer().listerComputersPage(orderBy);
+					listComputers = ComputerDAO.getDAOComputer().some(orderBy);
 				} catch (Exception e) {
 					logger.error(e.getLocalizedMessage() + " doGet : DashBoard");
 				}
 			} else {
 				try {
-					listComputers = DAOComputer.getDAOComputer().listerComputersPageRecherche(nomRecherche, orderBy);
+					listComputers  = ComputerDAO.getDAOComputer().someSearch(nomRecherche, orderBy);
 				} catch (Exception e) {
 					logger.error(e.getLocalizedMessage() + " doGet : DashBoard");
 				}
 			}
-			page.setComputers((ArrayList<Computer>) listComputers);
+			page.setComputers(listComputers);
 			resultat = "Liste de computers obtenue.";
 		} catch (Exception e) {
 			resultat = "Liste de résultat non obtenue : " + e.getLocalizedMessage();
@@ -130,7 +129,7 @@ public class DashBoard extends HttpServlet {
 			String valeurBox = req.getParameter("" + i);
 			if (valeurBox != null) {
 				try {
-					DAOComputer.getDAOComputer().supprimer(Integer.parseInt(valeurBox));
+					ComputerDAO.getDAOComputer().delete(Integer.parseInt(valeurBox));
 				} catch (NumberFormatException e) {
 					logger.error(e.getLocalizedMessage() + " doPost : DashBoard.");
 				} catch (Exception e) {
@@ -138,10 +137,10 @@ public class DashBoard extends HttpServlet {
 			}
 		}
 		try {
-			Page.setNombreComputers(DAOComputer.getDAOComputer().DemandeNombreComputers());
+			Page.setNombreComputers(ComputerDAO.getDAOComputer().DemandeNombreComputers());
 			List<Computer> listComputers = null;
 			try {
-				listComputers = DAOComputer.getDAOComputer().listerComputersPage(orderBy);
+				listComputers = ComputerDAO.getDAOComputer().some(orderBy);
 			} catch (Exception e) {
 				logger.error(e.getLocalizedMessage() + " doGet : DashBoard");
 			}

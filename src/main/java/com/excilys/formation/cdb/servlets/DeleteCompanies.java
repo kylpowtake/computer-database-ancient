@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.excilys.formation.cdb.exception.ValidationException;
 import com.excilys.formation.cdb.model.Company;
-import com.excilys.formation.cdb.persistence.DAOCompany;
+import com.excilys.formation.cdb.persistence.CompanyDAO;
 import com.excilys.formation.cdb.service.Util;
 
 @WebServlet(name = "deleteCompanies", urlPatterns = "/deleteCompanies")
@@ -49,9 +49,9 @@ public class DeleteCompanies extends HttpServlet {
 			nomRecherche = nomRechercheGeneral;
 		}
 		if ("".equals(nomRecherche)) {
-			listCompanies = DAOCompany.getDAOCompany().listerCompanies(orderBy);
+			listCompanies = CompanyDAO.getDAOCompany().all(orderBy);
 		} else {
-			listCompanies = DAOCompany.getDAOCompany().listerCompaniesRecherche(nomRecherche, orderBy);
+			listCompanies = CompanyDAO.getDAOCompany().allSearch(nomRecherche, orderBy);
 		}
 		resultat = "Liste de computers obtenue.";
 		req.setAttribute(ATT_LIST_COMPANIES, listCompanies);
@@ -67,22 +67,22 @@ public class DeleteCompanies extends HttpServlet {
 		String nomRecherche = nomRechercheGeneral;
 		String orderBy = orderByGeneral;
 		if ("".equals(nomRecherche)) {
-			listCompanies = DAOCompany.getDAOCompany().listerCompanies(orderBy);
+			listCompanies = CompanyDAO.getDAOCompany().all(orderBy);
 		} else {
-			listCompanies = DAOCompany.getDAOCompany().listerCompaniesRecherche(nomRecherche, orderBy);
+			listCompanies = CompanyDAO.getDAOCompany().allSearch(nomRecherche, orderBy);
 		}
 		for (int i = 0; i < listCompanies.size(); i++) {
 			String valeurBox = req.getParameter("" + i);
 			System.out.println("Box présente : " + valeurBox);
 			if (valeurBox != null && Util.stringIsInt(valeurBox)) {
 				System.out.println("On lance la destr");
-				DAOCompany.getDAOCompany().deleteCompanyAndComputers(Integer.parseInt(valeurBox));
+				CompanyDAO.getDAOCompany().delete(Integer.parseInt(valeurBox));
 			}
 		}
 		if ("".equals(nomRecherche)) {
-			listCompanies = DAOCompany.getDAOCompany().listerCompanies(orderBy);
+			listCompanies = CompanyDAO.getDAOCompany().all(orderBy);
 		} else {
-			listCompanies = DAOCompany.getDAOCompany().listerCompaniesRecherche(nomRecherche, orderBy);
+			listCompanies = CompanyDAO.getDAOCompany().allSearch(nomRecherche, orderBy);
 		}
 		resultat = "Liste de computers obtenue.";
 		req.setAttribute(ATT_LIST_COMPANIES, listCompanies);

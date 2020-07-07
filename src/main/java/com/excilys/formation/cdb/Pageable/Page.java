@@ -1,6 +1,6 @@
 package com.excilys.formation.cdb.Pageable;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.excilys.formation.cdb.model.Computer;
 
@@ -18,7 +18,7 @@ public class Page {
 	/**
 	 * ArrayList de computer
 	 */
-	private static ArrayList<Computer> computers;
+	private static List<Computer> computers;
 	/**
 	 * Nombre de computer maximum pour la page. {@value}
 	 */
@@ -65,12 +65,12 @@ public class Page {
 		return page;
 	}
 
-	public ArrayList<Computer> getComputers() {
+	public List<Computer> getComputers() {
 		return computers;
 	}
 
-	public void setComputers(ArrayList<Computer> pComputers) {
-		computers = pComputers;
+	public void setComputers(List<Computer> listComputers) {
+		computers = listComputers;
 	}
 
 	public int getNombreParPage() {

@@ -11,6 +11,7 @@ import java.util.List;
 import org.slf4j.Logger;
 
 import com.excilys.formation.cdb.connectiviteSQL.DataSource;
+import com.excilys.formation.cdb.enumeration.Resultat;
 import com.excilys.formation.cdb.logging.Logging;
 import com.excilys.formation.cdb.mapper.MapperCompany;
 import com.excilys.formation.cdb.model.Company;
@@ -23,18 +24,18 @@ import com.excilys.formation.cdb.model.Company;
  * @see Company
  *
  */
-public class DAOCompany {
+public class CompanyDAO implements ObjectDAO<Company>{
 	/**
 	 * Champ privé permettant d'avoir un singleton pour cette classe.
 	 */
-	private static DAOCompany daoCompany;
+	private static CompanyDAO daoCompany;
 
 	private static Logger logger = Logging.getLogger();
 
 	/**
 	 * Constructeur de la classe, en privé pour le singleton.
 	 */
-	private DAOCompany() {
+	private CompanyDAO() {
 	}
 
 	/**
@@ -51,9 +52,9 @@ public class DAOCompany {
 	 * 
 	 * @return une instance de la classe.
 	 */
-	public static DAOCompany getDAOCompany() {
+	public static CompanyDAO getDAOCompany() {
 		if (daoCompany == null) {
-			return new DAOCompany();
+			return new CompanyDAO();
 		} else {
 			return daoCompany;
 		}
@@ -67,7 +68,7 @@ public class DAOCompany {
 	 * @exception SQLException Si problème lorsque la base de données s'occupe de la
 	 *                         requête.
 	 */
-	public List<Company> listerCompanies(String pOrderBy) {
+	public List<Company> all(String pOrderBy) {
 		String orderBy = this.modificationOrderBy(pOrderBy);
 		List<Company> listCompanies = new ArrayList<Company>();
 		try {
@@ -99,7 +100,7 @@ public class DAOCompany {
 	 * @exception SQLException Si problème lorsque la base de données s'occupe de la
 	 *                         requête.
 	 */
-	public List<Company> listerCompaniesRecherche(String rechercheNom, String pOrderBy) {
+	public List<Company> allSearch(String rechercheNom, String pOrderBy) {
 		String orderBy = this.modificationOrderBy(pOrderBy);
 		List<Company> listCompanies = new ArrayList<Company>();
 		try {
@@ -133,7 +134,7 @@ public class DAOCompany {
 	 * @exception SQLException Si problème lorsque la base de données s'occupe des
 	 *                         requêtes.
 	 */
-	public Company findCompanybyId(int companyId) throws Exception {
+	public Company find(int companyId) throws Exception {
 		Company company = null;
 		try {
 			Connection connection = DataSource.getConnection();
@@ -158,7 +159,7 @@ public class DAOCompany {
 		return company;
 	}
 
-	public void deleteCompanyAndComputers(int id) {
+	public Resultat delete(int id) {
 		String requeteRechercheEtDestructionComputers = "DELETE FROM computer WHERE computer.company_id = ?;";
 		String requeteNombreComputersAvecCompany = "SELECT computer.company_id FROM computer WHERE computer.company_id = ?;";
 		String requeteRechercheEtDestructionCompany = "DELETE FROM company WHERE company.id = ?";
@@ -197,6 +198,7 @@ public class DAOCompany {
 			} catch (SQLException e) {
 			}
 		}
+		return Resultat.REUSSI;
 	}
 
 	public String modificationOrderBy(String orderBy) {
@@ -213,5 +215,29 @@ public class DAOCompany {
 		default:
 			return "company.id" + message;
 		}
+	}
+
+	@Override
+	public List<Company> some(String orderBy) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Company> someSearch(String orderBy, String search) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Resultat modify(Company object) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Resultat create(Company object) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
