@@ -1,4 +1,4 @@
-package com.excilys.formation.cdb.persistence;
+package com.excilys.formation.cdb.DAO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,10 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
-import com.excilys.formation.cdb.connectiviteSQL.DataSource;
+import com.excilys.formation.cdb.datasource.ConnectionSQL;
 import com.excilys.formation.cdb.enumeration.Resultat;
-import com.excilys.formation.cdb.logging.Logging;
 import com.excilys.formation.cdb.mapper.MapperCompany;
 import com.excilys.formation.cdb.model.Company;
 
@@ -24,13 +25,14 @@ import com.excilys.formation.cdb.model.Company;
  * @see Company
  *
  */
+@Repository
 public class CompanyDAO implements ObjectDAO<Company>{
 	/**
 	 * Champ privé permettant d'avoir un singleton pour cette classe.
 	 */
 	private static CompanyDAO daoCompany;
 
-	private static Logger logger = Logging.getLogger();
+	private Logger logger;
 
 	/**
 	 * Constructeur de la classe, en privé pour le singleton.
@@ -38,6 +40,17 @@ public class CompanyDAO implements ObjectDAO<Company>{
 	private CompanyDAO() {
 	}
 
+	@Autowired
+	ConnectionSQL connectionSQL;
+
+	public ConnectionSQL getConnection() {
+		return connectionSQL;
+	}
+	
+	public void setConnection(ConnectionSQL connectionSQL) {
+		this.connectionSQL = connectionSQL;
+	}
+	
 	/**
 	 * String représentant la requête pour obtenir la liste entière de companies de
 	 * la base de données.
@@ -72,7 +85,7 @@ public class CompanyDAO implements ObjectDAO<Company>{
 		String orderBy = this.modificationOrderBy(pOrderBy);
 		List<Company> listCompanies = new ArrayList<Company>();
 		try {
-			Connection connection = DataSource.getConnection();
+			Connection connection = connectionSQL.getConnection();
 			Statement statement = connection.createStatement();
 			ResultSet resultSet = statement.executeQuery(REQUETELISTECOMPANIES + " ORDER BY " + orderBy + ";");
 			while (resultSet.next()) {
@@ -104,7 +117,7 @@ public class CompanyDAO implements ObjectDAO<Company>{
 		String orderBy = this.modificationOrderBy(pOrderBy);
 		List<Company> listCompanies = new ArrayList<Company>();
 		try {
-			Connection connection = DataSource.getConnection();
+			Connection connection = connectionSQL.getConnection();
 			Statement statement = connection.createStatement();
 
 			ResultSet resultSet = statement.executeQuery(REQUETELISTECOMPANIES + " WHERE company.name LIKE '%"
@@ -137,7 +150,7 @@ public class CompanyDAO implements ObjectDAO<Company>{
 	public Company find(int companyId) throws Exception {
 		Company company = null;
 		try {
-			Connection connection = DataSource.getConnection();
+			Connection connection = connectionSQL.getConnection();
 			Statement statement = connection.createStatement();
 			ResultSet resultSet = statement.executeQuery(REQUETEFINDBYID + companyId + ";");
 			if (resultSet.next()) {
@@ -163,13 +176,13 @@ public class CompanyDAO implements ObjectDAO<Company>{
 		String requeteRechercheEtDestructionComputers = "DELETE FROM computer WHERE computer.company_id = ?;";
 		String requeteNombreComputersAvecCompany = "SELECT computer.company_id FROM computer WHERE computer.company_id = ?;";
 		String requeteRechercheEtDestructionCompany = "DELETE FROM company WHERE company.id = ?";
-		Connection connexion = null;
+		Connection connection = null;
 		try {
-			connexion = DataSource.getConnection();
-			connexion.setAutoCommit(false);
-			PreparedStatement statementDebut = connexion.prepareStatement(requeteRechercheEtDestructionComputers);
-			PreparedStatement statementMilieu = connexion.prepareStatement(requeteNombreComputersAvecCompany);
-			PreparedStatement statementFin = connexion.prepareStatement(requeteRechercheEtDestructionCompany);
+			connection = connectionSQL.getConnection();
+			connection.setAutoCommit(false);
+			PreparedStatement statementDebut = connection.prepareStatement(requeteRechercheEtDestructionComputers);
+			PreparedStatement statementMilieu = connection.prepareStatement(requeteNombreComputersAvecCompany);
+			PreparedStatement statementFin = connection.prepareStatement(requeteRechercheEtDestructionCompany);
 			statementDebut.setInt(1, id);
 			statementDebut.executeUpdate();
 			statementMilieu.setInt(1, id);
@@ -181,19 +194,19 @@ public class CompanyDAO implements ObjectDAO<Company>{
 			statementFin.executeUpdate();
 		} catch (SQLException e) {
 			System.out.println("Prob e : " + e.getLocalizedMessage());
-			if (connexion != null) {
+			if (connection != null) {
 				try {
-					connexion.rollback();
+					connection.rollback();
 				} catch (SQLException e1) {
 					System.out.println("Prob e1 : " + e.getLocalizedMessage());
 				}
 			}
 		} finally {
 			try {
-				if (connexion != null) {
-					connexion.commit();
-					connexion.setAutoCommit(true);
-					connexion.close();
+				if (connection != null) {
+					connection.commit();
+					connection.setAutoCommit(true);
+					connection.close();
 				}
 			} catch (SQLException e) {
 			}
@@ -239,5 +252,15 @@ public class CompanyDAO implements ObjectDAO<Company>{
 	public Resultat create(Company object) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public Logger getLogger() {
+		return this.logger;
+	}
+
+	@Override
+	public void setLogger(Logger logger) {
+		this.logger = logger;
 	}
 }

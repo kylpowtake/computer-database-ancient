@@ -13,15 +13,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 
-import com.excilys.formation.cdb.connectiviteSQL.ConnexionSQL;
+import com.excilys.formation.cdb.DAO.CompanyDAO;
+import com.excilys.formation.cdb.DAO.ComputerDAO;
 import com.excilys.formation.cdb.exception.ValidationException;
 import com.excilys.formation.cdb.logging.Logging;
 import com.excilys.formation.cdb.mapper.MapperDate;
 import com.excilys.formation.cdb.model.Company;
 import com.excilys.formation.cdb.model.Computer;
-import com.excilys.formation.cdb.model.Computer.BuilderComputer;
-import com.excilys.formation.cdb.persistence.CompanyDAO;
-import com.excilys.formation.cdb.persistence.ComputerDAO;
 import com.excilys.formation.cdb.validation.Validation;
 
 @SuppressWarnings("serial")
@@ -44,7 +42,6 @@ public class EditComputer extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String computerId = req.getParameter(COMPUTER_ID);
-		ConnexionSQL.getConnection();
 		Computer computer = null;
 		try {
 			computer = (Computer) ComputerDAO.getDAOComputer().find(Integer.parseInt(computerId));
@@ -81,7 +78,7 @@ public class EditComputer extends HttpServlet {
 		String companyId = req.getParameter(COMPANY_ID);
 
 		Map<String, String> erreurs = new HashMap<String, String>();
-		ConnexionSQL.getConnection();
+		;
 		Computer computer = null;
 		try {
 			computer = (Computer) ComputerDAO.getDAOComputer().find(Integer.parseInt(computerId));

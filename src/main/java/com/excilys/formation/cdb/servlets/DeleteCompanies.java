@@ -9,9 +9,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.excilys.formation.cdb.DAO.CompanyDAO;
 import com.excilys.formation.cdb.exception.ValidationException;
 import com.excilys.formation.cdb.model.Company;
-import com.excilys.formation.cdb.persistence.CompanyDAO;
 import com.excilys.formation.cdb.service.Util;
 
 @WebServlet(name = "deleteCompanies", urlPatterns = "/deleteCompanies")

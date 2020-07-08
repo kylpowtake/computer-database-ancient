@@ -1,10 +1,13 @@
-package com.excilys.formation.cdb.persistence;
+package com.excilys.formation.cdb.DAO;
 
 import java.util.List;
+
+import org.slf4j.Logger;
 
 import com.excilys.formation.cdb.enumeration.Resultat;
 
 public interface ObjectDAO<T> {
+	
 	
 	public List<T> all(String orderBy) throws Exception;
 	
@@ -21,4 +24,8 @@ public interface ObjectDAO<T> {
 	public Resultat create(T object) throws Exception;
 	
 	public T find(int id) throws Exception;
+	
+	public Logger getLogger();
+	
+	public void setLogger(Logger logger);
 }

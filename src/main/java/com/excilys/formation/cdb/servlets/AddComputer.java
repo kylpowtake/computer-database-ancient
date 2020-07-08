@@ -1,29 +1,30 @@
 package com.excilys.formation.cdb.servlets;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
-import com.excilys.formation.cdb.connectiviteSQL.ConnexionSQL;
+import com.excilys.formation.cdb.DAO.CompanyDAO;
+import com.excilys.formation.cdb.DAO.ComputerDAO;
+import com.excilys.formation.cdb.DAO.ObjectDAO;
 import com.excilys.formation.cdb.enumeration.Resultat;
 import com.excilys.formation.cdb.exception.ParametresException;
 import com.excilys.formation.cdb.exception.ValidationException;
 import com.excilys.formation.cdb.logging.Logging;
 import com.excilys.formation.cdb.mapper.MapperComputer;
-import com.excilys.formation.cdb.mapper.MapperDate;
 import com.excilys.formation.cdb.model.Company;
 import com.excilys.formation.cdb.model.Computer;
-import com.excilys.formation.cdb.persistence.CompanyDAO;
-import com.excilys.formation.cdb.persistence.ComputerDAO;
 import com.excilys.formation.cdb.validation.Validation;
 
 @SuppressWarnings("serial")
@@ -39,6 +40,14 @@ public class AddComputer extends HttpServlet {
 
 	private static Logger logger = Logging.getLogger();
 
+	private ObjectDAO<?> computerDAO;
+	
+    @Override
+	public void init(ServletConfig config) throws ServletException {
+    	super.init(config);
+		SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this,config.getServletContext());
+	}
+    
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		List<Company> listCompanies = null;
@@ -48,9 +57,8 @@ public class AddComputer extends HttpServlet {
 	}
 
 	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {		
 		logger.debug("Début doPost de AddComputer");
-		Validation validation = Validation.getValidation();
 		Resultat resultat = Resultat.ECHOUE;
 		List<Company> listCompanies = null;
 		Map<String, String> erreurs = new HashMap<String, String>();
@@ -59,9 +67,6 @@ public class AddComputer extends HttpServlet {
 		String computerIntroduced = (String) req.getParameter(CHAMP_INTRODUCED);
 		String computerDiscontinued = (String) req.getParameter(CHAMP_DISCONTINUED);
 		String companyId = req.getParameter(CHAMP_COMPANY_ID);
-		
-		ConnexionSQL.getConnection();
-
 		logger.debug("Début validation de doPost de AddComputer");
 		try {
 			Validation.validationName(computerName);
@@ -93,7 +98,6 @@ public class AddComputer extends HttpServlet {
 		}
 		
 		logger.debug("Fin validation de doPost de AddComputer");
-
 		
 		listCompanies = CompanyDAO.getDAOCompany().all("");
 		
@@ -136,5 +140,14 @@ public class AddComputer extends HttpServlet {
 	@Override
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		super.doPut(req, resp);
+	}
+	
+	
+	public ObjectDAO<?> getDAO() {
+		return computerDAO;
+	}
+	
+	public void setDAO(ObjectDAO<?> objectDAO) {
+		this.computerDAO = objectDAO;
 	}
 }

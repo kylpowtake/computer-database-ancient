@@ -1,4 +1,4 @@
-package com.excilys.formation.cdb.persistence;
+package com.excilys.formation.cdb.DAO;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -10,12 +10,13 @@ import java.sql.Statement;
 import java.util.List;
 
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import com.excilys.formation.cdb.Pageable.Page;
-import com.excilys.formation.cdb.connectiviteSQL.DataSource;
+import com.excilys.formation.cdb.datasource.ConnectionSQL;
 import com.excilys.formation.cdb.enumeration.Resultat;
 import com.excilys.formation.cdb.exception.ParametresException;
-import com.excilys.formation.cdb.logging.Logging;
 import com.excilys.formation.cdb.mapper.MapperComputer;
 import com.excilys.formation.cdb.model.Computer;
 
@@ -27,6 +28,7 @@ import com.excilys.formation.cdb.model.Computer;
  * @see Computer
  *
  */
+@Repository
 public class ComputerDAO implements ObjectDAO<Computer>{
 	/**
 	 * Champ privé permettant d'avoir un singleton pour cette classe.
@@ -37,6 +39,17 @@ public class ComputerDAO implements ObjectDAO<Computer>{
 	 * Constructeur de la classe, en privé pour le singleton.
 	 */
 	private ComputerDAO() {
+	}
+	
+	@Autowired
+	ConnectionSQL connectionSQL;
+
+	public ConnectionSQL getConnection() {
+		return connectionSQL;
+	}
+	
+	public void setConnection(ConnectionSQL connectionSQL) {
+		this.connectionSQL = connectionSQL;
 	}
 
 	/**
@@ -67,7 +80,7 @@ public class ComputerDAO implements ObjectDAO<Computer>{
 	 */
 	private static final String REQUETEDELETECOMPUTERBYID = "DELETE FROM computer WHERE computer.id = ";
 
-	private static Logger logger = Logging.getLogger();
+	private Logger logger;
 
 	private static final String REQUETEUPDATE = "update computer set computer.name = ?";
 
@@ -94,7 +107,7 @@ public class ComputerDAO implements ObjectDAO<Computer>{
 	public int DemandeNombreComputers() {
 		int nombreComputers = 0;
 		try {
-			Connection connection = DataSource.getConnection();
+			Connection connection = connectionSQL.getConnection();
 			Statement statement = connection.createStatement();
 			ResultSet resultSet = statement.executeQuery(REQUETENOMBRECOMPUTERS);
 			if (resultSet.next()) {
@@ -123,7 +136,7 @@ public class ComputerDAO implements ObjectDAO<Computer>{
 	 */
 	private boolean findcomputerById(int computerId) throws Exception {
 		boolean resultat = false;
-		Connection connection = DataSource.getConnection();
+		Connection connection = connectionSQL.getConnection();
 		Statement statement = connection.createStatement();
 		ResultSet resultSet = statement.executeQuery(REQUETEFINDCOMPUTERBYID + computerId + ";");
 		try {
@@ -162,7 +175,7 @@ public class ComputerDAO implements ObjectDAO<Computer>{
 	 */
 	private int faireRequeteSansResultat(String requete) {
 		try {
-			Connection connection = DataSource.getConnection();
+			Connection connection = connectionSQL.getConnection();
 			Statement statement = connection.createStatement();
 			int nombreLignes = statement.executeUpdate(requete);
 			statement.close();
@@ -191,7 +204,7 @@ public class ComputerDAO implements ObjectDAO<Computer>{
 		page.setNumeroPage(((nombreComputers - (nombreComputers % 10)) / 10) + 1);
 		page.setPeutAllerAncienneEtNouvellePage(nombreComputers);
 		List<Computer> listComputers = null;
-		Connection connection = DataSource.getConnection();
+		Connection connection = connectionSQL.getConnection();
 		Statement statement = connection.createStatement();
 		ResultSet resultSet = statement.executeQuery(REQUETENOMBRECOMPUTERSDEPUIS + "LIMIT " + page.getNombreParPage()
 				+ " OFFSET " + (page.getNumeroPage() - 1) * page.getNombreParPage() + ";");
@@ -225,7 +238,7 @@ public class ComputerDAO implements ObjectDAO<Computer>{
 		page.setPeutAllerAncienneEtNouvellePage(nombreComputers);
 		List<Computer> listComputers = null;
 		// Requête pour obtenir les computers de la page actuelle.
-		Connection connection = DataSource.getConnection();
+		Connection connection = connectionSQL.getConnection();
 		Statement statement = connection.createStatement();
 		ResultSet resultSet = statement.executeQuery(REQUETENOMBRECOMPUTERSDEPUIS + " ORDER BY " + orderBy + " LIMIT "
 				+ page.getNombreParPage() + " OFFSET " + (page.getNumeroPage()) * page.getNombreParPage() + ";");
@@ -260,7 +273,7 @@ public class ComputerDAO implements ObjectDAO<Computer>{
 		page.setPeutAllerAncienneEtNouvellePage(nombreComputers);
 		List<Computer> listComputers = null;
 		// Requête pour obtenir les computers de la page actuelle.
-		Connection connection = DataSource.getConnection();
+		Connection connection = connectionSQL.getConnection();
 		Statement statement = connection.createStatement();
 		ResultSet resultSet = statement.executeQuery(REQUETENOMBRECOMPUTERSDEPUIS + "WHERE ((computer.name LIKE '%"
 				+ motRecherche + "%') OR (company.name LIKE '%" + motRecherche + "%')) ORDER BY " + orderBy + " LIMIT "
@@ -289,7 +302,7 @@ public class ComputerDAO implements ObjectDAO<Computer>{
 	public String all() throws Exception {
 		String message = "";
 		List<Computer> listeComputers = null;
-		Connection connection = DataSource.getConnection();
+		Connection connection = connectionSQL.getConnection();
 		Statement statement = connection.createStatement();
 		ResultSet resultSet = statement.executeQuery(REQUETELISTECOMPLETECOMPUTERS);
 		try {
@@ -382,7 +395,7 @@ public class ComputerDAO implements ObjectDAO<Computer>{
 		if (!this.findcomputerById(computer.getId())) {
 			throw new Exception("L'id du computer a modifié n'est pas celui d'un computer existant : modifier");
 		}
-		Connection connection = DataSource.getConnection();
+		Connection connection = connectionSQL.getConnection();
 		connection.setAutoCommit(false);
 		if (computer.getIntroduced() != null) {
 			requeteUpdate += ", computer.introduced = ?";
@@ -465,7 +478,7 @@ public class ComputerDAO implements ObjectDAO<Computer>{
 	 */
 	public Computer find(int computerId) throws Exception {
 		List<Computer> listeComputers = null;
-		Connection connection = DataSource.getConnection();
+		Connection connection = connectionSQL.getConnection();
 		Statement statement = connection.createStatement();
 		ResultSet resultSet = statement.executeQuery(REQUETEFINDCOMPUTERBYID + computerId + ";");
 		try {
@@ -515,5 +528,15 @@ public class ComputerDAO implements ObjectDAO<Computer>{
 	public List<Computer> allSearch(String orderby, String search) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public Logger getLogger() {
+		return this.logger;
+	}
+
+	@Override
+	public void setLogger(Logger logger) {
+		this.logger = logger;
 	}
 }

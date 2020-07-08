@@ -1,4 +1,4 @@
-package com.excilys.formation.cdb.connectiviteSQL;
+package com.excilys.formation.cdb.datasource;
 
 import java.sql.*;
 
@@ -17,15 +17,18 @@ import com.excilys.formation.cdb.logging.Logging;
  * @author kylian
  *
  */
-public class ConnexionSQL {
+public class ConnectionNormal implements ConnectionSQL {
 	/**
 	 * La connexion à la base de données permettant de faire des requêtes.
 	 */
-	private static Connection connexion;
+	private static Connection connection;
 
 	public static DataSource dataSource;
 
 	private static Logger logger = Logging.getLogger();
+
+	public ConnectionNormal() {
+	}
 
 	/**
 	 * Méthode initialisant la connexion à la base de données.
@@ -33,17 +36,17 @@ public class ConnexionSQL {
 	 * @exception SQLException S'il y a eu un problème lors de la création de la
 	 *                         connexion à la base de données.
 	 */
-	private static void connexionSQL() {
+	private static void connection() throws SQLException{
 		try {
 			Context ctx = new InitialContext();
 			dataSource = (DataSource) ctx.lookup("java:comp/env/computer-database-db");
 		} catch (NamingException e) {
-			System.out.println("erreur lors de la connexion : " + e.getLocalizedMessage());
+			logger.error(e.getLocalizedMessage());
 		}
 		try {
-			connexion = dataSource.getConnection();
+			connection = dataSource.getConnection();
 		} catch (SQLException e) {
-			System.out.println("erreur lors de la connexion : " + e.getLocalizedMessage());
+			throw e;
 		}
 	}
 
@@ -53,22 +56,15 @@ public class ConnexionSQL {
 	 * 
 	 * @return la connexion à la base de données.
 	 */
-	public static Connection getConnection() {
-		if (connexion == null) {
-			connexionSQL();
+	@Override
+	public Connection getConnection() throws SQLException{
+		if (connection == null) {
+			try {
+				connection();
+			} catch (SQLException e) {
+				throw e;
+			}
 		}
-		return connexion;
-	}
-
-	/**
-	 * Méthode terminant la connexion à la base de données.
-	 */
-	public static void finirConnection() {
-		try {
-			connexion.close();
-		} catch (SQLException e) {
-			logger.error(
-					"Problème lors de la fin de la connexion avec la base de données : " + e.getLocalizedMessage());
-		}
+		return connection;
 	}
 }

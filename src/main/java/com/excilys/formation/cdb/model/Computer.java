@@ -3,6 +3,8 @@ package com.excilys.formation.cdb.model;
 
 import java.time.LocalDate;
 
+import com.excilys.formation.cdb.DTO.ComputerDTO;
+
 /**
  * Classe représentant un computer avec ses différentes valeurs.
  * @author kylian
@@ -123,23 +125,52 @@ public class Computer {
 		return message;
 	}
 	
-	public boolean equals(Object o) {
-		if(o == null) {
+	public boolean equals(Object obj) {
+		if (obj == null) {
 			return false;
 		}
-		Computer other = (Computer) o;
-		if((this.getCompany() != null && !this.getCompany().equals(other.getCompany())) 
-				|| (this.getDiscontinued() != null && !this.getDiscontinued().equals(other.getDiscontinued()))
-				|| (this.getIntroduced() != null && !this.getIntroduced().equals(other.getIntroduced()))
-				|| (!(this.getId() == other.getId()))
-				|| (this.getName() != null && !this.getName().equals(other.getName()))) {
+		try {
+			if (!Class.forName(this.getClass().getName()).isInstance(obj)) {
+				return false;
+			}
+		} catch (ClassNotFoundException e) {
 			return false;
-		} else if((this.getCompany() == null && other.getCompany() != null)
-				|| (this.getDiscontinued() == null && other.getDiscontinued() != null)
-				|| (this.getIntroduced() == null && other.getIntroduced() != null)
-				|| (this.getName() == null && other.getName() != null)){
+		}
+		ComputerDTO other = (ComputerDTO) obj;
+		if (this.getId() != other.getId()) {
+			return false;
+		}
+		if (other.getName() == null || this.getName().equals(other.getName())) {
+			return false;
+		}
+		if ((this.getIntroduced() == null && other.getIntroduced() != null)
+				|| (this.getIntroduced() != null && other.getIntroduced() == null)
+				|| !(this.getIntroduced().equals(other.getIntroduced()))) {
+			return false;
+		}
+		if ((this.getDiscontinued() == null && other.getDiscontinued() != null)
+				|| (this.getDiscontinued() != null && other.getDiscontinued() == null)
+				|| !(this.getDiscontinued().equals(other.getDiscontinued()))) {
+			return false;
+		}
+		if ((this.getCompany() == null && other.getCompany() != null)
+				|| (this.getCompany() != null && other.getCompany() == null)
+				|| !(this.getCompany().equals(other.getCompany()))) {
 			return false;
 		}
 		return true;
 	}
+	
+	@Override
+	public int hashCode() {
+		int value = 17;
+		int result = 1;
+		result = value * result + this.id;
+		result = value * result + ((this.getName() == null) ? 0 : this.getName().hashCode());
+		result = value * result + ((this.getIntroduced() == null) ? 0 : this.getIntroduced().hashCode());
+		result = value * result + ((this.getDiscontinued() == null) ? 0 : this.getDiscontinued().hashCode());
+		result = value * result + ((this.getCompany() == null) ? 0 : this.getCompany().hashCode());
+		return result;
+	}
+	
 }

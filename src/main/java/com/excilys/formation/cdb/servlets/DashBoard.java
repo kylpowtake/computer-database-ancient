@@ -11,12 +11,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 
+import com.excilys.formation.cdb.DAO.ComputerDAO;
 import com.excilys.formation.cdb.Pageable.Page;
 import com.excilys.formation.cdb.exception.ValidationException;
 import com.excilys.formation.cdb.logging.Logging;
 import com.excilys.formation.cdb.model.Computer;
-import com.excilys.formation.cdb.persistence.ComputerDAO;
-import com.excilys.formation.cdb.service.Util;
+import com.excilys.formation.cdb.validation.Validation;
 
 @SuppressWarnings("serial")
 public class DashBoard extends HttpServlet {
@@ -47,7 +47,7 @@ public class DashBoard extends HttpServlet {
 		
 		Page page = Page.getPage();
 		try {
-			this.validationOrderBy(orderBy);
+			Validation.validationOrderBy(orderBy);
 			if(orderBy.equals(orderByGeneral)) {
 				orderBy += " DESC";
 			}
@@ -60,19 +60,19 @@ public class DashBoard extends HttpServlet {
 			}
 		}
 		try {
-			this.validationNombreParPage(nombreParPage);
+			Validation.validationNombreParPage(nombreParPage);
 			page.setNombreParPage(Integer.parseInt(nombreParPage));
 		} catch (ValidationException e) {
 
 		}
 		try {
-			this.validationNumeroPage(numeroPage);
+			Validation.validationNumeroPage(numeroPage);
 			page.setNumeroPage(Integer.parseInt(numeroPage));
 		} catch (ValidationException e) {
 
 		}
 		try {
-			this.validationSearch(nomRecherche);
+			Validation.validationSearch(nomRecherche);
 			page.setNomRecherche(nomRecherche);
 		} catch (ValidationException e) {
 			if (nomRecherche != null) {
@@ -120,7 +120,6 @@ public class DashBoard extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
 		String resultat = "";
 		Page page = Page.getPage();
 		String orderBy = orderByGeneral;
@@ -152,33 +151,5 @@ public class DashBoard extends HttpServlet {
 		req.setAttribute(ATT_PAGE, page);
 		req.setAttribute(ATT_RESULTAT, resultat);
 		this.getServletContext().getRequestDispatcher("/WEB-INF/dashboard.jsp").forward(req, resp);
-	}
-
-	private void validationNombreParPage(String nombreParPage) throws ValidationException {
-		if (nombreParPage == null || nombreParPage.equals("") || nombreParPage.equals("null")
-				|| !(Util.stringIsInt(nombreParPage))) {
-			throw new ValidationException("Le nombre de page n'est pas valide : " + nombreParPage);
-		}
-	}
-
-	private void validationNumeroPage(String numeroPage) throws ValidationException {
-		if (numeroPage == null || numeroPage.equals("") || numeroPage.equals("null")
-				|| !(Util.stringIsInt(numeroPage))) {
-			throw new ValidationException("Le nombre de page n'est pas valide : " + numeroPage);
-		}
-	}
-
-	private void validationSearch(String nomRecherche) throws ValidationException {
-		if (nomRecherche == null || nomRecherche.equals("")) {
-			throw new ValidationException("Le mot recherché est null : " + nomRecherche);
-		}
-	}
-
-	private void validationOrderBy(String orderBy) throws ValidationException {
-		if (orderBy == null || orderBy.equals("") || orderBy.equals("null")
-				|| (!orderBy.equals("id") && !orderBy.equals("name") && !orderBy.equals("introduced")
-						&& !orderBy.equals("discontinued") && !orderBy.equals("company"))) {
-			throw new ValidationException("Mauvaise valeur pour l'ordre d'affichage des computers.");
-		}
 	}
 }
