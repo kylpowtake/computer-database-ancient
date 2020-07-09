@@ -1,7 +1,5 @@
 package com.excilys.formation.cdb.model;
 
-import com.excilys.formation.cdb.DTO.CompanyDTO;
-
 /**
  * Classe représentant une company avec ses différentes valeurs.
  * 
@@ -77,7 +75,7 @@ public class Company {
 		} catch (ClassNotFoundException e) {
 			return false;
 		}
-		CompanyDTO other = (CompanyDTO) obj;
+		Company other = (Company) obj;
 		if (this.id != other.getId()) {
 			return false;
 		}

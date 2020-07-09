@@ -3,8 +3,6 @@ package com.excilys.formation.cdb.model;
 
 import java.time.LocalDate;
 
-import com.excilys.formation.cdb.DTO.ComputerDTO;
-
 /**
  * Classe représentant un computer avec ses différentes valeurs.
  * @author kylian
@@ -136,7 +134,7 @@ public class Computer {
 		} catch (ClassNotFoundException e) {
 			return false;
 		}
-		ComputerDTO other = (ComputerDTO) obj;
+		Computer other = (Computer) obj;
 		if (this.getId() != other.getId()) {
 			return false;
 		}

@@ -1,4 +1,4 @@
-package com.excilys.formation.cdb.DAO;
+package com.excilys.formation.cdb.persistence;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -28,21 +28,19 @@ import com.excilys.formation.cdb.model.Company;
  */
 @Repository
 public class CompanyDAO {
-	/**
-	 * Champ privé permettant d'avoir un singleton pour cette classe.
-	 */
-	private static CompanyDAO daoCompany;
-
+	
 	private static Logger logger = Logging.getLogger();
+	
+	ConnectionSQL connectionSQL;
 
 	/**
 	 * Constructeur de la classe, en privé pour le singleton.
 	 */
-	private CompanyDAO() {
+	@Autowired
+	public CompanyDAO(ConnectionSQL connectionSQL) {
+		this.connectionSQL = connectionSQL;
 	}
 
-	@Autowired
-	ConnectionSQL connectionSQL;
 
 	public ConnectionSQL getConnection() {
 		return connectionSQL;
@@ -60,19 +58,6 @@ public class CompanyDAO {
 
 	private static final String REQUETEFINDBYID = "SELECT company.id, company.name FROM company WHERE company.id = ";
 
-	/**
-	 * Méthode permettant d'obtenir l'instance unique de la classe. Si l'instance
-	 * existe déjà elle est renvoyée, sinon elle est créée puis renvoyée.
-	 * 
-	 * @return une instance de la classe.
-	 */
-	public static CompanyDAO getDAOCompany() {
-		if (daoCompany == null) {
-			return new CompanyDAO();
-		} else {
-			return daoCompany;
-		}
-	}
 
 	/**
 	 * Méthode faisant la requête à la base de données pour avoir la liste de

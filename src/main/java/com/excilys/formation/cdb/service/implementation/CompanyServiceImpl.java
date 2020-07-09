@@ -5,17 +5,21 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.excilys.formation.cdb.DAO.CompanyDAO;
 import com.excilys.formation.cdb.enumeration.Resultat;
 import com.excilys.formation.cdb.model.Company;
+import com.excilys.formation.cdb.persistence.CompanyDAO;
 import com.excilys.formation.cdb.service.CompanyService;
 
 @Service
-public class CompanyServiceImplementation implements CompanyService{
-	
+public class CompanyServiceImpl implements CompanyService {
+
 	@Autowired
+	public CompanyServiceImpl(CompanyDAO companyDAO) {
+		this.companyDAO = companyDAO;
+	}
+
 	CompanyDAO companyDAO;
-	
+
 	@Override
 	public List<Company> all(String pOrderBy) {
 		return companyDAO.all(pOrderBy);

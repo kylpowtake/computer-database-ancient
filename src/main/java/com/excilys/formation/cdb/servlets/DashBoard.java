@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -11,9 +12,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
+import com.excilys.formation.cdb.DTO.PageDTO;
 import com.excilys.formation.cdb.Pageable.Page;
-import com.excilys.formation.cdb.exception.ValidationException;
 import com.excilys.formation.cdb.logging.Logging;
 import com.excilys.formation.cdb.model.Computer;
 import com.excilys.formation.cdb.service.ComputerService;
@@ -33,14 +35,24 @@ public class DashBoard extends HttpServlet {
 	public static final String PAR_NEXT = "next";
 	public static final String ATT_DELETE = "delete";
 	public static final String PARAM_ORDER_BY = "orderby";
-	
+
 	private static Logger logger = Logging.getLogger();
-	
+
 	@Autowired
 	private ComputerService computerService;
 
 	private String orderByGeneral = "id";
-	
+
+	public void init(ServletConfig config) {
+		try {
+			super.init(config);
+		} catch (ServletException e) {
+
+			e.printStackTrace();
+		}
+		SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
+	}
+
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		logger.debug("Début du doGet de DashBoard");
@@ -49,43 +61,22 @@ public class DashBoard extends HttpServlet {
 		String numeroPage = req.getParameter(CHAMP_NUMERO_PAGE);
 		String nombreParPage = req.getParameter(CHAMP_NOMBRE_PAR_PAGE);
 		String orderBy = req.getParameter(PARAM_ORDER_BY);
-		
+
+		PageDTO pageDTO = new PageDTO(nomRecherche, numeroPage, nombreParPage, orderBy);
+
+		Validation.validationPage(pageDTO);
 		Page page = Page.getPage();
-		try {
-			Validation.validationOrderBy(orderBy);
-			if(orderBy.equals(orderByGeneral)) {
-				orderBy += " DESC";
-			}
-			orderByGeneral = orderBy;
-		} catch (ValidationException e) {
-			if(orderByGeneral != null) {
-				orderBy = orderByGeneral;
-			} else {
-				orderBy = "id";
-			}
-		}
-		try {
-			Validation.validationNombreParPage(nombreParPage);
-			page.setNombreParPage(Integer.parseInt(nombreParPage));
-		} catch (ValidationException e) {
 
+		if (pageDTO.getOrderBy() != null && !("".equals(pageDTO.getOrderBy())) && pageDTO.getOrderBy().equals(orderByGeneral)) {
+			pageDTO.setOrderBy(pageDTO.getOrderBy() + " DESC");
+		} else if (pageDTO.getOrderBy() == null || "".equals(pageDTO.getOrderBy())) {
+			pageDTO.setOrderBy(orderByGeneral);
 		}
-		try {
-			Validation.validationNumeroPage(numeroPage);
-			page.setNumeroPage(Integer.parseInt(numeroPage));
-		} catch (ValidationException e) {
+		if(!"".equals(pageDTO.getNumeroPage())) {
+		page.setNumeroPage(Integer.parseInt(pageDTO.getNumeroPage()));
+		}
+		orderByGeneral = pageDTO.getOrderBy();
 
-		}
-		try {
-			Validation.validationSearch(nomRecherche);
-			page.setNomRecherche(nomRecherche);
-		} catch (ValidationException e) {
-			if (nomRecherche != null) {
-				nomRecherche = page.getNomRecherche();
-			} else {
-				nomRecherche = "";
-			}
-		}
 		String previous = req.getParameter(PAR_PREVIOUS);
 		if ("true".equals(previous)) {
 			page.setNumeroPage(page.getNumeroPage() - 1);
@@ -97,20 +88,21 @@ public class DashBoard extends HttpServlet {
 		try {
 			Page.setNombreComputers(computerService.nombre());
 			List<Computer> listComputers = null;
-			if ("".equals(nomRecherche)) {
+			if ("".equals(pageDTO.getNomRecherche())) {
 				try {
-					listComputers = computerService.some(orderBy);
+					listComputers = computerService.some(pageDTO.getOrderBy());
 				} catch (Exception e) {
 					logger.error(e.getLocalizedMessage() + " doGet : DashBoard");
 				}
 			} else {
 				try {
-					listComputers  = computerService.someSearch(nomRecherche, orderBy);
+					listComputers = computerService.someSearch(pageDTO.getNomRecherche(), pageDTO.getOrderBy());
 				} catch (Exception e) {
 					logger.error(e.getLocalizedMessage() + " doGet : DashBoard");
 				}
 			}
 			page.setComputers(listComputers);
+			logger.debug("The computers's list is composed of " + page.getComputers().size() + " computers     " + pageDTO.getNomRecherche());
 			resultat = "Liste de computers obtenue.";
 		} catch (Exception e) {
 			resultat = "Liste de résultat non obtenue : " + e.getLocalizedMessage();
@@ -118,7 +110,8 @@ public class DashBoard extends HttpServlet {
 		}
 		req.setAttribute(ATT_RESULTAT, resultat);
 		req.setAttribute(ATT_PAGE, page);
-		req.setAttribute(CHAMP_SEARCH, nomRecherche);
+		req.setAttribute(CHAMP_SEARCH, pageDTO.getNomRecherche());
+		req.setAttribute(PARAM_ORDER_BY, pageDTO.getOrderBy());
 		logger.debug("Fin du doGet de DashBoard");
 		this.getServletContext().getRequestDispatcher("/WEB-INF/dashboard.jsp").forward(req, resp);
 	}

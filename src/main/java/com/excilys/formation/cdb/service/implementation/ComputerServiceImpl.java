@@ -5,19 +5,25 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.excilys.formation.cdb.DAO.ComputerDAO;
 import com.excilys.formation.cdb.enumeration.Resultat;
 import com.excilys.formation.cdb.model.Computer;
+import com.excilys.formation.cdb.persistence.ComputerDAO;
 import com.excilys.formation.cdb.service.ComputerService;
 
 @Service
-public class ComputerServiceImplementation implements ComputerService{
+public class ComputerServiceImpl implements ComputerService{
 	
 	@Autowired
+	public ComputerServiceImpl(ComputerDAO computerDAO){
+		this.computerDAO = computerDAO;
+		
+	}
+	
 	ComputerDAO computerDAO;
 	
 	@Override
 	public List<Computer> some(String pOrderBy) throws Exception {
+		System.out.println("mmmmmmmmmmmmmmm");
 		return computerDAO.some(pOrderBy);
 	}
 

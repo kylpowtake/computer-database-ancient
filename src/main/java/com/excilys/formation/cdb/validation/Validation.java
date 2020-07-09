@@ -2,13 +2,24 @@ package com.excilys.formation.cdb.validation;
 
 import java.time.LocalDate;
 
-import com.excilys.formation.cdb.DAO.CompanyDAO;
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.excilys.formation.cdb.DTO.ComputerDTO;
+import com.excilys.formation.cdb.DTO.PageDTO;
 import com.excilys.formation.cdb.exception.ValidationException;
+import com.excilys.formation.cdb.logging.Logging;
 import com.excilys.formation.cdb.mapper.MapperDate;
 import com.excilys.formation.cdb.model.Company;
+import com.excilys.formation.cdb.service.CompanyService;
 import com.excilys.formation.cdb.service.Util;
 
 public class Validation {
+	
+	private static Logger logger = Logging.getLogger();
+	
+	@Autowired
+	public static CompanyService companyService;
 	
 	private static Validation validation = null;
 	
@@ -18,6 +29,22 @@ public class Validation {
 		} else {
 			return validation;
 		}
+	}
+	
+	public static void validationPage(PageDTO pageDTO) {
+		logger.debug("Start of validationPage");
+		pageDTO.setNomRecherche(validationSearch(pageDTO.getNomRecherche()));
+		pageDTO.setNombreParPage(validationNombreParPage(pageDTO.getNombreParPage()));
+		pageDTO.setNumeroPage(validationNumeroPage(pageDTO.getNumeroPage()));
+		pageDTO.setOrderBy(validationOrderBy(pageDTO.getOrderBy()));
+		logger.debug("End of validationPage");
+	}
+	
+	public static void validationComputerDTO(ComputerDTO computerDTO) throws Exception{
+		validationName(computerDTO.getName());
+		validationIntroduced(computerDTO.getIntroduced());
+		validationDiscontinued(computerDTO.getDiscontinued());
+		validationCompanyId(computerDTO.getCompany().getId());
 	}
 	
 	public static void validationIntroduced(String introduced) throws ValidationException {
@@ -49,7 +76,7 @@ public class Validation {
 				&& com.excilys.formation.cdb.service.Util.stringIsInt(companyId)) {
 			Company company;
 			try {
-				company = (Company) CompanyDAO.getDAOCompany().find(Integer.parseInt(companyId));
+				company = (Company) companyService.find(Integer.parseInt(companyId));
 			} catch (NumberFormatException e) {
 				throw new Exception(e.getLocalizedMessage() + " validationCompanyId");
 			} catch (Exception e) {
@@ -67,31 +94,35 @@ public class Validation {
 		}
 	}
 	
-	public static void validationNombreParPage(String nombreParPage) throws ValidationException {
+	public static String validationNombreParPage(String nombreParPage) {
 		if (nombreParPage == null || nombreParPage.equals("") || nombreParPage.equals("null")
 				|| !(Util.stringIsInt(nombreParPage))) {
-			throw new ValidationException("Le nombre de page n'est pas valide : " + nombreParPage);
+			nombreParPage = "10";
 		}
+		return nombreParPage;
 	}
 
-	public static void validationNumeroPage(String numeroPage) throws ValidationException {
+	public static String validationNumeroPage(String numeroPage) {
 		if (numeroPage == null || numeroPage.equals("") || numeroPage.equals("null")
 				|| !(Util.stringIsInt(numeroPage))) {
-			throw new ValidationException("Le nombre de page n'est pas valide : " + numeroPage);
+			numeroPage = "";
 		}
+		return numeroPage;
 	}
 
-	public static void validationSearch(String nomRecherche) throws ValidationException {
+	public static String validationSearch(String nomRecherche) {
 		if (nomRecherche == null || nomRecherche.equals("")) {
-			throw new ValidationException("Le mot recherché est null : " + nomRecherche);
+			nomRecherche = "";
 		}
+		return nomRecherche;
 	}
 
-	public static void validationOrderBy(String orderBy) throws ValidationException {
+	public static String validationOrderBy(String orderBy) {
 		if (orderBy == null || orderBy.equals("") || orderBy.equals("null")
 				|| (!orderBy.equals("id") && !orderBy.equals("name") && !orderBy.equals("introduced")
 						&& !orderBy.equals("discontinued") && !orderBy.equals("company"))) {
-			throw new ValidationException("Mauvaise valeur pour l'ordre d'affichage des computers.");
+			orderBy = "";
 		}
+		return orderBy;
 	}
 }

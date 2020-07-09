@@ -13,7 +13,7 @@ public class CompanyDtoMapper {
 		if(companyDto == null) {
 			return null;
 		}
-		BuilderCompany builderCompany = new Company.BuilderCompany(companyDto.getId());
+		BuilderCompany builderCompany = new Company.BuilderCompany(Integer.parseInt(companyDto.getId()));
 		if(companyDto.getName() != null) {
 			builderCompany.withName(companyDto.getName());
 		}
@@ -26,7 +26,7 @@ public class CompanyDtoMapper {
 			return null;
 		}
 		CompanyDTO companyDTO = new CompanyDTO();
-		companyDTO.setId(company.getId());
+		companyDTO.setId("" + company.getId());
 		if(company.getName() != null) {
 			companyDTO.setName(company.getName());
 		}

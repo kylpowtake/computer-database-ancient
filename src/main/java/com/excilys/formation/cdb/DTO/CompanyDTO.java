@@ -8,23 +8,23 @@ package com.excilys.formation.cdb.DTO;
  */
 public class CompanyDTO {
 
-	private int id;
+	private String id;
 
 	private String name;
 
 	public CompanyDTO() {
 	}
 
-	public CompanyDTO(int id, String name) {
+	public CompanyDTO(String id, String name) {
 		this.id = id;
 		this.name = name;
 	}
 
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -62,7 +62,7 @@ public class CompanyDTO {
 	public int hashCode() {
 		int value = 17;
 		int result = 1;
-		result = value * result + this.id;
+		result = value * result + ((this.getId() == null) ? 0 : this.getId().hashCode());
 		result = value * result + ((this.getName() == null) ? 0 : this.getName().hashCode());
 		return result;
 	}

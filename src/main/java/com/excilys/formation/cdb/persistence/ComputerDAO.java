@@ -1,4 +1,4 @@
-package com.excilys.formation.cdb.DAO;
+package com.excilys.formation.cdb.persistence;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -32,17 +32,13 @@ import com.excilys.formation.cdb.model.Computer;
 @Repository
 public class ComputerDAO {
 	/**
-	 * Champ privé permettant d'avoir un singleton pour cette classe.
-	 */
-	private static ComputerDAO daoComputer;
-
-	/**
 	 * Constructeur de la classe, en privé pour le singleton.
 	 */
-	private ComputerDAO() {
+	@Autowired
+	public ComputerDAO(ConnectionSQL connectionSQL) {
+		this.connectionSQL = connectionSQL;
 	}
 	
-	@Autowired
 	ConnectionSQL connectionSQL;
 
 	public ConnectionSQL getConnection() {
@@ -84,19 +80,6 @@ public class ComputerDAO {
 	private static Logger logger = Logging.getLogger();
 
 	private static final String REQUETEUPDATE = "update computer set computer.name = ?";
-
-	/**
-	 * Méthode permettant d'obtenir l'instance unique de la classe. Si l'instance
-	 * existe déjà elle est renvoyée, sinon elle est créée puis renvoyée.
-	 * 
-	 * @return une instance de la classe.
-	 */
-	public static ComputerDAO getDAOComputer() {
-		if (daoComputer == null) {
-			daoComputer = new ComputerDAO();
-		}
-		return daoComputer;
-	}
 
 	/**
 	 * Méthode Demandant à la base de données le nombre de computers selon leurs id.
@@ -234,7 +217,7 @@ public class ComputerDAO {
 	 * @see Page
 	 */
 	public List<Computer> some(String pOrderBy) throws Exception {
-		logger.debug("Start of some Computer");
+		logger.debug("Start of some of Computer");
 		String orderBy = this.modificationOrderBy(pOrderBy);
 		Page page = Page.getPage();
 		int nombreComputers = nombre();
@@ -254,7 +237,7 @@ public class ComputerDAO {
 			connection.close();
 			resultSet.close();
 		}
-		logger.debug("End of some Computer");
+		logger.debug("End of some of Computer");
 		return listComputers;
 	}
 

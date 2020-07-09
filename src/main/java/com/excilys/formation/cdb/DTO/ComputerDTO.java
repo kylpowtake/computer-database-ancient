@@ -1,7 +1,5 @@
 package com.excilys.formation.cdb.DTO;
 
-import java.time.LocalDate;
-
 import com.excilys.formation.cdb.model.Company;
 
 /**
@@ -12,20 +10,20 @@ import com.excilys.formation.cdb.model.Company;
  */
 public class ComputerDTO {
 
-	private int id;
+	private String id;
 
 	private String name;
 
-	private LocalDate introduced;
+	private String introduced;
 
-	private LocalDate discontinued;
+	private String discontinued;
 
-	private Company company;
+	private CompanyDTO company;
 
 	public ComputerDTO() {
 	}
 
-	public ComputerDTO(int id, String name, LocalDate introduced, LocalDate discontinued, Company company) {
+	public ComputerDTO(String id, String name, String introduced, String discontinued, CompanyDTO company) {
 		this.id = id;
 		this.name = name;
 		this.introduced = introduced;
@@ -33,11 +31,11 @@ public class ComputerDTO {
 		this.company = company;
 	}
 
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -49,29 +47,27 @@ public class ComputerDTO {
 		this.name = name;
 	}
 
-	public LocalDate getIntroduced() {
+	public String getIntroduced() {
 		return introduced;
 	}
 
-	public void setIntroduced(LocalDate introduced) {
+	public void setIntroduced(String introduced) {
 		this.introduced = introduced;
 	}
 
-	public LocalDate getDiscontinued() {
+	public String getDiscontinued() {
 		return discontinued;
 	}
 
-	public void setDiscontinued(LocalDate discontinued) {
-		if (this.introduced == null || this.discontinued == null || this.introduced.compareTo(discontinued) >= 0) {
-			this.discontinued = discontinued;
-		}
+	public void setDiscontinued(String discontinued) {
+		this.discontinued = discontinued;
 	}
 
-	public Company getCompany() {
+	public CompanyDTO getCompany() {
 		return company;
 	}
 
-	public void setCompany(Company company) {
+	public void setCompany(CompanyDTO company) {
 		this.company = company;
 	}
 
@@ -115,7 +111,7 @@ public class ComputerDTO {
 	public int hashCode() {
 		int value = 17;
 		int result = 1;
-		result = value * result + this.id;
+		result = value * result + ((this.getId() == null) ? 0 : this.getId().hashCode());
 		result = value * result + ((this.getName() == null) ? 0 : this.getName().hashCode());
 		result = value * result + ((this.getIntroduced() == null) ? 0 : this.getIntroduced().hashCode());
 		result = value * result + ((this.getDiscontinued() == null) ? 0 : this.getDiscontinued().hashCode());

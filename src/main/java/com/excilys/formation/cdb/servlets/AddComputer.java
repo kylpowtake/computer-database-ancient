@@ -15,6 +15,8 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
+import com.excilys.formation.cdb.DTO.CompanyDTO;
+import com.excilys.formation.cdb.DTO.ComputerDTO;
 import com.excilys.formation.cdb.enumeration.Resultat;
 import com.excilys.formation.cdb.exception.ParametresException;
 import com.excilys.formation.cdb.exception.ValidationException;
@@ -41,7 +43,6 @@ public class AddComputer extends HttpServlet {
 
 	@Autowired
 	private ComputerService computerService;
-	
 	@Autowired
 	private CompanyService companyService;
 	
@@ -66,28 +67,38 @@ public class AddComputer extends HttpServlet {
 		List<Company> listCompanies = null;
 		Map<String, String> erreurs = new HashMap<String, String>();
 		// On prend les paramètres pour la création du computer.
-		String computerName = (String) req.getParameter(CHAMP_NAME);
-		String computerIntroduced = (String) req.getParameter(CHAMP_INTRODUCED);
-		String computerDiscontinued = (String) req.getParameter(CHAMP_DISCONTINUED);
+		String name = (String) req.getParameter(CHAMP_NAME);
+		String introduced = (String) req.getParameter(CHAMP_INTRODUCED);
+		String discontinued = (String) req.getParameter(CHAMP_DISCONTINUED);
 		String companyId = req.getParameter(CHAMP_COMPANY_ID);
+		
+		CompanyDTO companyDTO = new CompanyDTO(companyId, null);
+		ComputerDTO computerDTO = new ComputerDTO(null, name, introduced, discontinued, companyDTO);
+		
+		try {
+			Validation.validationComputerDTO(computerDTO);
+		} catch (Exception e1) {
+			logger.error("Erreur à faire en faite.");
+		}
+		
 		logger.debug("Début validation de doPost de AddComputer");
 		try {
-			Validation.validationName(computerName);
+			Validation.validationName(name);
 		} catch (ValidationException e) {
 			erreurs.put(CHAMP_NAME, e.getLocalizedMessage());
 		}
 		try {
-			Validation.validationIntroduced(computerIntroduced);
+			Validation.validationIntroduced(introduced);
 		} catch (ValidationException e) {
 			erreurs.put(CHAMP_INTRODUCED, e.getLocalizedMessage());
 		}
 		try {
-			Validation.validationDiscontinued(computerDiscontinued);
+			Validation.validationDiscontinued(discontinued);
 		} catch (ValidationException e) {
 			erreurs.put(CHAMP_DISCONTINUED, e.getLocalizedMessage());
 		}
 		try {
-			Validation.validationChronologieDates(computerIntroduced, computerDiscontinued);
+			Validation.validationChronologieDates(introduced, discontinued);
 		} catch (ValidationException e) {
 			erreurs.put(CHAMP_CHRONOLOGY, e.getLocalizedMessage());
 		}
@@ -105,9 +116,9 @@ public class AddComputer extends HttpServlet {
 		listCompanies = companyService.all("");
 		
 		req.setAttribute(ATT_LIST_COMPANIES, listCompanies);
-		req.setAttribute(CHAMP_NAME, computerName);
-		req.setAttribute(CHAMP_INTRODUCED, computerIntroduced);
-		req.setAttribute(CHAMP_DISCONTINUED, computerDiscontinued);
+		req.setAttribute(CHAMP_NAME, name);
+		req.setAttribute(CHAMP_INTRODUCED, introduced);
+		req.setAttribute(CHAMP_DISCONTINUED, discontinued);
 		req.setAttribute(CHAMP_COMPANY_ID, companyId);
 		req.setAttribute(ATT_ERREURS, erreurs);
 		
@@ -115,7 +126,7 @@ public class AddComputer extends HttpServlet {
 			resultat = Resultat.ECHOUE;
 		} else {
 			try {
-				computer = MapperComputer.stringToComputer(computerName, computerIntroduced, computerDiscontinued,
+				computer = MapperComputer.stringToComputer(name, introduced, discontinued,
 						companyId);
 				if(company != null) {
 					computer.setCompany(company);
