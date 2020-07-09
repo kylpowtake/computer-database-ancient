@@ -12,14 +12,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import com.excilys.formation.cdb.DAO.CompanyDAO;
-import com.excilys.formation.cdb.DAO.ComputerDAO;
 import com.excilys.formation.cdb.exception.ValidationException;
 import com.excilys.formation.cdb.logging.Logging;
 import com.excilys.formation.cdb.mapper.MapperDate;
 import com.excilys.formation.cdb.model.Company;
 import com.excilys.formation.cdb.model.Computer;
+import com.excilys.formation.cdb.service.CompanyService;
+import com.excilys.formation.cdb.service.ComputerService;
 import com.excilys.formation.cdb.validation.Validation;
 
 @SuppressWarnings("serial")
@@ -39,19 +40,25 @@ public class EditComputer extends HttpServlet {
 
 	private static Logger logger = Logging.getLogger();
 
+	@Autowired
+	private ComputerService computerService;
+	
+	@Autowired
+	private CompanyService companyService;
+	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String computerId = req.getParameter(COMPUTER_ID);
 		Computer computer = null;
 		try {
-			computer = (Computer) ComputerDAO.getDAOComputer().find(Integer.parseInt(computerId));
+			computer = (Computer) computerService.find(Integer.parseInt(computerId));
 		} catch (NumberFormatException e) {
 			logger.error(e.getLocalizedMessage() + " doGet : EditComputer");
 		} catch (Exception e) {
 			logger.error(e.getLocalizedMessage() + " doGet : EditComputer");
 
 		}
-		List<Company> listCompanies = CompanyDAO.getDAOCompany().all("");
+		List<Company> listCompanies = companyService.all("");
 		req.setAttribute(COMPUTER_ID, computerId);
 		req.setAttribute(COMPUTER_NAME, computer.getName());
 		if (computer.getIntroduced() != null) {
@@ -81,7 +88,7 @@ public class EditComputer extends HttpServlet {
 		;
 		Computer computer = null;
 		try {
-			computer = (Computer) ComputerDAO.getDAOComputer().find(Integer.parseInt(computerId));
+			computer = (Computer) computerService.find(Integer.parseInt(computerId));
 		} catch (NumberFormatException e) {
 			erreurs.put(COMPUTER_ID, "L'id du computer n'est pas valide");
 		} catch (Exception e) {
@@ -119,7 +126,7 @@ public class EditComputer extends HttpServlet {
 		Company company = null;
 		try {
 			Validation.validationCompanyId(companyId);
-			company = (Company) CompanyDAO.getDAOCompany().find(Integer.parseInt(companyId));
+			company = (Company) companyService.find(Integer.parseInt(companyId));
 			if (company != null) {
 				computer.setCompany(company);
 			}
@@ -149,7 +156,7 @@ public class EditComputer extends HttpServlet {
 				computer.setDiscontinued(MapperDate.StringToLocalDate(discontinued));
 			}
 			try {
-				ComputerDAO.getDAOComputer().modify(computer);
+				computerService.modify(computer);
 			} catch (NumberFormatException e) {
 				logger.error(e.getLocalizedMessage() + " modifierComputer/modifierComputer/doPost/EditComputer.");
 			} catch (Exception e) {

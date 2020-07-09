@@ -15,9 +15,6 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
-import com.excilys.formation.cdb.DAO.CompanyDAO;
-import com.excilys.formation.cdb.DAO.ComputerDAO;
-import com.excilys.formation.cdb.DAO.ObjectDAO;
 import com.excilys.formation.cdb.enumeration.Resultat;
 import com.excilys.formation.cdb.exception.ParametresException;
 import com.excilys.formation.cdb.exception.ValidationException;
@@ -25,6 +22,8 @@ import com.excilys.formation.cdb.logging.Logging;
 import com.excilys.formation.cdb.mapper.MapperComputer;
 import com.excilys.formation.cdb.model.Company;
 import com.excilys.formation.cdb.model.Computer;
+import com.excilys.formation.cdb.service.CompanyService;
+import com.excilys.formation.cdb.service.ComputerService;
 import com.excilys.formation.cdb.validation.Validation;
 
 @SuppressWarnings("serial")
@@ -40,7 +39,11 @@ public class AddComputer extends HttpServlet {
 
 	private static Logger logger = Logging.getLogger();
 
-	private ObjectDAO<?> computerDAO;
+	@Autowired
+	private ComputerService computerService;
+	
+	@Autowired
+	private CompanyService companyService;
 	
     @Override
 	public void init(ServletConfig config) throws ServletException {
@@ -51,7 +54,7 @@ public class AddComputer extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		List<Company> listCompanies = null;
-		listCompanies = CompanyDAO.getDAOCompany().all("");
+		listCompanies = companyService.all("");
 		req.setAttribute(ATT_LIST_COMPANIES, listCompanies);
 		this.getServletContext().getRequestDispatcher("/WEB-INF/addComputer.jsp").forward(req, resp);
 	}
@@ -92,14 +95,14 @@ public class AddComputer extends HttpServlet {
 		Computer computer = null;
 		try {
 			Validation.validationCompanyId(companyId);
-			company = (Company) CompanyDAO.getDAOCompany().find(Integer.parseInt(companyId));
+			company = (Company) companyService.find(Integer.parseInt(companyId));
 		} catch (Exception e) {
 			erreurs.put(CHAMP_COMPANY_ID, e.getLocalizedMessage());
 		}
 		
 		logger.debug("Fin validation de doPost de AddComputer");
 		
-		listCompanies = CompanyDAO.getDAOCompany().all("");
+		listCompanies = companyService.all("");
 		
 		req.setAttribute(ATT_LIST_COMPANIES, listCompanies);
 		req.setAttribute(CHAMP_NAME, computerName);
@@ -119,7 +122,7 @@ public class AddComputer extends HttpServlet {
 				}
 				try {
 					logger.debug("Création de doPost de AddComputer");
-					resultat = ComputerDAO.getDAOComputer().create(computer);
+					resultat = computerService.create(computer);
 				} catch (NumberFormatException e) {
 					logger.error(e.getLocalizedMessage() + " doPost : AddComputer");
 					System.exit(1);
@@ -140,14 +143,5 @@ public class AddComputer extends HttpServlet {
 	@Override
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		super.doPut(req, resp);
-	}
-	
-	
-	public ObjectDAO<?> getDAO() {
-		return computerDAO;
-	}
-	
-	public void setDAO(ObjectDAO<?> objectDAO) {
-		this.computerDAO = objectDAO;
 	}
 }

@@ -17,6 +17,7 @@ import com.excilys.formation.cdb.Pageable.Page;
 import com.excilys.formation.cdb.datasource.ConnectionSQL;
 import com.excilys.formation.cdb.enumeration.Resultat;
 import com.excilys.formation.cdb.exception.ParametresException;
+import com.excilys.formation.cdb.logging.Logging;
 import com.excilys.formation.cdb.mapper.MapperComputer;
 import com.excilys.formation.cdb.model.Computer;
 
@@ -29,7 +30,7 @@ import com.excilys.formation.cdb.model.Computer;
  *
  */
 @Repository
-public class ComputerDAO implements ObjectDAO<Computer>{
+public class ComputerDAO {
 	/**
 	 * Champ privé permettant d'avoir un singleton pour cette classe.
 	 */
@@ -67,7 +68,7 @@ public class ComputerDAO implements ObjectDAO<Computer>{
 	 * String représentant la requête pour avoir la liste complète de computers dans
 	 * la base de données.
 	 */
-	private static final String REQUETELISTECOMPLETECOMPUTERS = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id;";
+	private static final String REQUETELISTECOMPLETECOMPUTERS = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id ORDER BY ?;";
 
 	/**
 	 * Méthode représentant une requête pour trouver le computer ayant l'id donné.
@@ -80,7 +81,7 @@ public class ComputerDAO implements ObjectDAO<Computer>{
 	 */
 	private static final String REQUETEDELETECOMPUTERBYID = "DELETE FROM computer WHERE computer.id = ";
 
-	private Logger logger;
+	private static Logger logger = Logging.getLogger();
 
 	private static final String REQUETEUPDATE = "update computer set computer.name = ?";
 
@@ -104,7 +105,8 @@ public class ComputerDAO implements ObjectDAO<Computer>{
 	 * @exception SQLException Si problème lorsque la base de données s'occupe des
 	 *                         requêtes.
 	 */
-	public int DemandeNombreComputers() {
+	public int nombre() {
+		logger.debug("Start of nombre Computer");
 		int nombreComputers = 0;
 		try {
 			Connection connection = connectionSQL.getConnection();
@@ -122,6 +124,7 @@ public class ComputerDAO implements ObjectDAO<Computer>{
 					+ e.getLocalizedMessage());
 			System.exit(1);
 		}
+		logger.debug("End of nombre Computer");
 		return nombreComputers;
 	}
 
@@ -200,7 +203,7 @@ public class ComputerDAO implements ObjectDAO<Computer>{
 	public String listerComputersEnd() throws Exception {
 		String message = "";
 		Page page = Page.getPage();
-		int nombreComputers = DemandeNombreComputers();
+		int nombreComputers = nombre();
 		page.setNumeroPage(((nombreComputers - (nombreComputers % 10)) / 10) + 1);
 		page.setPeutAllerAncienneEtNouvellePage(nombreComputers);
 		List<Computer> listComputers = null;
@@ -231,10 +234,10 @@ public class ComputerDAO implements ObjectDAO<Computer>{
 	 * @see Page
 	 */
 	public List<Computer> some(String pOrderBy) throws Exception {
-//		String message = "";
+		logger.debug("Start of some Computer");
 		String orderBy = this.modificationOrderBy(pOrderBy);
 		Page page = Page.getPage();
-		int nombreComputers = DemandeNombreComputers();
+		int nombreComputers = nombre();
 		page.setPeutAllerAncienneEtNouvellePage(nombreComputers);
 		List<Computer> listComputers = null;
 		// Requête pour obtenir les computers de la page actuelle.
@@ -251,7 +254,7 @@ public class ComputerDAO implements ObjectDAO<Computer>{
 			connection.close();
 			resultSet.close();
 		}
-//		message = listComputers.toString();
+		logger.debug("End of some Computer");
 		return listComputers;
 	}
 
@@ -269,7 +272,7 @@ public class ComputerDAO implements ObjectDAO<Computer>{
 //		String message = "";
 		String orderBy = this.modificationOrderBy(pOrderBy);
 		Page page = Page.getPage();
-		int nombreComputers = DemandeNombreComputers();
+		int nombreComputers = nombre();
 		page.setPeutAllerAncienneEtNouvellePage(nombreComputers);
 		List<Computer> listComputers = null;
 		// Requête pour obtenir les computers de la page actuelle.
@@ -348,7 +351,8 @@ public class ComputerDAO implements ObjectDAO<Computer>{
 	 * @exception SQLException Si problème lorsque la base de données s'occupe des
 	 *                         requêtes.
 	 */
-	public Resultat create(Computer computer) throws Exception {		
+	public Resultat create(Computer computer) throws Exception {
+		System.out.println("Plop");
 		logger.debug("Début create de ComputerDAO.");
 		Resultat resultat = Resultat.ECHOUE;
 		String requete = "";
@@ -518,25 +522,28 @@ public class ComputerDAO implements ObjectDAO<Computer>{
 		}
 	}
 
-	@Override
-	public List<Computer> all(String orderBy) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Computer> all(String pOrderBy) throws Exception {
+		String orderBy = this.modificationOrderBy(pOrderBy);
+		List<Computer> listeComputers = null;
+		Connection connection = connectionSQL.getConnection();
+		PreparedStatement preparedStatement = connection.prepareStatement(REQUETELISTECOMPLETECOMPUTERS);
+		Statement statement = connection.createStatement();
+		try {
+			preparedStatement.setString(1, orderBy);
+			ResultSet resultSet = preparedStatement.executeQuery();
+			listeComputers = MapperComputer.mapResultSetToListComputer(resultSet);
+			resultSet.close();
+		} catch (ParametresException e) {
+			throw new Exception(e.getLocalizedMessage() + " listerComputers");
+		} finally {
+			statement.close();
+			connection.close();
+		}
+		return listeComputers;
 	}
-
-	@Override
+	
 	public List<Computer> allSearch(String orderby, String search) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public Logger getLogger() {
-		return this.logger;
-	}
-
-	@Override
-	public void setLogger(Logger logger) {
-		this.logger = logger;
 	}
 }

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import com.excilys.formation.cdb.datasource.ConnectionSQL;
 import com.excilys.formation.cdb.enumeration.Resultat;
+import com.excilys.formation.cdb.logging.Logging;
 import com.excilys.formation.cdb.mapper.MapperCompany;
 import com.excilys.formation.cdb.model.Company;
 
@@ -26,13 +27,13 @@ import com.excilys.formation.cdb.model.Company;
  *
  */
 @Repository
-public class CompanyDAO implements ObjectDAO<Company>{
+public class CompanyDAO {
 	/**
 	 * Champ privé permettant d'avoir un singleton pour cette classe.
 	 */
 	private static CompanyDAO daoCompany;
 
-	private Logger logger;
+	private static Logger logger = Logging.getLogger();
 
 	/**
 	 * Constructeur de la classe, en privé pour le singleton.
@@ -230,37 +231,23 @@ public class CompanyDAO implements ObjectDAO<Company>{
 		}
 	}
 
-	@Override
 	public List<Company> some(String orderBy) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
 	public List<Company> someSearch(String orderBy, String search) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
 	public Resultat modify(Company object) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
 	public Resultat create(Company object) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public Logger getLogger() {
-		return this.logger;
-	}
-
-	@Override
-	public void setLogger(Logger logger) {
-		this.logger = logger;
 	}
 }

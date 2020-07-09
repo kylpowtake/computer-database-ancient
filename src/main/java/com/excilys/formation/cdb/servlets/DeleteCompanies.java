@@ -9,9 +9,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.excilys.formation.cdb.DAO.CompanyDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.excilys.formation.cdb.exception.ValidationException;
 import com.excilys.formation.cdb.model.Company;
+import com.excilys.formation.cdb.service.CompanyService;
 import com.excilys.formation.cdb.service.Util;
 
 @WebServlet(name = "deleteCompanies", urlPatterns = "/deleteCompanies")
@@ -26,7 +28,10 @@ public class DeleteCompanies extends HttpServlet {
 
 	private String orderByGeneral = "id";
 	private String nomRechercheGeneral = "";
-
+	
+	@Autowired
+	private CompanyService companyService;
+	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String resultat = "";
@@ -49,9 +54,9 @@ public class DeleteCompanies extends HttpServlet {
 			nomRecherche = nomRechercheGeneral;
 		}
 		if ("".equals(nomRecherche)) {
-			listCompanies = CompanyDAO.getDAOCompany().all(orderBy);
+			listCompanies = companyService.all(orderBy);
 		} else {
-			listCompanies = CompanyDAO.getDAOCompany().allSearch(nomRecherche, orderBy);
+			listCompanies = companyService.allSearch(nomRecherche, orderBy);
 		}
 		resultat = "Liste de computers obtenue.";
 		req.setAttribute(ATT_LIST_COMPANIES, listCompanies);
@@ -67,22 +72,22 @@ public class DeleteCompanies extends HttpServlet {
 		String nomRecherche = nomRechercheGeneral;
 		String orderBy = orderByGeneral;
 		if ("".equals(nomRecherche)) {
-			listCompanies = CompanyDAO.getDAOCompany().all(orderBy);
+			listCompanies = companyService.all(orderBy);
 		} else {
-			listCompanies = CompanyDAO.getDAOCompany().allSearch(nomRecherche, orderBy);
+			listCompanies = companyService.allSearch(nomRecherche, orderBy);
 		}
 		for (int i = 0; i < listCompanies.size(); i++) {
 			String valeurBox = req.getParameter("" + i);
 			System.out.println("Box présente : " + valeurBox);
 			if (valeurBox != null && Util.stringIsInt(valeurBox)) {
 				System.out.println("On lance la destr");
-				CompanyDAO.getDAOCompany().delete(Integer.parseInt(valeurBox));
+				companyService.delete(Integer.parseInt(valeurBox));
 			}
 		}
 		if ("".equals(nomRecherche)) {
-			listCompanies = CompanyDAO.getDAOCompany().all(orderBy);
+			listCompanies = companyService.all(orderBy);
 		} else {
-			listCompanies = CompanyDAO.getDAOCompany().allSearch(nomRecherche, orderBy);
+			listCompanies = companyService.allSearch(nomRecherche, orderBy);
 		}
 		resultat = "Liste de computers obtenue.";
 		req.setAttribute(ATT_LIST_COMPANIES, listCompanies);

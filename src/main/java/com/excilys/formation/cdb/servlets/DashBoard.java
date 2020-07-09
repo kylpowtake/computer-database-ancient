@@ -10,12 +10,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import com.excilys.formation.cdb.DAO.ComputerDAO;
 import com.excilys.formation.cdb.Pageable.Page;
 import com.excilys.formation.cdb.exception.ValidationException;
 import com.excilys.formation.cdb.logging.Logging;
 import com.excilys.formation.cdb.model.Computer;
+import com.excilys.formation.cdb.service.ComputerService;
 import com.excilys.formation.cdb.validation.Validation;
 
 @SuppressWarnings("serial")
@@ -34,11 +35,15 @@ public class DashBoard extends HttpServlet {
 	public static final String PARAM_ORDER_BY = "orderby";
 	
 	private static Logger logger = Logging.getLogger();
+	
+	@Autowired
+	private ComputerService computerService;
 
 	private String orderByGeneral = "id";
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		logger.debug("Début du doGet de DashBoard");
 		String resultat = "";
 		String nomRecherche = req.getParameter(CHAMP_SEARCH);
 		String numeroPage = req.getParameter(CHAMP_NUMERO_PAGE);
@@ -89,19 +94,18 @@ public class DashBoard extends HttpServlet {
 		if ("true".equals(next)) {
 			page.setNumeroPage(page.getNumeroPage() + 1);
 		}
-
 		try {
-			Page.setNombreComputers(ComputerDAO.getDAOComputer().DemandeNombreComputers());
+			Page.setNombreComputers(computerService.nombre());
 			List<Computer> listComputers = null;
 			if ("".equals(nomRecherche)) {
 				try {
-					listComputers = ComputerDAO.getDAOComputer().some(orderBy);
+					listComputers = computerService.some(orderBy);
 				} catch (Exception e) {
 					logger.error(e.getLocalizedMessage() + " doGet : DashBoard");
 				}
 			} else {
 				try {
-					listComputers  = ComputerDAO.getDAOComputer().someSearch(nomRecherche, orderBy);
+					listComputers  = computerService.someSearch(nomRecherche, orderBy);
 				} catch (Exception e) {
 					logger.error(e.getLocalizedMessage() + " doGet : DashBoard");
 				}
@@ -115,6 +119,7 @@ public class DashBoard extends HttpServlet {
 		req.setAttribute(ATT_RESULTAT, resultat);
 		req.setAttribute(ATT_PAGE, page);
 		req.setAttribute(CHAMP_SEARCH, nomRecherche);
+		logger.debug("Fin du doGet de DashBoard");
 		this.getServletContext().getRequestDispatcher("/WEB-INF/dashboard.jsp").forward(req, resp);
 	}
 
@@ -128,7 +133,7 @@ public class DashBoard extends HttpServlet {
 			String valeurBox = req.getParameter("" + i);
 			if (valeurBox != null) {
 				try {
-					ComputerDAO.getDAOComputer().delete(Integer.parseInt(valeurBox));
+					computerService.delete(Integer.parseInt(valeurBox));
 				} catch (NumberFormatException e) {
 					logger.error(e.getLocalizedMessage() + " doPost : DashBoard.");
 				} catch (Exception e) {
@@ -136,10 +141,10 @@ public class DashBoard extends HttpServlet {
 			}
 		}
 		try {
-			Page.setNombreComputers(ComputerDAO.getDAOComputer().DemandeNombreComputers());
+			Page.setNombreComputers(computerService.nombre());
 			List<Computer> listComputers = null;
 			try {
-				listComputers = ComputerDAO.getDAOComputer().some(orderBy);
+				listComputers = computerService.some(orderBy);
 			} catch (Exception e) {
 				logger.error(e.getLocalizedMessage() + " doGet : DashBoard");
 			}
