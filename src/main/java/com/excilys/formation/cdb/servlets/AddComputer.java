@@ -17,11 +17,10 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.excilys.formation.cdb.DTO.CompanyDTO;
 import com.excilys.formation.cdb.DTO.ComputerDTO;
+import com.excilys.formation.cdb.DTO.Mappers.ComputerDtoMapper;
 import com.excilys.formation.cdb.enumeration.Resultat;
-import com.excilys.formation.cdb.exception.ParametresException;
 import com.excilys.formation.cdb.exception.ValidationException;
 import com.excilys.formation.cdb.logging.Logging;
-import com.excilys.formation.cdb.mapper.MapperComputer;
 import com.excilys.formation.cdb.model.Company;
 import com.excilys.formation.cdb.model.Computer;
 import com.excilys.formation.cdb.service.CompanyService;
@@ -45,13 +44,13 @@ public class AddComputer extends HttpServlet {
 	private ComputerService computerService;
 	@Autowired
 	private CompanyService companyService;
-	
-    @Override
+
+	@Override
 	public void init(ServletConfig config) throws ServletException {
-    	super.init(config);
-		SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this,config.getServletContext());
+		super.init(config);
+		SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
 	}
-    
+
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		List<Company> listCompanies = null;
@@ -61,7 +60,7 @@ public class AddComputer extends HttpServlet {
 	}
 
 	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {		
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		logger.debug("Début doPost de AddComputer");
 		Resultat resultat = Resultat.ECHOUE;
 		List<Company> listCompanies = null;
@@ -71,16 +70,16 @@ public class AddComputer extends HttpServlet {
 		String introduced = (String) req.getParameter(CHAMP_INTRODUCED);
 		String discontinued = (String) req.getParameter(CHAMP_DISCONTINUED);
 		String companyId = req.getParameter(CHAMP_COMPANY_ID);
-		
+
 		CompanyDTO companyDTO = new CompanyDTO(companyId, null);
 		ComputerDTO computerDTO = new ComputerDTO(null, name, introduced, discontinued, companyDTO);
-		
+
 		try {
 			Validation.validationComputerDTO(computerDTO);
 		} catch (Exception e1) {
 			logger.error("Erreur à faire en faite.");
 		}
-		
+
 		logger.debug("Début validation de doPost de AddComputer");
 		try {
 			Validation.validationName(name);
@@ -110,39 +109,33 @@ public class AddComputer extends HttpServlet {
 		} catch (Exception e) {
 			erreurs.put(CHAMP_COMPANY_ID, e.getLocalizedMessage());
 		}
-		
+
 		logger.debug("Fin validation de doPost de AddComputer");
-		
+
 		listCompanies = companyService.all("");
-		
+
 		req.setAttribute(ATT_LIST_COMPANIES, listCompanies);
 		req.setAttribute(CHAMP_NAME, name);
 		req.setAttribute(CHAMP_INTRODUCED, introduced);
 		req.setAttribute(CHAMP_DISCONTINUED, discontinued);
 		req.setAttribute(CHAMP_COMPANY_ID, companyId);
 		req.setAttribute(ATT_ERREURS, erreurs);
-		
+
 		if (!erreurs.isEmpty()) {
 			resultat = Resultat.ECHOUE;
 		} else {
+			computer = ComputerDtoMapper.computerDTOToComputer(computerDTO);
+			if (company != null) {
+				computer.setCompany(company);
+			}
 			try {
-				computer = MapperComputer.stringToComputer(name, introduced, discontinued,
-						companyId);
-				if(company != null) {
-					computer.setCompany(company);
-				}
-				try {
-					logger.debug("Création de doPost de AddComputer");
-					resultat = computerService.create(computer);
-				} catch (NumberFormatException e) {
-					logger.error(e.getLocalizedMessage() + " doPost : AddComputer");
-					System.exit(1);
-				} catch (Exception e) {
-					logger.error(e.getLocalizedMessage() + " doPost : AddComputer");
-					System.exit(1);
-				}
-			} catch (ParametresException e) {
-				logger.error(e.getLocalizedMessage() + " doPost : AddComputer.");
+				logger.debug("Création de doPost de AddComputer");
+				resultat = computerService.create(computer);
+			} catch (NumberFormatException e) {
+				logger.error(e.getLocalizedMessage() + " doPost : AddComputer");
+				System.exit(1);
+			} catch (Exception e) {
+				logger.error(e.getLocalizedMessage() + " doPost : AddComputer");
 				System.exit(1);
 			}
 		}
