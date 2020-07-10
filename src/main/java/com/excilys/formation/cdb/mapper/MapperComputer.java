@@ -35,7 +35,6 @@ public class MapperComputer {
 	 * @return Liste de Computers venant du ResultSet.
 	 */
 	public static List<Computer> mapResultSetToListComputer(ResultSet resultSet) throws Exception{
-		logger.debug("Start of resultSet to ListComputer of mMapperComputer.");
 		List<Computer> listComputers = new ArrayList<Computer>();
 		try {
 			while(resultSet.next()) {
@@ -53,12 +52,10 @@ public class MapperComputer {
 					throw e;
 				}
 				listComputers.add(computer);
-				
 			}
 		} catch (SQLException e) {
 			throw new Exception("Il y a une erreur lors du passage de ResultSet en Computer : " + e.getLocalizedMessage());
 		}
-		logger.debug("End of resultSet to ListComputer of MapperComputer.");
 		return listComputers;	
 	}
 	

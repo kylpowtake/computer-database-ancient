@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import com.excilys.formation.cdb.DTO.ComputerDTO;
 import com.excilys.formation.cdb.model.Computer;
 import com.excilys.formation.cdb.model.Computer.BuilderComputer;
+import com.excilys.formation.cdb.service.Utility;
 
 public class ComputerDtoMapper {
 
@@ -17,16 +18,18 @@ public class ComputerDtoMapper {
 			return computer;
 		}
 		BuilderComputer builderComputer = null;
-		if (computerDTO.getName() != null) {
+		if (Utility.stringIsSomething(computerDTO.getName())) {
 			builderComputer = new BuilderComputer(computerDTO.getName());
 		} else {
 			return null;
 		}
-		builderComputer.withId(Integer.parseInt(computerDTO.getId()));
-		if (computerDTO.getIntroduced() != null) {
+		if(Utility.stringIsSomething(computerDTO.getId())) {
+			builderComputer.withId(Integer.parseInt(computerDTO.getId()));
+		}
+		if (Utility.stringIsSomething(computerDTO.getIntroduced())) {
 			builderComputer.introducedThe(LocalDate.parse(computerDTO.getIntroduced()));
 		}
-		if (computerDTO.getDiscontinued() != null) {
+		if (Utility.stringIsSomething(computerDTO.getDiscontinued())) {
 			builderComputer.discontinuedThe(LocalDate.parse(computerDTO.getDiscontinued()));
 		}
 		if (computerDTO.getCompany() != null) {

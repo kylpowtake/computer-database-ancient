@@ -16,7 +16,7 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import com.excilys.formation.cdb.exception.ValidationException;
 import com.excilys.formation.cdb.model.Company;
 import com.excilys.formation.cdb.service.CompanyService;
-import com.excilys.formation.cdb.service.Util;
+import com.excilys.formation.cdb.service.Utility;
 
 @WebServlet(name = "deleteCompanies", urlPatterns = "/deleteCompanies")
 public class DeleteCompanies extends HttpServlet {
@@ -87,7 +87,7 @@ public class DeleteCompanies extends HttpServlet {
 		for (int i = 0; i < listCompanies.size(); i++) {
 			String valeurBox = req.getParameter("" + i);
 			System.out.println("Box présente : " + valeurBox);
-			if (valeurBox != null && Util.stringIsInt(valeurBox)) {
+			if (valeurBox != null && Utility.stringIsInt(valeurBox)) {
 				System.out.println("On lance la destr");
 				companyService.delete(Integer.parseInt(valeurBox));
 			}

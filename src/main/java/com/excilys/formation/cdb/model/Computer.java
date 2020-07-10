@@ -2,6 +2,8 @@ package com.excilys.formation.cdb.model;
 
 import java.time.LocalDate;
 
+import com.excilys.formation.cdb.logging.Logging;
+
 /**
  * Classe représentant un computer avec ses différentes valeurs.
  * 
@@ -102,10 +104,10 @@ public class Computer {
 	}
 
 	public void setIntroduced(LocalDate introduced) {
-		this.introduced = introduced;
-		if (this.getDiscontinued() == null || this.getDiscontinued().compareTo(introduced) <= 0) {
+		if (this.getDiscontinued() == null || introduced == null || this.getDiscontinued().compareTo(introduced) >= 0) {
 			this.introduced = introduced;
 		} else if(this.getDiscontinued() != null){
+			Logging.getLogger().debug("date introduced plus récente que date discontinued.");
 			throw new IllegalArgumentException();
 		}
 	}
@@ -115,9 +117,10 @@ public class Computer {
 	}
 
 	public void setDiscontinued(LocalDate discontinued) throws IllegalArgumentException {
-		if (this.introduced == null || this.introduced.compareTo(discontinued) <= 0) {
+		if (this.introduced == null || discontinued == null || this.introduced.compareTo(discontinued) <= 0) {
 			this.discontinued = discontinued;
 		} else if(this.getIntroduced() != null){
+			Logging.getLogger().debug("date introduced plus récente que date discontinued.");
 			throw new IllegalArgumentException();
 		}
 	}

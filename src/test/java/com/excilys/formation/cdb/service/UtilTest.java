@@ -10,14 +10,14 @@ public class UtilTest extends TestCase{
 	
 	
 	public static void testStringIsIntLettres() {
-		assertFalse(Util.stringIsInt("TestLettres"));
+		assertFalse(Utility.stringIsInt("TestLettres"));
 	}
 	
 	public static void testStringIsIntNull() {
-		assertFalse(Util.stringIsInt(null));
+		assertFalse(Utility.stringIsInt(null));
 	}
 	
 	public static void testStringIsIntTrue() {
-		assertTrue(Util.stringIsInt("12574"));
+		assertTrue(Utility.stringIsInt("12574"));
 	}
 }

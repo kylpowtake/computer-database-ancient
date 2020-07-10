@@ -12,7 +12,7 @@ import com.excilys.formation.cdb.logging.Logging;
 import com.excilys.formation.cdb.mapper.MapperDate;
 import com.excilys.formation.cdb.model.Company;
 import com.excilys.formation.cdb.service.CompanyService;
-import com.excilys.formation.cdb.service.Util;
+import com.excilys.formation.cdb.service.Utility;
 
 public class Validation {
 	
@@ -73,7 +73,7 @@ public class Validation {
 	
 	public static void validationCompanyId(String companyId) throws Exception, ValidationException {
 		if (companyId != null && !(companyId.equals("0")) && !(companyId.equals("")) && !(companyId.equals("null"))
-				&& com.excilys.formation.cdb.service.Util.stringIsInt(companyId)) {
+				&& com.excilys.formation.cdb.service.Utility.stringIsInt(companyId)) {
 			Company company;
 			try {
 				company = (Company) companyService.find(Integer.parseInt(companyId));
@@ -96,7 +96,7 @@ public class Validation {
 	
 	public static String validationNombreParPage(String nombreParPage) {
 		if (nombreParPage == null || nombreParPage.equals("") || nombreParPage.equals("null")
-				|| !(Util.stringIsInt(nombreParPage))) {
+				|| !(Utility.stringIsInt(nombreParPage))) {
 			nombreParPage = "10";
 		}
 		return nombreParPage;
@@ -104,7 +104,7 @@ public class Validation {
 
 	public static String validationNumeroPage(String numeroPage) {
 		if (numeroPage == null || numeroPage.equals("") || numeroPage.equals("null")
-				|| !(Util.stringIsInt(numeroPage))) {
+				|| !(Utility.stringIsInt(numeroPage))) {
 			numeroPage = "";
 		}
 		return numeroPage;

@@ -91,6 +91,7 @@ public class EditComputer extends HttpServlet {
 		String introduced = req.getParameter(COMPUTER_INTRODUCED);
 		String discontinued = req.getParameter(COMPUTER_DISCONTINUED);
 		String companyId = req.getParameter(COMPANY_ID);
+		List<Company> listCompanies = companyService.all("");
 
 		Map<String, String> erreurs = new HashMap<String, String>();
 		;
@@ -153,6 +154,8 @@ public class EditComputer extends HttpServlet {
 		req.setAttribute(COMPUTER_DISCONTINUED, discontinued);
 		req.setAttribute(COMPANY_ID, companyId);
 		req.setAttribute(ATT_ERREURS, erreurs);
+		req.setAttribute(ATT_LIST_COMPANIES, listCompanies);
+
 		if (erreurs.isEmpty()) {
 			if (name != null && !(name.equals("")) && !(name.equals("null"))) {
 				computer.setName(name);

@@ -23,10 +23,10 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-xs-8 col-xs-offset-2 box">
-					<div class="label label-default pull-right">id: ${computer.id}</div>
+					<div class="label label-default pull-right">id: ${computerId}</div>
 					<h1>Edit Computer</h1>
 					<form action="editComputer" method="POST">
-						<input type="hidden" value="${computer.id}" id="computerId"
+						<input type="hidden" value="${computerId}" id="computerId"
 						name="computerId" />
 						<span class="erreur">${erreurs['computerId']}</span>
 						<fieldset>

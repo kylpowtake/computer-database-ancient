@@ -11,7 +11,7 @@ import com.excilys.formation.cdb.persistence.ComputerDAO;
  * @see CompanyDAO
  * @see Page
  */
-public class Util {
+public class Utility {
 	
 	/**
 	 * Méthode vérifiant si le String passé en argument est constitué seulement de chiffre.
