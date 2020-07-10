@@ -35,6 +35,7 @@ public class MapperComputer {
 	 * @return Liste de Computers venant du ResultSet.
 	 */
 	public static List<Computer> mapResultSetToListComputer(ResultSet resultSet) throws Exception{
+		logger.debug("Start of resultSet to ListComputer of mMapperComputer.");
 		List<Computer> listComputers = new ArrayList<Computer>();
 		try {
 			while(resultSet.next()) {
@@ -45,8 +46,9 @@ public class MapperComputer {
 				String name = resultSet.getString("computer.name");
 				Date introducedDate = resultSet.getDate("computer.introduced");
 				Date discontinuedDate = resultSet.getDate("computer.discontinued");
+				Company company = MapperCompany.dataToCompany(idCompany, nameCompany);
 				try {
-					computer = MapperComputer.dataToComputer(indice, name, introducedDate, discontinuedDate, idCompany, nameCompany);
+					computer = MapperComputer.dataToComputer(indice, name, introducedDate, discontinuedDate, company);
 				} catch (ParametresException e) {
 					throw e;
 				}
@@ -56,6 +58,7 @@ public class MapperComputer {
 		} catch (SQLException e) {
 			throw new Exception("Il y a une erreur lors du passage de ResultSet en Computer : " + e.getLocalizedMessage());
 		}
+		logger.debug("End of resultSet to ListComputer of MapperComputer.");
 		return listComputers;	
 	}
 	
@@ -70,15 +73,8 @@ public class MapperComputer {
 	 * @param companyName Le nom de la company du compiter.
 	 * @return Le computer.
 	 */
-	public static Computer dataToComputer(int id, String name, Date introducedDate, Date discontinuedDate, int companyId, String companyName) throws ParametresException{
+	public static Computer dataToComputer(int id, String name, Date introducedDate, Date discontinuedDate, Company company) throws ParametresException{
 		Computer computer = null;
-		Company company = null;
-		if(companyId != 0) {
-			if("null".equals(companyName)) {
-				companyName = "";
-			}
-			company = new Company.BuilderCompany(companyId).withName(companyName).build();
-		}
 		if(name == null || "".equals(name)) {
 			logger.error("Problème causé par le nom d'un computer étant soit vide soit null.");
 			throw new ParametresException("Le parametre pour le nom du computer est vide, ce n'est pas valide.");

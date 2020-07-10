@@ -1,10 +1,10 @@
 package com.excilys.formation.cdb.model;
 
-
 import java.time.LocalDate;
 
 /**
  * Classe représentant un computer avec ses différentes valeurs.
+ * 
  * @author kylian
  * @see Company
  */
@@ -29,100 +29,118 @@ public class Computer {
 	 * La company du computer.
 	 */
 	private Company company;
-	
+
 	/**
 	 * Constructeur minimal avec seulement le nom du computer.
+	 * 
 	 * @param name
 	 */
 	private Computer() {
 	}
-	
+
 	public static class BuilderComputer {
 		private int id;
 		private String name;
 		private LocalDate introduced;
 		private LocalDate discontinued;
 		private Company company;
-		
+
 		public BuilderComputer(String name) {
 			this.name = name;
 		}
-		
+
 		public BuilderComputer withId(int id) {
 			this.id = id;
 			return this;
 		}
-		
+
 		public BuilderComputer introducedThe(LocalDate introduced) {
 			this.introduced = introduced;
 			return this;
 		}
-		
+
 		public BuilderComputer discontinuedThe(LocalDate discontinued) {
 			this.discontinued = discontinued;
 			return this;
 		}
-		
+
 		public BuilderComputer byCompany(Company company) {
 			this.company = company;
 			return this;
 		}
-		
+
 		public Computer build() {
 			Computer computer = new Computer();
-			computer.id = this.id;
-			computer.name = this.name;
-			computer.introduced = this.introduced;
-			computer.discontinued = this.discontinued;
-			computer.company = this.company;
-			
+			computer.setId(this.id);
+			computer.setName(this.name);
+			computer.setIntroduced(this.introduced);
+			computer.setDiscontinued(this.discontinued);
+			computer.setCompany(this.company);
+
 			return computer;
 		}
 	}
-	
+
 	public int getId() {
 		return id;
 	}
+
 	public void setId(int id) {
 		this.id = id;
 	}
+
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	public LocalDate getIntroduced() {
 		return introduced;
 	}
+
 	public void setIntroduced(LocalDate introduced) {
 		this.introduced = introduced;
+		if (this.getDiscontinued() == null || this.getDiscontinued().compareTo(introduced) <= 0) {
+			this.introduced = introduced;
+		} else if(this.getDiscontinued() != null){
+			throw new IllegalArgumentException();
+		}
 	}
+
 	public LocalDate getDiscontinued() {
 		return discontinued;
 	}
-	public void setDiscontinued(LocalDate discontinued) {
-		if(this.introduced == null || this.introduced.compareTo(discontinued) <= 0) {
+
+	public void setDiscontinued(LocalDate discontinued) throws IllegalArgumentException {
+		if (this.introduced == null || this.introduced.compareTo(discontinued) <= 0) {
 			this.discontinued = discontinued;
+		} else if(this.getIntroduced() != null){
+			throw new IllegalArgumentException();
 		}
 	}
+
 	public Company getCompany() {
 		return company;
 	}
+
 	public void setCompany(Company company) {
 		this.company = company;
 	}
-	
+
 	public String toString() {
-		String message = "index : " + this.id + " , name : " + this.name + " , introduced : " + this.introduced + " , discontinued : " + this.discontinued + " , ";
-		if(company != null) {
+		String message = "index : " + this.id + " , name : " + this.name + " , introduced : " + this.introduced
+				+ " , discontinued : " + this.discontinued + " , ";
+		if (company != null) {
 			message += company.toString();
 		} else {
 			message += "null\n";
 		}
 		return message;
 	}
-	
+
 	public boolean equals(Object obj) {
 		if (obj == null) {
 			return false;
@@ -138,7 +156,7 @@ public class Computer {
 		if (this.getId() != other.getId()) {
 			return false;
 		}
-		if (other.getName() == null || this.getName().equals(other.getName())) {
+		if (other.getName() == null || !(this.getName().equals(other.getName()))) {
 			return false;
 		}
 		if ((this.getIntroduced() == null && other.getIntroduced() != null)
@@ -158,7 +176,7 @@ public class Computer {
 		}
 		return true;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		int value = 17;
@@ -170,5 +188,5 @@ public class Computer {
 		result = value * result + ((this.getCompany() == null) ? 0 : this.getCompany().hashCode());
 		return result;
 	}
-	
+
 }

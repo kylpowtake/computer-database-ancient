@@ -79,8 +79,7 @@ public class Company {
 		if (this.id != other.getId()) {
 			return false;
 		}
-		if ((this.name == null && other.getName() != null) || (this.name != null && other.getName() == null)
-				|| (this.name.equals(other.getName()))) {
+		if ((this.name == null && other.getName() != null) || (this.name != null && !this.name.equals(other.getName()))) {
 			return false;
 		}
 		return true;

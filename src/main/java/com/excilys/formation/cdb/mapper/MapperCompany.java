@@ -8,12 +8,15 @@ import com.excilys.formation.cdb.model.Company.BuilderCompany;
 public class MapperCompany {
 	public static Company resultSetToCompany(ResultSet resultSetNextise) throws Exception{
 		Company company = null;
-		if(resultSetNextise != null) {
+		if(resultSetNextise != null && !resultSetNextise.isAfterLast() && !resultSetNextise.isBeforeFirst()) {
 			BuilderCompany buildercompany = new BuilderCompany(resultSetNextise.getInt("id")).withName(resultSetNextise.getString("name"));
 			company = buildercompany.build();
-		} else {
-			throw new Exception("Passage d'un resultSet de company null au mappeur. Méthode : resultSetToCompany");
 		}
+		return company;
+	}
+	
+	public static Company dataToCompany(int id, String name) {
+		Company company = new BuilderCompany(id).withName(name).build();
 		return company;
 	}
 }
