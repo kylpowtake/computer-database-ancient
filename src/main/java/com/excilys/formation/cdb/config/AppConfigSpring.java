@@ -7,8 +7,10 @@ import org.springframework.web.context.AbstractContextLoaderInitializer;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
-import com.excilys.formation.cdb.datasource.ConnectionSQL;
 import com.excilys.formation.cdb.datasource.ConnectionHikari;
+import com.excilys.formation.cdb.datasource.ConnectionSQL;
+
+
 
 @Configuration
 @ComponentScan(basePackages= {"com.excilys.formation.cdb.persistence", "com.excilys.formation.cdb.service", "com.excilys.formation.cdb.servlets", "com.excilys.formation.cdb.validation"})

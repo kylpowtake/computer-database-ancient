@@ -5,8 +5,6 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-import com.zaxxer.hikari.HikariDataSource;
-
 public interface ConnectionSQL {
 	
 	public abstract Connection getConnection() throws SQLException;
