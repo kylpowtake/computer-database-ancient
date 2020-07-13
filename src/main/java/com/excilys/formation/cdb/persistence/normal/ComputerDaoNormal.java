@@ -1,4 +1,4 @@
-package com.excilys.formation.cdb.persistence;
+package com.excilys.formation.cdb.persistence.normal;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -20,6 +20,7 @@ import com.excilys.formation.cdb.exception.ParametresException;
 import com.excilys.formation.cdb.logging.Logging;
 import com.excilys.formation.cdb.mapper.MapperComputer;
 import com.excilys.formation.cdb.model.Computer;
+import com.excilys.formation.cdb.persistence.ComputerDao;
 
 /**
  * Classe comprenant les méthodes permettant de faire des requêtes à la base de
@@ -30,12 +31,12 @@ import com.excilys.formation.cdb.model.Computer;
  *
  */
 @Repository
-public class ComputerDAO {
+public class ComputerDaoNormal implements ComputerDao{
 	/**
 	 * Constructeur de la classe, en privé pour le singleton.
 	 */
 	@Autowired
-	public ComputerDAO(ConnectionSQL connectionSQL) {
+	public ComputerDaoNormal(ConnectionSQL connectionSQL) {
 		this.connectionSQL = connectionSQL;
 	}
 	
@@ -120,7 +121,7 @@ public class ComputerDAO {
 	 * @exception SQLException Si problème lorsque la base de données s'occupe des
 	 *                         requêtes.
 	 */
-	private boolean findcomputerById(int computerId) throws Exception {
+	public boolean findcomputerById(int computerId) throws Exception {
 		boolean resultat = false;
 		Connection connection = connectionSQL.getConnection();
 		Statement statement = connection.createStatement();
@@ -159,7 +160,7 @@ public class ComputerDAO {
 	 * @exception SQLException Si problème lorsque la base de données s'occupe des
 	 *                         requêtes.
 	 */
-	private int faireRequeteSansResultat(String requete) {
+	public int faireRequeteSansResultat(String requete) {
 		try {
 			Connection connection = connectionSQL.getConnection();
 			Statement statement = connection.createStatement();
@@ -183,8 +184,7 @@ public class ComputerDAO {
 	 *                         requêtes.
 	 * @see Page
 	 */
-	public String listerComputersEnd() throws Exception {
-		String message = "";
+	public List<Computer> listerComputersEnd() throws Exception {
 		Page page = Page.getPage();
 		int nombreComputers = nombre();
 		page.setNumeroPage(((nombreComputers - (nombreComputers % 10)) / 10) + 1);
@@ -203,8 +203,7 @@ public class ComputerDAO {
 			connection.close();
 			resultSet.close();
 		}
-		message = listComputers.toString();
-		return message;
+		return listComputers;
 	}
 
 	/**
@@ -218,7 +217,7 @@ public class ComputerDAO {
 	 */
 	public List<Computer> some(String pOrderBy) throws Exception {
 		logger.debug("Start of some of Computer");
-		String orderBy = this.modificationOrderBy(pOrderBy);
+		String orderBy = ComputerDao.modificationOrderBy(pOrderBy);
 		Page page = Page.getPage();
 		int nombreComputers = nombre();
 		page.setPeutAllerAncienneEtNouvellePage(nombreComputers);
@@ -253,7 +252,7 @@ public class ComputerDAO {
 	 */
 	public List<Computer> someSearch(String motRecherche, String pOrderBy) throws Exception {
 //		String message = "";
-		String orderBy = this.modificationOrderBy(pOrderBy);
+		String orderBy = ComputerDao.modificationOrderBy(pOrderBy);
 		Page page = Page.getPage();
 		int nombreComputers = nombre();
 		page.setPeutAllerAncienneEtNouvellePage(nombreComputers);
@@ -285,8 +284,7 @@ public class ComputerDAO {
 	 * @exception SQLException Si problème lorsque la base de données s'occupe des
 	 *                         requêtes.
 	 */
-	public String all() throws Exception {
-		String message = "";
+	public List<Computer> all() throws Exception {
 		List<Computer> listeComputers = null;
 		Connection connection = connectionSQL.getConnection();
 		Statement statement = connection.createStatement();
@@ -300,8 +298,7 @@ public class ComputerDAO {
 			statement.close();
 			connection.close();
 		}
-		message = listeComputers.toString();
-		return message;
+		return listeComputers;
 	}
 
 	/**
@@ -313,7 +310,7 @@ public class ComputerDAO {
 	 * @return String représentant le rapport nombre de ligne affectées et le nombre
 	 *         attendu (1).
 	 */
-	private Resultat verificationFonctionnementRequêteNonSelectUnique(int nombreLignes) throws Exception {
+	public Resultat verificationFonctionnementRequêteNonSelectUnique(int nombreLignes) throws Exception {
 		if (nombreLignes == 1) {
 			return Resultat.REUSSI;
 		} else if (nombreLignes == 0) {
@@ -483,30 +480,8 @@ public class ComputerDAO {
 		return null;
 	}
 
-	public String modificationOrderBy(String orderBy) {
-		String message = "";
-		String[] orderBies = orderBy.split(" ");
-		if (orderBies.length == 2) {
-			message = " " + orderBies[1];
-		}
-		switch (orderBies[0]) {
-		case "id":
-			return "computer.id" + message;
-		case "name":
-			return "computer.name" + message;
-		case "introduced":
-			return "computer.introduced" + message;
-		case "discontinued":
-			return "computer.discontinued" + message;
-		case "company":
-			return "company.name" + message;
-		default:
-			return "computer.id" + message;
-		}
-	}
-
 	public List<Computer> all(String pOrderBy) throws Exception {
-		String orderBy = this.modificationOrderBy(pOrderBy);
+		String orderBy = ComputerDao.modificationOrderBy(pOrderBy);
 		List<Computer> listeComputers = null;
 		Connection connection = connectionSQL.getConnection();
 		PreparedStatement preparedStatement = connection.prepareStatement(REQUETELISTECOMPLETECOMPUTERS);

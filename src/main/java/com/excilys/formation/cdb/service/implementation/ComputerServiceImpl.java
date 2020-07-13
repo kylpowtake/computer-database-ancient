@@ -7,19 +7,19 @@ import org.springframework.stereotype.Service;
 
 import com.excilys.formation.cdb.enumeration.Resultat;
 import com.excilys.formation.cdb.model.Computer;
-import com.excilys.formation.cdb.persistence.ComputerDAO;
+import com.excilys.formation.cdb.persistence.normal.ComputerDaoNormal;
 import com.excilys.formation.cdb.service.ComputerService;
 
 @Service
 public class ComputerServiceImpl implements ComputerService{
 	
 	@Autowired
-	public ComputerServiceImpl(ComputerDAO computerDAO){
+	public ComputerServiceImpl(ComputerDaoNormal computerDAO){
 		this.computerDAO = computerDAO;
 		
 	}
 	
-	ComputerDAO computerDAO;
+	ComputerDaoNormal computerDAO;
 	
 	@Override
 	public List<Computer> some(String pOrderBy) throws Exception {

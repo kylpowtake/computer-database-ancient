@@ -17,10 +17,10 @@ import com.excilys.formation.cdb.enumeration.Resultat;
 import com.excilys.formation.cdb.logging.Logging;
 import com.excilys.formation.cdb.mapper.MapperCompany;
 import com.excilys.formation.cdb.model.Company;
-import com.excilys.formation.cdb.persistence.CompanyDAO;
+import com.excilys.formation.cdb.persistence.CompanyDao;
 
 @Repository
-public class CompanyDaoNormal implements CompanyDAO{
+public class CompanyDaoNormal implements CompanyDao{
 
 	private static Logger logger = Logging.getLogger();
 	
@@ -62,7 +62,7 @@ public class CompanyDaoNormal implements CompanyDAO{
 	 */
 	public List<Company> all(String pOrderBy) {
 		logger.debug("Start of all from CompanyDaoNormal.");
-		String orderBy = this.modificationOrderBy(pOrderBy);
+		String orderBy = CompanyDao.modificationOrderBy(pOrderBy);
 		List<Company> listCompanies = new ArrayList<Company>();
 		try {
 			Connection connection = connectionSQL.getConnection();
@@ -71,7 +71,7 @@ public class CompanyDaoNormal implements CompanyDAO{
 			while (resultSet.next()) {
 				int id = resultSet.getInt("company.id");
 				String name = resultSet.getString("company.name");
-				Company company = new Company.BuilderCompany(id).withName(name).build();
+				Company company = new Company.CompanyBuilder(id).withName(name).build();
 				listCompanies.add(company);
 			}
 			statement.close();
@@ -95,7 +95,7 @@ public class CompanyDaoNormal implements CompanyDAO{
 	 *                         requête.
 	 */
 	public List<Company> allSearch(String rechercheNom, String pOrderBy) {
-		String orderBy = this.modificationOrderBy(pOrderBy);
+		String orderBy = CompanyDao.modificationOrderBy(pOrderBy);
 		List<Company> listCompanies = new ArrayList<Company>();
 		try {
 			Connection connection = connectionSQL.getConnection();
@@ -106,7 +106,7 @@ public class CompanyDaoNormal implements CompanyDAO{
 			while (resultSet.next()) {
 				int id = resultSet.getInt("company.id");
 				String name = resultSet.getString("company.name");
-				Company company = new Company.BuilderCompany(id).withName(name).build();
+				Company company = new Company.CompanyBuilder(id).withName(name).build();
 				listCompanies.add(company);
 			}
 			statement.close();
@@ -193,22 +193,6 @@ public class CompanyDaoNormal implements CompanyDAO{
 			}
 		}
 		return Resultat.REUSSI;
-	}
-
-	public String modificationOrderBy(String orderBy) {
-		String message = "";
-		String[] orderBies = orderBy.split(" ");
-		if (orderBies.length == 2) {
-			message = " " + orderBies[1];
-		}
-		switch (orderBies[0]) {
-		case "id":
-			return "company.id" + message;
-		case "name":
-			return "company.name" + message;
-		default:
-			return "company.id" + message;
-		}
 	}
 
 	public List<Company> some(String orderBy) throws Exception {

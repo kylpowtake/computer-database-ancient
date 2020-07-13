@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import org.junit.Assert;
 
 import com.excilys.formation.cdb.model.Company;
-import com.excilys.formation.cdb.model.Company.BuilderCompany;
+import com.excilys.formation.cdb.model.Company.CompanyBuilder;
 
 import junit.framework.TestCase;
 
@@ -44,7 +44,7 @@ public class MapperCompanyTest extends TestCase {
 			when(resultSet.isAfterLast()).thenReturn(false);
 			when(resultSet.getInt("id")).thenReturn(5);
 			when(resultSet.getString("name")).thenReturn("goodName");
-			Company companyExpected = new BuilderCompany(5).withName("goodName").build();
+			Company companyExpected = new CompanyBuilder(5).withName("goodName").build();
 			assertEquals(companyExpected,MapperCompany.resultSetToCompany(resultSet));
 		} catch (SQLException e) {
 		} catch (Exception e) {
@@ -58,7 +58,7 @@ public class MapperCompanyTest extends TestCase {
 			when(resultSet.isAfterLast()).thenReturn(false);
 			when(resultSet.getInt("id")).thenReturn(5);
 			when(resultSet.getString("name")).thenReturn("goodName");
-			Company companyExpected = new BuilderCompany(8).withName("badName").build();
+			Company companyExpected = new CompanyBuilder(8).withName("badName").build();
 			Assert.assertNotEquals(companyExpected,MapperCompany.resultSetToCompany(resultSet));
 		} catch (SQLException e) {
 		} catch (Exception e) {
@@ -66,22 +66,22 @@ public class MapperCompanyTest extends TestCase {
 	}
 
 	public static void testDataToCompanyNull() {
-		Company companyExpected = new BuilderCompany(0).withName(null).build();
+		Company companyExpected = new CompanyBuilder(0).withName(null).build();
 		assertTrue(companyExpected.equals(MapperCompany.dataToCompany(0, null)));
 	}
 
 	public static void testDataToCompanyEmpty() {
-		Company companyExpected = new BuilderCompany(0).withName("").build();
+		Company companyExpected = new CompanyBuilder(0).withName("").build();
 		assertTrue(companyExpected.equals(MapperCompany.dataToCompany(0, "")));
 	}
 
 	public static void testDataToCompanyNoProblem() {
-		Company companyExpected = new BuilderCompany(5).withName("BonNom").build();
+		Company companyExpected = new CompanyBuilder(5).withName("BonNom").build();
 		assertTrue(companyExpected.equals(MapperCompany.dataToCompany(5, "BonNom")));
 	}
 
 	public static void testDataToCompanyWrongValue() {
-		Company companyExpected = new BuilderCompany(5).withName("BonNom").build();
+		Company companyExpected = new CompanyBuilder(5).withName("BonNom").build();
 		assertTrue(!companyExpected.equals(MapperCompany.dataToCompany(7, "MauvaisNom")));
 	}
 }

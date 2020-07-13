@@ -39,6 +39,9 @@ public class DashBoard extends HttpServlet {
 	private static Logger logger = Logging.getLogger();
 
 	@Autowired
+	private Validation validation;
+	
+	@Autowired
 	private ComputerService computerService;
 
 	private String orderByGeneral = "id";
@@ -64,7 +67,7 @@ public class DashBoard extends HttpServlet {
 
 		PageDTO pageDTO = new PageDTO(nomRecherche, numeroPage, nombreParPage, orderBy);
 
-		Validation.validationPage(pageDTO);
+		validation.validationPage(pageDTO);
 		Page page = Page.getPage();
 
 		if (pageDTO.getOrderBy() != null && !("".equals(pageDTO.getOrderBy())) && pageDTO.getOrderBy().equals(orderByGeneral)) {

@@ -61,6 +61,35 @@ public class MapperComputer {
 	
 	
 	/**
+	 * Méthode mappant un ResultSet en une liste de Computers.
+	 * @param resultSet Le resultSet à passé en Computers.
+	 * @return Liste de Computers venant du ResultSet.
+	 */
+	public static Computer mapResultSetToComputer(ResultSet resultSet) throws Exception{
+		Computer computer = null;
+		try {
+			if(!resultSet.isAfterLast() && !resultSet.isBeforeFirst()) {
+				int idCompany = resultSet.getInt("computer.company_id");
+				String nameCompany = resultSet.getString("company.name");
+				int indice = resultSet.getInt("computer.id");
+				String name = resultSet.getString("computer.name");
+				Date introducedDate = resultSet.getDate("computer.introduced");
+				Date discontinuedDate = resultSet.getDate("computer.discontinued");
+				Company company = MapperCompany.dataToCompany(idCompany, nameCompany);
+				try {
+					computer = MapperComputer.dataToComputer(indice, name, introducedDate, discontinuedDate, company);
+				} catch (ParametresException e) {
+					throw e;
+				}
+			}
+		} catch (SQLException e) {
+			throw new Exception("Il y a une erreur lors du passage de ResultSet en Computer : " + e.getLocalizedMessage());
+		}
+		return computer;	
+	}
+	
+	
+	/**
 	 * Méthode créant un computer à partir des différentes données formant un computer tout en vérifiant si les valeurs sont valables.
 	 * @param id L'idée du computer.
 	 * @param name Le nom du computer.
@@ -84,7 +113,7 @@ public class MapperComputer {
 		if(discontinuedDate != null) {
 			discontinued = discontinuedDate.toLocalDate();
 		}	
-		computer = new Computer.BuilderComputer(name).withId(id).introducedThe(introduced).discontinuedThe(discontinued).byCompany(company).build();
+		computer = new Computer.ComputerBuilder(name).withId(id).introducedThe(introduced).discontinuedThe(discontinued).byCompany(company).build();
 		return computer;
 	}
 	

@@ -13,9 +13,9 @@ import static org.mockito.Mockito.when;
 import com.excilys.formation.cdb.exception.ParametresException;
 import com.excilys.formation.cdb.logging.Logging;
 import com.excilys.formation.cdb.model.Company;
-import com.excilys.formation.cdb.model.Company.BuilderCompany;
+import com.excilys.formation.cdb.model.Company.CompanyBuilder;
 import com.excilys.formation.cdb.model.Computer;
-import com.excilys.formation.cdb.model.Computer.BuilderComputer;
+import com.excilys.formation.cdb.model.Computer.ComputerBuilder;
 
 public class MapperComputerTest extends TestCase {
 //    @Mock
@@ -119,8 +119,8 @@ public class MapperComputerTest extends TestCase {
 	public static void testDataToComputerNoProblem() {
 		Logging.getLogger().debug("Start of test MapperComputer 2 NoProblem.");
 		try {
-			Company company = new BuilderCompany(15).withName("company").build();
-			Computer computerExpected = new BuilderComputer("Plop").byCompany(company)
+			Company company = new CompanyBuilder(15).withName("company").build();
+			Computer computerExpected = new ComputerBuilder("Plop").byCompany(company)
 					.introducedThe(LocalDate.of(1999, 12, 12)).discontinuedThe(LocalDate.of(2111, 11, 11)).withId(0)
 					.build();
 			Computer computer;
@@ -137,8 +137,8 @@ public class MapperComputerTest extends TestCase {
 		Logging.getLogger().debug("Start of test MapperComputer 2 WrongValue.");
 		try {
 
-			Company company = new BuilderCompany(15).withName("company").build();
-			new BuilderComputer("Plop").byCompany(company).introducedThe(LocalDate.of(1999, 12, 12))
+			Company company = new CompanyBuilder(15).withName("company").build();
+			new ComputerBuilder("Plop").byCompany(company).introducedThe(LocalDate.of(1999, 12, 12))
 					.discontinuedThe(LocalDate.of(1988, 11, 11)).withId(0).build();
 			fail("An IllegalArgumentException should be thrown.");
 		} catch (IllegalArgumentException e) {

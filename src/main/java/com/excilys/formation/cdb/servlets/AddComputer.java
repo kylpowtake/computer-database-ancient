@@ -39,7 +39,10 @@ public class AddComputer extends HttpServlet {
 	private static final String ATT_LIST_COMPANIES = "listcompanies";
 
 	private static Logger logger = Logging.getLogger();
-
+	
+	@Autowired
+	private Validation validation;
+	
 	@Autowired
 	private ComputerService computerService;
 	@Autowired
@@ -75,36 +78,36 @@ public class AddComputer extends HttpServlet {
 		ComputerDTO computerDTO = new ComputerDTO(null, name, introduced, discontinued, companyDTO);
 
 		try {
-			Validation.validationComputerDTO(computerDTO);
+			validation.validationComputerDTO(computerDTO);
 		} catch (Exception e1) {
 			logger.error("Erreur à faire en faite.");
 		}
 
 		logger.debug("Début validation de doPost de AddComputer");
 		try {
-			Validation.validationName(name);
+			validation.validationName(name);
 		} catch (ValidationException e) {
 			erreurs.put(CHAMP_NAME, e.getLocalizedMessage());
 		}
 		try {
-			Validation.validationIntroduced(introduced);
+			validation.validationIntroduced(introduced);
 		} catch (ValidationException e) {
 			erreurs.put(CHAMP_INTRODUCED, e.getLocalizedMessage());
 		}
 		try {
-			Validation.validationDiscontinued(discontinued);
+			validation.validationDiscontinued(discontinued);
 		} catch (ValidationException e) {
 			erreurs.put(CHAMP_DISCONTINUED, e.getLocalizedMessage());
 		}
 		try {
-			Validation.validationChronologieDates(introduced, discontinued);
+			validation.validationChronologieDates(introduced, discontinued);
 		} catch (ValidationException e) {
 			erreurs.put(CHAMP_CHRONOLOGY, e.getLocalizedMessage());
 		}
 		Company company = null;
 		Computer computer = null;
 		try {
-			Validation.validationCompanyId(companyId);
+			validation.validationCompanyId(companyId);
 			company = (Company) companyService.find(Integer.parseInt(companyId));
 		} catch (Exception e) {
 			erreurs.put(CHAMP_COMPANY_ID, e.getLocalizedMessage());

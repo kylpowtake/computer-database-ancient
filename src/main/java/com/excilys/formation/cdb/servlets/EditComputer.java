@@ -43,6 +43,8 @@ public class EditComputer extends HttpServlet {
 	private static Logger logger = Logging.getLogger();
 
 	@Autowired
+	private Validation validation;
+	@Autowired
 	private ComputerService computerService;
 	
 	@Autowired
@@ -107,25 +109,25 @@ public class EditComputer extends HttpServlet {
 			erreurs.put(COMPUTER_ID, "L'id du computer n'est pas valide");
 		}
 		try {
-			Validation.validationIntroduced(introduced);
+			validation.validationIntroduced(introduced);
 		} catch (ValidationException e) {
 			erreurs.put(COMPUTER_INTRODUCED, "Introduced n'est pas valide.");
 		}
 		try {
-			Validation.validationDiscontinued(discontinued);
+			validation.validationDiscontinued(discontinued);
 		} catch (ValidationException e) {
 			erreurs.put(COMPUTER_DISCONTINUED, "Discontinued n'est pas valide.");
 		}
 		if (computer != null) {
 			try {
 				if (introduced != null && !introduced.equals("") && discontinued != null && !discontinued.equals("")) {
-					Validation.validationChronologieDates(introduced, discontinued);
+					validation.validationChronologieDates(introduced, discontinued);
 				} else if (discontinued != null && !discontinued.equals("") && computer.getIntroduced() != null
 						&& !computer.getIntroduced().toString().equals("")) {
-					Validation.validationChronologieDates(computer.getIntroduced().toString(), discontinued);
+					validation.validationChronologieDates(computer.getIntroduced().toString(), discontinued);
 				} else if (introduced != null && !introduced.equals("") && computer.getDiscontinued() != null
 						&& !computer.getDiscontinued().toString().equals("")) {
-					Validation.validationChronologieDates(introduced, computer.getDiscontinued().toString());
+					validation.validationChronologieDates(introduced, computer.getDiscontinued().toString());
 				}
 			} catch (ValidationException e) {
 				erreurs.put(ATT_ERREUR_CHRONOLOGIE,
@@ -134,7 +136,7 @@ public class EditComputer extends HttpServlet {
 		}
 		Company company = null;
 		try {
-			Validation.validationCompanyId(companyId);
+			validation.validationCompanyId(companyId);
 			company = (Company) companyService.find(Integer.parseInt(companyId));
 			if (company != null) {
 				computer.setCompany(company);
@@ -155,7 +157,6 @@ public class EditComputer extends HttpServlet {
 		req.setAttribute(COMPANY_ID, companyId);
 		req.setAttribute(ATT_ERREURS, erreurs);
 		req.setAttribute(ATT_LIST_COMPANIES, listCompanies);
-
 		if (erreurs.isEmpty()) {
 			if (name != null && !(name.equals("")) && !(name.equals("null"))) {
 				computer.setName(name);

@@ -2,7 +2,7 @@ package com.excilys.formation.cdb.DTO.Mappers;
 
 import com.excilys.formation.cdb.DTO.CompanyDTO;
 import com.excilys.formation.cdb.model.Company;
-import com.excilys.formation.cdb.model.Company.BuilderCompany;
+import com.excilys.formation.cdb.model.Company.CompanyBuilder;
 
 public class CompanyDtoMapper {
 	private CompanyDtoMapper() {
@@ -13,7 +13,7 @@ public class CompanyDtoMapper {
 		if(companyDto == null) {
 			return null;
 		}
-		BuilderCompany builderCompany = new Company.BuilderCompany(Integer.parseInt(companyDto.getId()));
+		CompanyBuilder builderCompany = new Company.CompanyBuilder(Integer.parseInt(companyDto.getId()));
 		if(companyDto.getName() != null) {
 			builderCompany.withName(companyDto.getName());
 		}

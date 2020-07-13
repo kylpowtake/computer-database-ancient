@@ -67,4 +67,9 @@ public class ConnectionNormal implements ConnectionSQL {
 		}
 		return connection;
 	}
+
+	@Override
+	public DataSource getDataSource() {
+		return null;
+	}
 }

@@ -7,16 +7,20 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 public class ConnectionHikari implements ConnectionSQL {
-	private static HikariConfig config;
-	private static HikariDataSource dataSource;
+	private HikariConfig config;
+	private HikariDataSource dataSource;
 
-	public ConnectionHikari() {
-		 config = new HikariConfig("/datasource.properties");
-		 dataSource = new HikariDataSource(config);
+	public ConnectionHikari(String pathProperties) {
+		config = new HikariConfig(pathProperties);
+		dataSource = new HikariDataSource(config);
 	}
 
 	@Override
 	public Connection getConnection() throws SQLException {
 		return dataSource.getConnection();
+	}
+
+	public HikariDataSource getDataSource() {
+		return this.dataSource;
 	}
 }

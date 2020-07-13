@@ -22,15 +22,15 @@ public class Company {
 	private Company() {
 	}
 
-	public static class BuilderCompany {
+	public static class CompanyBuilder {
 		private int id;
 		private String name;
 
-		public BuilderCompany(int id) {
+		public CompanyBuilder(int id) {
 			this.id = id;
 		}
 
-		public BuilderCompany withName(String name) {
+		public CompanyBuilder withName(String name) {
 			this.name = name;
 			return this;
 		}

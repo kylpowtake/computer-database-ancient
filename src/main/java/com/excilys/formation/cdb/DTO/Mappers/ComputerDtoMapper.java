@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 import com.excilys.formation.cdb.DTO.ComputerDTO;
 import com.excilys.formation.cdb.model.Computer;
-import com.excilys.formation.cdb.model.Computer.BuilderComputer;
+import com.excilys.formation.cdb.model.Computer.ComputerBuilder;
 import com.excilys.formation.cdb.service.Utility;
 
 public class ComputerDtoMapper {
@@ -17,9 +17,9 @@ public class ComputerDtoMapper {
 		if (computerDTO == null) {
 			return computer;
 		}
-		BuilderComputer builderComputer = null;
+		ComputerBuilder builderComputer = null;
 		if (Utility.stringIsSomething(computerDTO.getName())) {
-			builderComputer = new BuilderComputer(computerDTO.getName());
+			builderComputer = new ComputerBuilder(computerDTO.getName());
 		} else {
 			return null;
 		}

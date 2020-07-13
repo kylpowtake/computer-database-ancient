@@ -16,7 +16,7 @@ public class AppConfigSpring extends AbstractContextLoaderInitializer{
 	
 	@Bean
 	public ConnectionSQL TheConnection() {
-		ConnectionHikari connectionHikari = new ConnectionHikari();
+		ConnectionHikari connectionHikari = new ConnectionHikari("/datasource.properties");
 		return connectionHikari;
 	}
 	
