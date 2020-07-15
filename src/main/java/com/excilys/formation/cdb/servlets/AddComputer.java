@@ -1,4 +1,5 @@
-package com.excilys.formation.cdb.servlets;
+ package com.excilys.formation.cdb.servlets;
+ 
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -15,11 +16,10 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
-import com.excilys.formation.cdb.DTO.CompanyDTO;
-import com.excilys.formation.cdb.DTO.ComputerDTO;
+import com.excilys.formation.cdb.DTO.CompanyDto;
+import com.excilys.formation.cdb.DTO.ComputerDto;
 import com.excilys.formation.cdb.DTO.Mappers.ComputerDtoMapper;
 import com.excilys.formation.cdb.enumeration.Resultat;
-import com.excilys.formation.cdb.exception.ValidationException;
 import com.excilys.formation.cdb.logging.Logging;
 import com.excilys.formation.cdb.model.Company;
 import com.excilys.formation.cdb.model.Computer;
@@ -74,43 +74,25 @@ public class AddComputer extends HttpServlet {
 		String discontinued = (String) req.getParameter(CHAMP_DISCONTINUED);
 		String companyId = req.getParameter(CHAMP_COMPANY_ID);
 
-		CompanyDTO companyDTO = new CompanyDTO(companyId, null);
-		ComputerDTO computerDTO = new ComputerDTO(null, name, introduced, discontinued, companyDTO);
+		CompanyDto companyDTO = new CompanyDto(companyId, null);
+		ComputerDto computerDTO = new ComputerDto(null, name, introduced, discontinued, companyDTO.getId(), companyDTO.getName());
 
 		try {
-			validation.validationComputerDTO(computerDTO);
+			validation.validationComputerDTO(computerDTO, erreurs);
 		} catch (Exception e1) {
 			logger.error("Erreur à faire en faite.");
 		}
 
-		logger.debug("Début validation de doPost de AddComputer");
-		try {
-			validation.validationName(name);
-		} catch (ValidationException e) {
-			erreurs.put(CHAMP_NAME, e.getLocalizedMessage());
-		}
-		try {
-			validation.validationIntroduced(introduced);
-		} catch (ValidationException e) {
-			erreurs.put(CHAMP_INTRODUCED, e.getLocalizedMessage());
-		}
-		try {
-			validation.validationDiscontinued(discontinued);
-		} catch (ValidationException e) {
-			erreurs.put(CHAMP_DISCONTINUED, e.getLocalizedMessage());
-		}
-		try {
-			validation.validationChronologieDates(introduced, discontinued);
-		} catch (ValidationException e) {
-			erreurs.put(CHAMP_CHRONOLOGY, e.getLocalizedMessage());
-		}
 		Company company = null;
 		Computer computer = null;
-		try {
-			validation.validationCompanyId(companyId);
-			company = (Company) companyService.find(Integer.parseInt(companyId));
-		} catch (Exception e) {
-			erreurs.put(CHAMP_COMPANY_ID, e.getLocalizedMessage());
+		if(!erreurs.containsKey(CHAMP_COMPANY_ID)) {
+			try {
+				company = (Company) companyService.find(Integer.parseInt(companyId));
+			} catch (NumberFormatException e) {
+				logger.error(e.getLocalizedMessage() + " à porpos de companyId dans addComputer.");
+			} catch (Exception e) {
+				logger.error("Problème de requête.");
+			}
 		}
 
 		logger.debug("Fin validation de doPost de AddComputer");

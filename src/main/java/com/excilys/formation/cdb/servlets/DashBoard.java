@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,6 +23,7 @@ import com.excilys.formation.cdb.service.ComputerService;
 import com.excilys.formation.cdb.validation.Validation;
 
 @SuppressWarnings("serial")
+@WebServlet(name = "dashBoard", urlPatterns = "/dashBoard")
 public class DashBoard extends HttpServlet {
 	public static final String CHAMP_NUMERO_PAGE = "numeroPage";
 	public static final String CHAMP_NOMBRE_PAR_PAGE = "nombreParPage";

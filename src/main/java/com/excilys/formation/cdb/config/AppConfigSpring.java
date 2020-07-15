@@ -16,6 +16,8 @@ import com.excilys.formation.cdb.datasource.ConnectionSQL;
 @ComponentScan(basePackages= {"com.excilys.formation.cdb.persistence", "com.excilys.formation.cdb.service", "com.excilys.formation.cdb.servlets", "com.excilys.formation.cdb.validation"})
 public class AppConfigSpring extends AbstractContextLoaderInitializer{
 	
+	public static AnnotationConfigWebApplicationContext rootContext;
+	
 	@Bean
 	public ConnectionSQL TheConnection() {
 		ConnectionHikari connectionHikari = new ConnectionHikari("/datasource.properties");
@@ -24,8 +26,7 @@ public class AppConfigSpring extends AbstractContextLoaderInitializer{
 	
 	@Override
     protected WebApplicationContext createRootApplicationContext() {
-        AnnotationConfigWebApplicationContext rootContext
-          = new AnnotationConfigWebApplicationContext();
+        rootContext = new AnnotationConfigWebApplicationContext();
         rootContext.register(AppConfigSpring.class);
         return rootContext;
     }

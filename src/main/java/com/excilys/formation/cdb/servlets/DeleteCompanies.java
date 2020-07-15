@@ -1,3 +1,4 @@
+/*
 package com.excilys.formation.cdb.servlets;
 
 import java.io.IOException;
@@ -118,3 +119,4 @@ public class DeleteCompanies extends HttpServlet {
 		}
 	}
 }
+*/

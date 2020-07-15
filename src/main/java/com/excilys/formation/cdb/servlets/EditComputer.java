@@ -1,3 +1,4 @@
+/*
 package com.excilys.formation.cdb.servlets;
 
 import java.io.IOException;
@@ -180,3 +181,4 @@ public class EditComputer extends HttpServlet {
 		this.getServletContext().getRequestDispatcher("/WEB-INF/editComputer.jsp").forward(req, resp);
 	}
 }
+*/

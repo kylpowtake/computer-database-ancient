@@ -8,7 +8,7 @@ import com.excilys.formation.cdb.model.Company;
  * @author kylian
  * @see Company
  */
-public class ComputerDTO {
+public class ComputerDto {
 
 	private String id;
 
@@ -18,17 +18,20 @@ public class ComputerDTO {
 
 	private String discontinued;
 
-	private CompanyDTO company;
+	private String companyId;
 
-	public ComputerDTO() {
+	private String companyName;
+	
+	public ComputerDto() {
 	}
 
-	public ComputerDTO(String id, String name, String introduced, String discontinued, CompanyDTO company) {
+	public ComputerDto(String id, String name, String introduced, String discontinued, String companyId, String companyName) {
 		this.id = id;
 		this.name = name;
 		this.introduced = introduced;
 		this.discontinued = discontinued;
-		this.company = company;
+		this.companyId = companyId;
+		this.companyName = companyName;
 	}
 
 	public String getId() {
@@ -63,14 +66,22 @@ public class ComputerDTO {
 		this.discontinued = discontinued;
 	}
 
-	public CompanyDTO getCompany() {
-		return company;
+	public String getCompanyId() {
+		return companyId;
 	}
 
-	public void setCompany(CompanyDTO company) {
-		this.company = company;
+	public void setCompanyId(String company) {
+		this.companyId = company;
 	}
 
+	public String getCompanyName() {
+		return companyName;
+	}
+
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
+	}
+	
 	public boolean equals(Object obj) {
 		if (obj == null) {
 			return false;
@@ -82,7 +93,7 @@ public class ComputerDTO {
 		} catch (ClassNotFoundException e) {
 			return false;
 		}
-		ComputerDTO other = (ComputerDTO) obj;
+		ComputerDto other = (ComputerDto) obj;
 		if (this.getId() != other.getId()) {
 			return false;
 		}
@@ -99,9 +110,14 @@ public class ComputerDTO {
 				|| !(this.getDiscontinued().equals(other.getDiscontinued()))) {
 			return false;
 		}
-		if ((this.getCompany() == null && other.getCompany() != null)
-				|| (this.getCompany() != null && other.getCompany() == null)
-				|| !(this.getCompany().equals(other.getCompany()))) {
+		if ((this.getCompanyId() == null && other.getCompanyId() != null)
+				|| (this.getCompanyId() != null && other.getCompanyId() == null)
+				|| !(this.getCompanyId().equals(other.getCompanyId()))) {
+			return false;
+		}
+		if ((this.getCompanyName() == null && other.getCompanyName() != null)
+				|| (this.getCompanyName() != null && other.getCompanyName() == null)
+				|| !(this.getCompanyName().equals(other.getCompanyName()))) {
 			return false;
 		}
 		return true;
@@ -115,8 +131,15 @@ public class ComputerDTO {
 		result = value * result + ((this.getName() == null) ? 0 : this.getName().hashCode());
 		result = value * result + ((this.getIntroduced() == null) ? 0 : this.getIntroduced().hashCode());
 		result = value * result + ((this.getDiscontinued() == null) ? 0 : this.getDiscontinued().hashCode());
-		result = value * result + ((this.getCompany() == null) ? 0 : this.getCompany().hashCode());
+		result = value * result + ((this.getCompanyId() == null) ? 0 : this.getCompanyId().hashCode());
+		result = value * result + ((this.getCompanyName() == null) ? 0 : this.getCompanyName().hashCode());
 		return result;
+	}
+
+	public String toString() {
+		String message = "index : " + this.id + " , name : " + this.name + " , introduced : " + this.introduced
+				+ " , discontinued : " + this.discontinued + " , " + this.companyId + " , " + this.companyName;
+		return message;
 	}
 
 }

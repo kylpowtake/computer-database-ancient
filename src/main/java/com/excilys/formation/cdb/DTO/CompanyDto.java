@@ -6,16 +6,16 @@ package com.excilys.formation.cdb.DTO;
  * @author kylian
  *
  */
-public class CompanyDTO {
+public class CompanyDto {
 
 	private String id;
 
 	private String name;
 
-	public CompanyDTO() {
+	public CompanyDto() {
 	}
 
-	public CompanyDTO(String id, String name) {
+	public CompanyDto(String id, String name) {
 		this.id = id;
 		this.name = name;
 	}
@@ -47,7 +47,7 @@ public class CompanyDTO {
 		} catch (ClassNotFoundException e) {
 			return false;
 		}
-		CompanyDTO other = (CompanyDTO) obj;
+		CompanyDto other = (CompanyDto) obj;
 		if (this.id != other.getId()) {
 			return false;
 		}
