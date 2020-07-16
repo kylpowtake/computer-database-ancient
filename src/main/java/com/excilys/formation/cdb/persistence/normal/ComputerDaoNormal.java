@@ -184,27 +184,27 @@ public class ComputerDaoNormal implements ComputerDao{
 	 *                         requêtes.
 	 * @see Page
 	 */
-	public List<Computer> listerComputersEnd() throws Exception {
-		Page page = Page.getPage();
-		int nombreComputers = nombre();
-		page.setNumeroPage(((nombreComputers - (nombreComputers % 10)) / 10) + 1);
-		page.setPeutAllerAncienneEtNouvellePage(nombreComputers);
-		List<Computer> listComputers = null;
-		Connection connection = connectionSQL.getConnection();
-		Statement statement = connection.createStatement();
-		ResultSet resultSet = statement.executeQuery(REQUETENOMBRECOMPUTERSDEPUIS + "LIMIT " + page.getNombreParPage()
-				+ " OFFSET " + (page.getNumeroPage() - 1) * page.getNombreParPage() + ";");
-		try {
-			listComputers = MapperComputer.mapResultSetToListComputer(resultSet);
-		} catch (Exception e) {
-			throw new Exception(e.getLocalizedMessage() + " listerComputerEnd");
-		} finally {
-			statement.close();
-			connection.close();
-			resultSet.close();
-		}
-		return listComputers;
-	}
+//	public List<Computer> listerComputersEnd() throws Exception {
+//		Page page = Page.getPage();
+//		int nombreComputers = nombre();
+//		page.setNumeroPage(((nombreComputers - (nombreComputers % 10)) / 10) + 1);
+//		page.setPeutAllerAncienneEtNouvellePage(nombreComputers);
+//		List<Computer> listComputers = null;
+//		Connection connection = connectionSQL.getConnection();
+//		Statement statement = connection.createStatement();
+//		ResultSet resultSet = statement.executeQuery(REQUETENOMBRECOMPUTERSDEPUIS + "LIMIT " + page.getNombreParPage()
+//				+ " OFFSET " + (page.getNumeroPage() - 1) * page.getNombreParPage() + ";");
+//		try {
+//			listComputers = MapperComputer.mapResultSetToListComputer(resultSet);
+//		} catch (Exception e) {
+//			throw new Exception(e.getLocalizedMessage() + " listerComputerEnd");
+//		} finally {
+//			statement.close();
+//			connection.close();
+//			resultSet.close();
+//		}
+//		return listComputers;
+//	}
 
 	/**
 	 * Méthode faisant une requête à la base de données pour avoir la page actuelle
@@ -217,8 +217,8 @@ public class ComputerDaoNormal implements ComputerDao{
 	 */
 	public List<Computer> some(String pOrderBy) throws Exception {
 		logger.debug("Start of some of Computer");
-		String orderBy = ComputerDao.modificationOrderBy(pOrderBy);
 		Page page = Page.getPage();
+		String orderBy = ComputerDao.modificationOrderBy(pOrderBy);
 		int nombreComputers = nombre();
 		page.setPeutAllerAncienneEtNouvellePage(nombreComputers);
 		List<Computer> listComputers = null;
@@ -252,8 +252,8 @@ public class ComputerDaoNormal implements ComputerDao{
 	 */
 	public List<Computer> someSearch(String motRecherche, String pOrderBy) throws Exception {
 //		String message = "";
-		String orderBy = ComputerDao.modificationOrderBy(pOrderBy);
 		Page page = Page.getPage();
+		String orderBy = ComputerDao.modificationOrderBy(pOrderBy);
 		int nombreComputers = nombre();
 		page.setPeutAllerAncienneEtNouvellePage(nombreComputers);
 		List<Computer> listComputers = null;

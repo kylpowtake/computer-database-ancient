@@ -23,7 +23,7 @@ public class Validation {
 	private static final String CHAMP_DISCONTINUED = "discontinued";
 	private static final String CHAMP_COMPANY_ID = "companyId";
 	private static final String CHAMP_CHRONOLOGY = "chronology";
-	
+
 	private static Logger logger = Logging.getLogger();
 
 	public CompanyService companyService;
@@ -33,36 +33,43 @@ public class Validation {
 		this.companyService = companyservice;
 	}
 
-	public void validationPage(PageDTO pageDTO) {
+	public boolean validationPage(PageDTO pageDTO) {
 		logger.debug("Start of validationPage");
-		pageDTO.setNomRecherche(validationSearch(pageDTO.getNomRecherche()));
-		pageDTO.setNombreParPage(validationNombreParPage(pageDTO.getNombreParPage()));
-		pageDTO.setNumeroPage(validationNumeroPage(pageDTO.getNumeroPage()));
-		pageDTO.setOrderBy(validationOrderBy(pageDTO.getOrderBy()));
-		logger.debug("End of validationPage");
+		if (validationSearch(pageDTO.getNomRecherche()) && validationNombreParPage(pageDTO.getNombreParPage())
+				&& validationNumeroPage(pageDTO.getNumeroPage()) && validationOrderBy(pageDTO.getOrderBy())) {
+			logger.debug("End of validationPage : true.");
+			return true;
+		} else {
+			logger.debug("End of validationPage : false.");
+			return false;
+		}
 	}
 
 	public void validationComputerDTO(ComputerDto computerDTO, Map<String, String> erreurs) {
 		logger.debug("Start of validationComputerDto.");
-			validationName(computerDTO.getName(), erreurs);
-			validationIntroduced(computerDTO.getIntroduced(), erreurs);
-			validationDiscontinued(computerDTO.getDiscontinued(), erreurs);
-			validationChronologieDates(computerDTO.getIntroduced(), computerDTO.getDiscontinued(), erreurs);
-			validationCompanyId(computerDTO.getCompanyId(), erreurs);
+		validationName(computerDTO.getName(), erreurs);
+		validationIntroduced(computerDTO.getIntroduced(), erreurs);
+		validationDiscontinued(computerDTO.getDiscontinued(), erreurs);
+		validationChronologieDates(computerDTO.getIntroduced(), computerDTO.getDiscontinued(), erreurs);
+		validationCompanyId(computerDTO.getCompanyId(), erreurs);
 	}
 
 	public void validationName(String name, Map<String, String> erreurs) {
 		logger.debug("Start of validationName.");
 		if (name == null || name.equals("")) {
-			erreurs.put(CHAMP_NAME, new ValidationException("Le computer doit nécessairement avoir un nom.").getLocalizedMessage());
+			erreurs.put(CHAMP_NAME,
+					new ValidationException("Le computer doit nécessairement avoir un nom.").getLocalizedMessage());
 		}
 	}
-	
+
 	public void validationIntroduced(String introduced, Map<String, String> erreurs) {
 		logger.debug("Start of validationIntroduced.");
 		if (introduced != null && !(introduced.equals("")) && !(introduced.equals("null"))
 				&& !MapperDate.validatorStringIsDate(introduced)) {
-		erreurs.put(CHAMP_INTRODUCED, new ValidationException("La date 'introduced' n'est pas constitué selon le format d'une date : YYYY-MM-JJ").getLocalizedMessage());		
+			erreurs.put(CHAMP_INTRODUCED,
+					new ValidationException(
+							"La date 'introduced' n'est pas constitué selon le format d'une date : YYYY-MM-JJ")
+									.getLocalizedMessage());
 		}
 	}
 
@@ -70,7 +77,10 @@ public class Validation {
 		logger.debug("Start of validationDiscontinued.");
 		if (discontinued != null && !(discontinued.equals("")) && !(discontinued.equals("null"))
 				&& !MapperDate.validatorStringIsDate(discontinued)) {
-		erreurs.put(CHAMP_DISCONTINUED, new ValidationException("La date 'discontinued' n'est pas constitué selon le format d'une date : YYYY-MM-JJ").getLocalizedMessage());	
+			erreurs.put(CHAMP_DISCONTINUED,
+					new ValidationException(
+							"La date 'discontinued' n'est pas constitué selon le format d'une date : YYYY-MM-JJ")
+									.getLocalizedMessage());
 		}
 	}
 
@@ -80,7 +90,9 @@ public class Validation {
 			LocalDate introducedDate = MapperDate.StringToLocalDate(introduced);
 			LocalDate discontinuedDate = MapperDate.StringToLocalDate(discontinued);
 			if (introducedDate != null && discontinuedDate != null && !(introducedDate.isBefore(discontinuedDate))) {
-				erreurs.put(CHAMP_CHRONOLOGY, new ValidationException("La date 'discontinued' est moins récente que la date 'introduced'.").getLocalizedMessage());
+				erreurs.put(CHAMP_CHRONOLOGY,
+						new ValidationException("La date 'discontinued' est moins récente que la date 'introduced'.")
+								.getLocalizedMessage());
 			}
 		}
 	}
@@ -93,47 +105,58 @@ public class Validation {
 			try {
 				company = (Company) companyService.find(Integer.parseInt(companyId));
 			} catch (NumberFormatException e) {
-				erreurs.put(CHAMP_COMPANY_ID, new ValidationException(e.getLocalizedMessage() + " validationCompanyId").getLocalizedMessage());
+				erreurs.put(CHAMP_COMPANY_ID, new ValidationException(e.getLocalizedMessage() + " validationCompanyId")
+						.getLocalizedMessage());
 			} catch (Exception e) {
-				erreurs.put(CHAMP_COMPANY_ID, new ValidationException(e.getLocalizedMessage() + " validationCompanyId").getLocalizedMessage());
+				erreurs.put(CHAMP_COMPANY_ID, new ValidationException(e.getLocalizedMessage() + " validationCompanyId")
+						.getLocalizedMessage());
 			}
 			if (company == null) {
-				erreurs.put(CHAMP_COMPANY_ID, new ValidationException("La company selon l'id donné n'existe pas : validationCompanyId").getLocalizedMessage());
+				erreurs.put(CHAMP_COMPANY_ID,
+						new ValidationException("La company selon l'id donné n'existe pas : validationCompanyId")
+								.getLocalizedMessage());
 			}
 		}
 	}
 
-
-
-	public String validationNombreParPage(String nombreParPage) {
-		if (nombreParPage == null || nombreParPage.equals("") || nombreParPage.equals("null")
-				|| !(Utility.stringIsInt(nombreParPage))) {
-			nombreParPage = "10";
+	public boolean validationNombreParPage(String nombreParPage) {
+		if (nombreParPage == null) {
+			return true;
 		}
-		return nombreParPage;
+		if (nombreParPage.equals("") || nombreParPage.equals("null") || !(Utility.stringIsInt(nombreParPage))) {
+			return false;
+		}
+		return true;
 	}
 
-	public String validationNumeroPage(String numeroPage) {
-		if (numeroPage == null || numeroPage.equals("") || numeroPage.equals("null")
-				|| !(Utility.stringIsInt(numeroPage))) {
-			numeroPage = "";
+	public boolean validationNumeroPage(String numeroPage) {
+		if (numeroPage == null) {
+			return true;
 		}
-		return numeroPage;
+		if (numeroPage.equals("") || numeroPage.equals("null") || !(Utility.stringIsInt(numeroPage))) {
+			return false;
+		}
+		return true;
 	}
 
-	public String validationSearch(String nomRecherche) {
-		if (nomRecherche == null || nomRecherche.equals("")) {
-			nomRecherche = "";
+	public boolean validationSearch(String nomRecherche) {
+		if (nomRecherche == null) {
+			return true;
 		}
-		return nomRecherche;
+		if (nomRecherche.equals("") || nomRecherche.equals("null")) {
+			return false;
+		}
+		return true;
 	}
 
-	public String validationOrderBy(String orderBy) {
-		if (orderBy == null || orderBy.equals("") || orderBy.equals("null")
-				|| (!orderBy.equals("id") && !orderBy.equals("name") && !orderBy.equals("introduced")
-						&& !orderBy.equals("discontinued") && !orderBy.equals("company"))) {
-			orderBy = "";
+	public boolean validationOrderBy(String orderBy) {
+		if (orderBy == null) {
+			return true;
 		}
-		return orderBy;
+		if (orderBy.equals("") || orderBy.equals("null") || (!orderBy.equals("id") && !orderBy.equals("name")
+				&& !orderBy.equals("introduced") && !orderBy.equals("discontinued") && !orderBy.equals("company.name"))) {
+			return false;
+		}
+		return true;
 	}
 }

@@ -9,9 +9,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"
 	charset="UTF-8">
 <!-- Bootstrap -->
-<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+<!-- <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
 <link href="css/font-awesome.css" rel="stylesheet" media="screen">
-<link href="css/main.css" rel="stylesheet" media="screen">
+<link href="css/main.css" rel="stylesheet" media="screen"> -->
+
+<link href="<c:url value="css/bootstrap.min.css" />" rel="stylesheet"
+	media="screen">
+<link href="<c:url value="css/font-awesome.css" />" rel="stylesheet"
+	media="screen">
+<link href="<c:url value="css/main.css" />" rel="stylesheet"
+	media="screen">
+
+<script src="<c:url value="js/jquery.min.js" />"></script>
+<script src="<c:url value="js/addComputer.js" />"></script>
 </head>
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
@@ -37,17 +47,17 @@
 								<div class="form-group">
 									<label  for="computerName">Computer name</label>
 									<form:input path="name" />
-									<form:errors path="name" />
+									<form:errors path="name" cssClass="error"/>
 								</div>
 								<div class="form-group">
 									<label for="introduced">Introduced date</label>
 									<form:input type="date" path="introduced" />
-									<form:errors path="introduced" />
+									<form:errors path="*" cssClass="error"/>
 								</div>
 								<div class="form-group">
 									<label for="discontinued">Discontinued date</label>
 									<form:input type="date" path="discontinued" />
-									<form:errors path="discontinued" />
+									<form:errors path="discontinued" cssClass="error"/>
 									<%--<form:errors path="chronology" /> --%>
 								</div>
 								<div class="form-group">

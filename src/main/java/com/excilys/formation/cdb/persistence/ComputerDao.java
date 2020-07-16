@@ -2,6 +2,7 @@ package com.excilys.formation.cdb.persistence;
 
 import java.util.List;
 
+import com.excilys.formation.cdb.Pageable.Page;
 import com.excilys.formation.cdb.enumeration.Resultat;
 import com.excilys.formation.cdb.model.Computer;
 
@@ -9,11 +10,16 @@ public interface ComputerDao {
 
 	static final String REQUETENOMBRECOMPUTERS = "SELECT COUNT(computer.id) FROM computer;";
 
-	static final String REQUETEPAGECOMPUTERS = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name "
-			+ "from computer LEFT JOIN company ON computer.company_id = company.id ORDER BY :orderBy LIMIT :computerParPage OFFSET :positionComputers;";
+	static final String REQUETEPAGECOMPUTERSSTART = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name "
+			+ "from computer LEFT JOIN company ON computer.company_id = company.id ORDER BY ";
+
+	static final String REQUETEPAGECOMPUTERSEND = " LIMIT :computerParPage OFFSET :positionComputers;";
 
 	static final String REQUETEPAGECOMPUTERSSEARCH = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name "
-			+ "from computer LEFT JOIN company ON computer.company_id = company.id WHERE ((computer.name LIKE '%:motRecherche%') OR (company.name LIKE '%:motRecherche%')) ORDER BY :orderBy LIMIT :computerParPage OFFSET :positionComputers;";
+			+ "from computer LEFT JOIN company ON computer.company_id = company.id WHERE ((computer.name LIKE '%:motRecherche%') OR (company.name LIKE '%:motRecherche%')) ORDER BY ";
+
+	static final String REQUETECOMPUTERS = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name \"\n"
+			+ "from computer LEFT JOIN company ON computer.company_id = company.id";
 
 	static final String REQUETELISTECOMPLETECOMPUTERS = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name "
 			+ "FROM computer LEFT JOIN company ON computer.company_id = company.id ORDER BY :orderBy;";
@@ -32,8 +38,6 @@ public interface ComputerDao {
 	public boolean findcomputerById(int computerId) throws Exception;
 
 	public int faireRequeteSansResultat(String requete);
-
-	public List<Computer> listerComputersEnd() throws Exception;
 
 	public List<Computer> some(String pOrderBy) throws Exception;
 

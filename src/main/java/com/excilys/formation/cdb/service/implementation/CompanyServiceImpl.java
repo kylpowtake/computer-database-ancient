@@ -3,6 +3,7 @@ package com.excilys.formation.cdb.service.implementation;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.excilys.formation.cdb.enumeration.Resultat;
@@ -14,7 +15,7 @@ import com.excilys.formation.cdb.service.CompanyService;
 public class CompanyServiceImpl implements CompanyService {
 
 	@Autowired
-	public CompanyServiceImpl(CompanyDao companyDAO) {
+	public CompanyServiceImpl(@Qualifier(value = "companyDaoJdbc") CompanyDao companyDAO) {
 		this.companyDAO = companyDAO;
 	}
 

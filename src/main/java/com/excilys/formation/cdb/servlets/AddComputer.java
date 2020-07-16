@@ -1,4 +1,5 @@
- package com.excilys.formation.cdb.servlets;
+/*
+package com.excilys.formation.cdb.servlets;
  
 
 import java.io.IOException;
@@ -134,3 +135,4 @@ public class AddComputer extends HttpServlet {
 		super.doPut(req, resp);
 	}
 }
+*/

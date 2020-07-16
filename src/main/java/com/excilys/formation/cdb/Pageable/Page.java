@@ -18,7 +18,7 @@ public class Page {
 	/**
 	 * ArrayList de computer
 	 */
-	private static List<Computer> computers;
+	private static List<Computer> computers = null;
 	/**
 	 * Nombre de computer maximum pour la page. {@value}
 	 */
@@ -26,7 +26,7 @@ public class Page {
 	/**
 	 * Le numéro de page permettant de se positionner parmi tous les computer.
 	 */
-	private static int numeroPage;
+	private static int numeroPage = 0;
 	/**
 	 * Le nom recherché pour chaque computer.
 	 */
@@ -36,21 +36,41 @@ public class Page {
 	/**
 	 * Booléan donnant la présence de page antérieure.
 	 */
-	private boolean peutAllerNouvellePage;
+	private static boolean peutAllerNouvellePage = false;
 	/**
 	 * Booléan donnant la précense de page postérieure.
 	 */
-	private boolean peutAllerAnciennePage;
+	private static boolean peutAllerAnciennePage = false;
 
+	private static String orderBy = "id";
+	
+	private static OrderEnum order = OrderEnum.ASC;
+	public enum OrderEnum{
+		ASC("ASC"),
+		DESC("DESC");
+		
+		String value;
+
+		OrderEnum(String string) {
+			value = string;
+		}
+		
+		public String getValue() {
+			return value;
+		}
+
+		public static OrderEnum change(OrderEnum orderEnum) {
+			if(orderEnum.equals(OrderEnum.ASC)) {
+				return OrderEnum.DESC;
+			} else {
+				return OrderEnum.ASC;
+			}
+		}
+	}
 	/**
 	 * Constructeur privée de la classe sans paramètre.
 	 */
 	private Page() {
-		computers = null;
-		numeroPage = 0;
-		nomRecherche = "";
-		peutAllerAnciennePage = false;
-		peutAllerNouvellePage = false;
 	}
 
 	/**
@@ -66,35 +86,35 @@ public class Page {
 	}
 
 	public List<Computer> getComputers() {
-		return computers;
+		return Page.computers;
 	}
 
 	public void setComputers(List<Computer> listComputers) {
-		computers = listComputers;
+		Page.computers = listComputers;
 	}
 
 	public int getNombreParPage() {
-		return nombreParPage;
+		return Page.nombreParPage;
 	}
 
-	public void setNombreParPage(int pNombreParPage) {
-		nombreParPage = pNombreParPage;
+	public void setNombreParPage(int nombreParPage) {
+		Page.nombreParPage = nombreParPage;
 	}
 
 	public int getNumeroPage() {
-		return numeroPage;
+		return Page.numeroPage;
 	}
 
-	public void setNumeroPage(int pNumeroPage) {
-		if (pNumeroPage < 0) {
-			numeroPage = 0;
-		} else if (pNumeroPage * this.getNombreParPage() < this.getNombreComputers()) {
-			numeroPage = pNumeroPage;
+	public void setNumeroPage(int numeroPage) {
+		if (numeroPage < 0) {
+			Page.numeroPage = 0;
+		} else if (numeroPage * this.getNombreParPage() < this.getNombreComputers()) {
+			Page.numeroPage = numeroPage;
 		}
 	}
 
 	public String getNomRecherche() {
-		return nomRecherche;
+		return Page.nomRecherche;
 	}
 
 	public void setNomRecherche(String nomRecherche) {
@@ -102,32 +122,52 @@ public class Page {
 	}
 
 	public boolean isPeutAllerNouvellePage() {
-		return peutAllerNouvellePage;
+		return Page.peutAllerNouvellePage;
 	}
 
 	public int getNombreComputers() {
-		return nombreComputers;
+		return Page.nombreComputers;
 	}
 
-	public static void setNombreComputers(int nombreComputers) {
+	public void setNombreComputers(int nombreComputers) {
 		Page.nombreComputers = nombreComputers;
 	}
 
 	public void setPeutAllerNouvellePage(boolean peutAllerNouvellePage) {
-		this.peutAllerNouvellePage = peutAllerNouvellePage;
+		Page.peutAllerNouvellePage = peutAllerNouvellePage;
 	}
 
 	public boolean isPeutAllerAnciennePage() {
-		return peutAllerAnciennePage;
+		return Page.peutAllerAnciennePage;
 	}
 
 	public void setPeutAllerAnciennePage(boolean peutAlleranciennePage) {
-		this.peutAllerAnciennePage = peutAlleranciennePage;
+		Page.peutAllerAnciennePage = peutAlleranciennePage;
 	}
 
 	public void setPeutAllerAncienneEtNouvellePage(int nombreComputers) {
 		this.setPeutAllerNouvellePage(nombreComputers > this.getNumeroPage() * this.getNombreParPage());
 		this.setPeutAllerAnciennePage(this.getNumeroPage() != 1);
+	}
+
+	public String getOrderBy() {
+		return Page.orderBy;
+	}
+
+	public void setOrderBy(String orderBy) {
+		Page.orderBy = orderBy;
+	}
+	
+	public String toString() {
+		return "La page est : " + this.getNombreParPage() + ", " + this.getNombreComputers() + ", " + this.getNomRecherche() + ", " + this.getNumeroPage() + ", " + this.getOrderBy();
+	}
+
+	public OrderEnum getOrder() {
+		return order;
+	}
+
+	public  void setOrder(OrderEnum order) {
+		Page.order = order;
 	}
 
 }

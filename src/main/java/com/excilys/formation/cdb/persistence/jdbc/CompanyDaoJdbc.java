@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.formation.cdb.datasource.ConnectionSQL;
@@ -15,7 +16,9 @@ import com.excilys.formation.cdb.enumeration.Resultat;
 import com.excilys.formation.cdb.logging.Logging;
 import com.excilys.formation.cdb.model.Company;
 import com.excilys.formation.cdb.persistence.CompanyDao;
+import com.excilys.formation.cdb.persistence.jdbc.row.mapper.CompanyRowMapper;
 
+@Repository
 public class CompanyDaoJdbc implements CompanyDao{
 	private static Logger logger = Logging.getLogger();
 	
@@ -38,7 +41,6 @@ public class CompanyDaoJdbc implements CompanyDao{
 		this.connectionSQL = connectionSQL;
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<Company> all(String pOrderBy) {
 		logger.debug("Start of all of CompanyDaoJdbc");
@@ -57,7 +59,6 @@ public class CompanyDaoJdbc implements CompanyDao{
 		return (List<Company>) namedParameterJdbcTemplate.queryForObject(REQUETELISTECOMPANIESSEARCH, namedParameters, (RowMapper<Company>) new CompanyRowMapper());
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public Company find(int companyId) throws Exception {
 		logger.debug("Start of find of CompanyDaoJdbc");

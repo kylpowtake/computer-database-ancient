@@ -3,27 +3,28 @@ package com.excilys.formation.cdb.service.implementation;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.excilys.formation.cdb.enumeration.Resultat;
 import com.excilys.formation.cdb.model.Computer;
-import com.excilys.formation.cdb.persistence.normal.ComputerDaoNormal;
+import com.excilys.formation.cdb.persistence.ComputerDao;
+import com.excilys.formation.cdb.persistence.jdbc.ComputerDaoJdbc;
 import com.excilys.formation.cdb.service.ComputerService;
 
 @Service
 public class ComputerServiceImpl implements ComputerService{
 	
 	@Autowired
-	public ComputerServiceImpl(ComputerDaoNormal computerDAO){
+	public ComputerServiceImpl(@Qualifier(value = "computerDaoJdbc") ComputerDaoJdbc computerDAO){
 		this.computerDAO = computerDAO;
 		
 	}
 	
-	ComputerDaoNormal computerDAO;
+	ComputerDao computerDAO;
 	
 	@Override
 	public List<Computer> some(String pOrderBy) throws Exception {
-		System.out.println("mmmmmmmmmmmmmmm");
 		return computerDAO.some(pOrderBy);
 	}
 

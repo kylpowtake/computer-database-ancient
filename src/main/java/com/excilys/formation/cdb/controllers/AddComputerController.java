@@ -44,29 +44,27 @@ public class AddComputerController {
 	public ModelAndView addComputer(HttpServletRequest request, HttpServletResponse response) {
 		ModelAndView mv = new ModelAndView("addComputer");
 		mv.setViewName("addComputer");
-		mv.getModel().put("data", "Welcome home man");	
 		mv.addObject("computer", new ComputerDto());
-		List<CompanyDto> companiesDtoList = companyService.all("").stream().map(x -> CompanyDtoMapper.companyToCompanyDto(x)).collect(Collectors.toList());
+		List<CompanyDto> companiesDtoList = companyService.all("").stream()
+				.map(x -> CompanyDtoMapper.companyToCompanyDto(x)).collect(Collectors.toList());
 		mv.addObject("companiesList", companiesDtoList);
 		return mv;
 	}
 
 	@RequestMapping(value = "/addComputer", method = RequestMethod.POST)
-	public ModelAndView addUser(HttpServletRequest request, HttpServletResponse response,
+	public ModelAndView addComputer(HttpServletRequest request, HttpServletResponse response,
 			@ModelAttribute("computer") ComputerDto computerDto) {
 		Map<String, String> erreurs = new HashMap<String, String>();
 		ModelAndView mv = new ModelAndView("addComputer");
 		Resultat resultat = Resultat.ECHOUE;
-
 		try {
 			validation.validationComputerDTO(computerDto, erreurs);
 		} catch (Exception e1) {
 			logger.error("Erreur à faire en faite.");
 		}
-		
 		Company company = null;
 		Computer computer = null;
-		if(!erreurs.containsKey(CHAMP_COMPANY_ID)) {
+		if (!erreurs.containsKey(CHAMP_COMPANY_ID)) {
 			try {
 				company = (Company) companyService.find(Integer.parseInt(computerDto.getCompanyId()));
 				computerDto.setCompanyName(company.getName());
@@ -94,9 +92,9 @@ public class AddComputerController {
 				System.exit(1);
 			}
 		}
-		
 		mv.addObject("computer", computerDto);
-		List<CompanyDto> companiesDtoList = companyService.all("").stream().map(x -> CompanyDtoMapper.companyToCompanyDto(x)).collect(Collectors.toList());
+		List<CompanyDto> companiesDtoList = companyService.all("").stream()
+				.map(x -> CompanyDtoMapper.companyToCompanyDto(x)).collect(Collectors.toList());
 		mv.addObject("companiesList", companiesDtoList);
 		mv.addObject("errors", erreurs);
 		mv.addObject("resultat", resultat);

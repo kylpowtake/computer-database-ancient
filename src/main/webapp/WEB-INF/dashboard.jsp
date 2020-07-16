@@ -8,9 +8,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta charset="utf-8">
 <!-- Bootstrap -->
-<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+<!-- <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
 <link href="css/font-awesome.css" rel="stylesheet" media="screen">
 <link href="css/main.css" rel="stylesheet" media="screen">
+ -->
+<link href="<c:url value="css/bootstrap.min.css" />" rel="stylesheet"
+	media="screen">
+<link href="<c:url value="css/font-awesome.css" />" rel="stylesheet"
+	media="screen">
+<link href="<c:url value="css/main.css" />" rel="stylesheet"
+	media="screen">
+
+<script src="<c:url value="js/jquery.min.js" />"></script>
+<script src="<c:url value="js/bootstrap.min.js" />"></script>
+<script src="<c:url value="js/dashboard.js" />"></script>
+
+
 </head>
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
@@ -22,11 +35,10 @@
 
 	<section id="main">
 		<div class="container">
-			<h1 id="homeTitle">${page.getNombreComputers()} Computersfound</h1>
+			<h1 id="homeTitle">${page.getNombreComputers()}Computersfound</h1>
 			<div id="actions" class="form-horizontal">
 				<div class="pull-left">
 					<form id="searchForm" action="#" method="GET" class="form-inline">
-
 						<input type="search" id="searchbox" name="search"
 							class="form-control" placeholder="Search name" /> <input
 							type="submit" id="searchsubmit" value="Filter by name"
@@ -61,19 +73,23 @@
 						</span></th>
 						<th><a href="dashboard?orderby=id">Computer id</a></th>
 						<th><a href="dashboard?orderby=name">Computer name</a></th>
-						<th><a href="dashboard?orderby=introduced">Introduced date</a></th>
-						<th><a href="dashboard?orderby=discontinued">Discontinued date</a></th>
-						<th><a href="dashboard?orderby=company">Company</a></th>
+						<th><a href="dashboard?orderby=introduced">Introduced
+								date</a></th>
+						<th><a href="dashboard?orderby=discontinued">Discontinued
+								date</a></th>
+						<th><a href="dashboard?orderby=company.name">Company</a></th>
 
 
 					</tr>
 				</thead>
 				<!-- Browse attribute computers -->
 				<tbody id="results">
-					<c:forEach items="${page.getComputers()}" var="computer" varStatus="loop">
+					<c:forEach items="${page.getComputers()}" var="computer"
+						varStatus="loop">
 						<tr>
-							<td class="editMode"><input type="checkbox" name="${loop.index}" form="deleteForm"
-								class="cb" value="${computer.id}"></td>
+							<td class="editMode"><input type="checkbox"
+								name="${loop.index}" form="deleteForm" class="cb"
+								value="${computer.id}"></td>
 							<td><a href="editComputer?computerId=${computer.id}"
 								onclick="">${computer.id}</a></td>
 							<th>${computer.name}</th>
@@ -103,25 +119,25 @@
 
 		<div class="container text-center">
 			<ul class="pagination">
-				<li><a href="dashboard?previous=true"
-					aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
+				<li><a href="dashboard?previous=true" aria-label="Previous">
+						<span aria-hidden="true">&laquo;</span>
 				</a></li>
 				<li><a href="dashboard?numeroPage=0">1</a></li>
 				<li><a href="dashboard?numeroPage=1">2</a></li>
 				<li><a href="dashboard?numeroPage=2">3</a></li>
 				<li><a href="dashboard?numeroPage=3">4</a></li>
 				<li><a href="dashboard?numeroPage=4">5</a></li>
-				<li><a href="dashboard?next=true"
-					aria-label="Next"> <span aria-hidden="true">&raquo;</span>
+				<li><a href="dashboard?next=true" aria-label="Next"> <span
+						aria-hidden="true">&raquo;</span>
 				</a></li>
 			</ul>
 		</div>
 
 
 	</footer>
-	<script src="js/jquery.min.js"></script>
+<!-- 	<script src="js/jquery.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
-	<script src="js/dashboard.js"></script>
+	<script src="js/dashboard.js"></script> -->
 
 </body>
 </html>

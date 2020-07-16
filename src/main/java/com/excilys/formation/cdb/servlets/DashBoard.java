@@ -1,3 +1,4 @@
+/*
 package com.excilys.formation.cdb.servlets;
 
 import java.io.IOException;
@@ -156,3 +157,4 @@ public class DashBoard extends HttpServlet {
 		this.getServletContext().getRequestDispatcher("/WEB-INF/dashboard.jsp").forward(req, resp);
 	}
 }
+*/
