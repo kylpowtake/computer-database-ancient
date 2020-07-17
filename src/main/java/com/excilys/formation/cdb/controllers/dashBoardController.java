@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.excilys.formation.cdb.DTO.PageDTO;
 import com.excilys.formation.cdb.Pageable.Page;
 import com.excilys.formation.cdb.Pageable.Page.OrderEnum;
+import com.excilys.formation.cdb.config.WebAppInitializer;
 import com.excilys.formation.cdb.logging.Logging;
 import com.excilys.formation.cdb.model.Computer;
 import com.excilys.formation.cdb.service.ComputerService;
@@ -44,6 +47,11 @@ public class dashBoardController {
 
 	@Autowired
 	private ComputerService computerService;
+	
+	ApplicationContext applicationContext = WebAppInitializer.rootContext;
+
+	MessageSource messageSource = applicationContext.getBean(MessageSource.class);
+
 
 //	private String orderByGeneral = "id";
 
@@ -85,7 +93,8 @@ public class dashBoardController {
 		logger.debug("Fin du doPost de Dashboard");
 		return mv;
 	}
-
+	
+	
 	public void gestionModificationPage(Page page, HttpServletRequest req) {
 		String nomRecherche = req.getParameter(CHAMP_SEARCH);
 		String numeroPage = req.getParameter(CHAMP_NUMERO_PAGE);

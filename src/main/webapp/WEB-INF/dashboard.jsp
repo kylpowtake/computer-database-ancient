@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -35,20 +37,24 @@
 
 	<section id="main">
 		<div class="container">
-			<h1 id="homeTitle">${page.getNombreComputers()}Computersfound</h1>
+			<h1 id="homeTitle">${page.getNombreComputers()}
+				<fmt:message key="computersFound" />
+			</h1>
 			<div id="actions" class="form-horizontal">
 				<div class="pull-left">
 					<form id="searchForm" action="#" method="GET" class="form-inline">
 						<input type="search" id="searchbox" name="search"
-							class="form-control" placeholder="Search name" /> <input
-							type="submit" id="searchsubmit" value="Filter by name"
+							class="form-control"
+							placeholder="<fmt:message key="searchName" />" /> <input
+							type="submit" id="searchsubmit" value="${filterByName}"
 							class="btn btn-primary" />
 					</form>
 				</div>
 				<div class="pull-right">
-					<a class="btn btn-success" id="addComputer" href="addComputer">Add
-						Computer</a> <a class="btn btn-default" id="editComputer" href="#"
-						onclick="$.fn.toggleEditMode();">Edit</a>
+					<a class="btn btn-success" id="addComputer" href="addComputer"><fmt:message
+							key="addComputer" /></a> <a class="btn btn-default"
+						id="editComputer" href="#" onclick="$.fn.toggleEditMode();"><fmt:message
+							key="edit" /></a>
 				</div>
 			</div>
 		</div>
@@ -71,13 +77,16 @@
 									class="fa fa-trash-o fa-lg"></i>
 							</a>
 						</span></th>
-						<th><a href="dashboard?orderby=id">Computer id</a></th>
-						<th><a href="dashboard?orderby=name">Computer name</a></th>
-						<th><a href="dashboard?orderby=introduced">Introduced
-								date</a></th>
-						<th><a href="dashboard?orderby=discontinued">Discontinued
-								date</a></th>
-						<th><a href="dashboard?orderby=company.name">Company</a></th>
+						<th><a href="dashboard?orderby=id"><fmt:message
+									key="computerId" /></a></th>
+						<th><a href="dashboard?orderby=name"><fmt:message
+									key="computerName" /></a></th>
+						<th><a href="dashboard?orderby=introduced"><fmt:message
+									key="introducedDate" /></a></th>
+						<th><a href="dashboard?orderby=discontinued"><fmt:message
+									key="discontinuedDate" /></a></th>
+						<th><a href="dashboard?orderby=company.name"><fmt:message
+									key="company" /></a></th>
 
 
 					</tr>
@@ -109,6 +118,17 @@
 	<footer class="navbar-fixed-bottom">
 
 		<div class="btn-group btn-group-sm pull-right" role="group">
+			<button onclick="location.href='dashboard?lang=fr'" type="button"
+				class="btn btn-default">
+				<fmt:message key="fr" />
+			</button>
+			<button onclick="location.href='dashboard?lang=en'" type="button"
+				class="btn btn-default">
+				<fmt:message key="en" />
+			</button>
+		</div>
+
+		<div class="btn-group btn-group-sm pull-right" role="group">
 			<button onclick="location.href='dashboard?nombreParPage=10'"
 				type="button" class="btn btn-default">10</button>
 			<button onclick="location.href='dashboard?nombreParPage=50'"
@@ -135,7 +155,7 @@
 
 
 	</footer>
-<!-- 	<script src="js/jquery.min.js"></script>
+	<!-- 	<script src="js/jquery.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/dashboard.js"></script> -->
 
