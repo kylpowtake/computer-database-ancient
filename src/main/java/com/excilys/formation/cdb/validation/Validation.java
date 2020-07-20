@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.excilys.formation.cdb.DTO.CompanyDto;
 import com.excilys.formation.cdb.DTO.ComputerDto;
 import com.excilys.formation.cdb.DTO.PageDTO;
 import com.excilys.formation.cdb.exception.ValidationException;
@@ -51,7 +52,7 @@ public class Validation {
 		validationIntroduced(computerDTO.getIntroduced(), erreurs);
 		validationDiscontinued(computerDTO.getDiscontinued(), erreurs);
 		validationChronologieDates(computerDTO.getIntroduced(), computerDTO.getDiscontinued(), erreurs);
-		validationCompanyId(computerDTO.getCompanyId(), erreurs);
+		validationCompany(computerDTO.getCompany(), erreurs);
 	}
 
 	public void validationName(String name, Map<String, String> erreurs) {
@@ -97,13 +98,13 @@ public class Validation {
 		}
 	}
 
-	public void validationCompanyId(String companyId, Map<String, String> erreurs) {
+	public void validationCompany(CompanyDto companyDto, Map<String, String> erreurs) {
 		logger.debug("Start of validationCompanyId.");
-		if (companyId != null && !(companyId.equals("0")) && !(companyId.equals("")) && !(companyId.equals("null"))
-				&& com.excilys.formation.cdb.service.Utility.stringIsInt(companyId)) {
+		if (companyDto.getId() != null && !(companyDto.getId().equals("0")) && !(companyDto.getId().equals("")) && !(companyDto.getId().equals("null"))
+				&& com.excilys.formation.cdb.service.Utility.stringIsInt(companyDto.getId())) {
 			Company company = null;
 			try {
-				company = (Company) companyService.find(Integer.parseInt(companyId));
+				company = (Company) companyService.find(Integer.parseInt(companyDto.getId()));
 			} catch (NumberFormatException e) {
 				erreurs.put(CHAMP_COMPANY_ID, new ValidationException(e.getLocalizedMessage() + " validationCompanyId")
 						.getLocalizedMessage());

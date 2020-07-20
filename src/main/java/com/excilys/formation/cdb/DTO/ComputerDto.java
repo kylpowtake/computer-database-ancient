@@ -17,21 +17,18 @@ public class ComputerDto {
 	private String introduced;
 
 	private String discontinued;
-
-	private String companyId;
-
-	private String companyName;
+	
+	private CompanyDto company;
 	
 	public ComputerDto() {
 	}
 
-	public ComputerDto(String id, String name, String introduced, String discontinued, String companyId, String companyName) {
+	public ComputerDto(String id, String name, String introduced, String discontinued, CompanyDto company ) {
 		this.id = id;
 		this.name = name;
 		this.introduced = introduced;
 		this.discontinued = discontinued;
-		this.companyId = companyId;
-		this.companyName = companyName;
+		this.company = company;
 	}
 
 	public String getId() {
@@ -66,22 +63,14 @@ public class ComputerDto {
 		this.discontinued = discontinued;
 	}
 
-	public String getCompanyId() {
-		return companyId;
+	public CompanyDto getCompany() {
+		return company;
 	}
 
-	public void setCompanyId(String company) {
-		this.companyId = company;
+	public void setCompany(CompanyDto company) {
+		this.company = company;
 	}
 
-	public String getCompanyName() {
-		return companyName;
-	}
-
-	public void setCompanyName(String companyName) {
-		this.companyName = companyName;
-	}
-	
 	public boolean equals(Object obj) {
 		if (obj == null) {
 			return false;
@@ -102,22 +91,17 @@ public class ComputerDto {
 		}
 		if ((this.getIntroduced() == null && other.getIntroduced() != null)
 				|| (this.getIntroduced() != null && other.getIntroduced() == null)
-				|| !(this.getIntroduced().equals(other.getIntroduced()))) {
+				|| (this.getIntroduced() != null && !this.getIntroduced().equals(other.getIntroduced()))) {
 			return false;
 		}
 		if ((this.getDiscontinued() == null && other.getDiscontinued() != null)
 				|| (this.getDiscontinued() != null && other.getDiscontinued() == null)
-				|| !(this.getDiscontinued().equals(other.getDiscontinued()))) {
+				|| (this.getDiscontinued() != null && !this.getDiscontinued().equals(other.getDiscontinued()))) {
 			return false;
 		}
-		if ((this.getCompanyId() == null && other.getCompanyId() != null)
-				|| (this.getCompanyId() != null && other.getCompanyId() == null)
-				|| !(this.getCompanyId().equals(other.getCompanyId()))) {
-			return false;
-		}
-		if ((this.getCompanyName() == null && other.getCompanyName() != null)
-				|| (this.getCompanyName() != null && other.getCompanyName() == null)
-				|| !(this.getCompanyName().equals(other.getCompanyName()))) {
+		if((this.company == null && other.getCompany() != null)
+			|| (other.getCompany() == null && this.getCompany() != null)
+			|| (this.getCompany() != null && !this.getCompany().equals(other.getCompany()))) {
 			return false;
 		}
 		return true;
@@ -131,14 +115,13 @@ public class ComputerDto {
 		result = value * result + ((this.getName() == null) ? 0 : this.getName().hashCode());
 		result = value * result + ((this.getIntroduced() == null) ? 0 : this.getIntroduced().hashCode());
 		result = value * result + ((this.getDiscontinued() == null) ? 0 : this.getDiscontinued().hashCode());
-		result = value * result + ((this.getCompanyId() == null) ? 0 : this.getCompanyId().hashCode());
-		result = value * result + ((this.getCompanyName() == null) ? 0 : this.getCompanyName().hashCode());
+		result = value * result + ((this.getCompany() == null) ? 0 : this.getCompany().hashCode());
 		return result;
 	}
 
 	public String toString() {
 		String message = "index : " + this.id + " , name : " + this.name + " , introduced : " + this.introduced
-				+ " , discontinued : " + this.discontinued + " , " + this.companyId + " , " + this.companyName;
+				+ " , discontinued : " + this.discontinued + " , " + this.company;
 		return message;
 	}
 

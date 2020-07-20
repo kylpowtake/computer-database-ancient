@@ -22,6 +22,10 @@ public class Company {
 	private Company() {
 	}
 
+//	public Company(String plop) {
+//		id = Integer.parseInt(plop);
+//	}
+	
 	public static class CompanyBuilder {
 		private int id;
 		private String name;

@@ -15,6 +15,11 @@ public class CompanyDto {
 	public CompanyDto() {
 	}
 
+	public CompanyDto(String mot) {
+		id = mot;
+		name = "";
+	}
+	
 	public CompanyDto(String id, String name) {
 		this.id = id;
 		this.name = name;
@@ -67,4 +72,10 @@ public class CompanyDto {
 		return result;
 	}
 
+	@Override
+	public String toString() {
+		return "CompanyDto : " + id + " " + name;
+	}
+
+	
 }

@@ -32,8 +32,8 @@ public class ComputerDtoMapper {
 		if (Utility.stringIsSomething(computerDto.getDiscontinued())) {
 			builderComputer.discontinuedThe(LocalDate.parse(computerDto.getDiscontinued()));
 		}
-		if (computerDto.getCompanyId() != null) {
-			builderComputer.byCompany(CompanyDtoMapper.stringToCompany(computerDto.getCompanyId(), computerDto.getCompanyName()));
+		if (computerDto.getCompany() != null) {
+			builderComputer.byCompany(CompanyDtoMapper.companyDtoToCompany(computerDto.getCompany()));
 		}
 		computer = builderComputer.build();
 		return computer;
@@ -55,8 +55,7 @@ public class ComputerDtoMapper {
 			computerDto.setDiscontinued("" + computer.getDiscontinued());
 		}
 		if (computer.getCompany() != null) {
-			computerDto.setCompanyId("" + computer.getCompany().getId());
-			computerDto.setCompanyName("" + computer.getCompany().getName());
+			computerDto.setCompany(CompanyDtoMapper.companyToCompanyDto(computer.getCompany()));
 		}
 		return computerDto;
 	}

@@ -45,6 +45,7 @@
 						<fmt:message key="addComputer" />
 					</h1>
 					<form:form modelAttribute="computer">
+						<form:errors path="*" cssClass="error" />
 						<fieldset>
 							<div class="form-group">
 								<div class="form-group">
@@ -57,7 +58,7 @@
 									<label for="introduced"><fmt:message
 											key="introducedDate" /></label>
 									<form:input type="date" path="introduced" />
-									<form:errors path="*" cssClass="error" />
+									<form:errors path="introduced" cssClass="error" />
 								</div>
 								<div class="form-group">
 									<label for="discontinued"><fmt:message
@@ -68,11 +69,16 @@
 								</div>
 								<div class="form-group">
 									<label for="companyId"><fmt:message key="company" /></label>
-									<form:select path="companyId">
-										<form:option value="0" label="--Select if needed." />
+									<form:select path="company">
+										<form:option value="0" label="-Please Select-" />
 										<form:options items="${companiesList}" itemValue="id"
 											itemLabel="name" />
 									</form:select>
+									<%-- 									<form:select path="company">
+										<form:option value="0" label="--Select if needed." />
+										<form:options items="${companiesList}" itemValue="id"
+											itemLabel="name" />
+									</form:select> --%>
 								</div>
 							</div>
 						</fieldset>

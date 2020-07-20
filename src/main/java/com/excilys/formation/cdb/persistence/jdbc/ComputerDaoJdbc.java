@@ -152,9 +152,12 @@ public class ComputerDaoJdbc implements ComputerDao {
 		parameters.put("name", computer.getName());
 		parameters.put("introduced", computer.getIntroduced());
 		parameters.put("discontinued", computer.getDiscontinued());
-		parameters.put("companyId", computer.getCompany().getId());
+		if(computer.getCompany().getId() != 0) {
+			parameters.put("company_id", computer.getCompany().getId());
+		} else {
+		}
 		SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(connectionSQL.getDataSource())
-				.withTableName("COMPUTER").usingGeneratedKeyColumns("ID");
+				.withTableName("computer").usingGeneratedKeyColumns("id");
 		Number id = simpleJdbcInsert.executeAndReturnKey(parameters);
 		if (id == null) {
 			return Resultat.ECHOUE;
