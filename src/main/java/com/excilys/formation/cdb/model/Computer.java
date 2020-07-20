@@ -2,6 +2,12 @@ package com.excilys.formation.cdb.model;
 
 import java.time.LocalDate;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+
 import com.excilys.formation.cdb.logging.Logging;
 
 /**
@@ -10,14 +16,17 @@ import com.excilys.formation.cdb.logging.Logging;
  * @author kylian
  * @see Company
  */
+@Entity
 public class Computer {
 	/**
 	 * L'id du computer.
 	 */
+	@Id
 	private int id;
 	/**
 	 * Le nom du computer.
 	 */
+	@Column(nullable=true)
 	private String name;
 	/**
 	 * La date d'introduction du computer.
@@ -30,6 +39,8 @@ public class Computer {
 	/**
 	 * La company du computer.
 	 */
+	@OneToOne()
+	@JoinColumn(name="company_id", referencedColumnName="id")
 	private Company company;
 
 	/**

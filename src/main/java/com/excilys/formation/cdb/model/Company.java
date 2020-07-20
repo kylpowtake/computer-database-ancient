@@ -1,15 +1,20 @@
 package com.excilys.formation.cdb.model;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
 /**
  * Classe représentant une company avec ses différentes valeurs.
  * 
  * @author kylian
  *
  */
+@Entity
 public class Company {
 	/**
 	 * L'id de la company.
 	 */
+	@Id
 	private int id;
 	/**
 	 * Le nom de la company.
