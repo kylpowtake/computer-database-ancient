@@ -4,9 +4,12 @@ import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 import com.excilys.formation.cdb.logging.Logging;
 
@@ -16,30 +19,35 @@ import com.excilys.formation.cdb.logging.Logging;
  * @author kylian
  * @see Company
  */
-@Entity
+@Entity(name = "Computer")
+@Table(name = "computer")
 public class Computer {
 	/**
 	 * L'id du computer.
 	 */
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name="id")
 	private int id;
 	/**
 	 * Le nom du computer.
 	 */
-	@Column(nullable=true)
+	@Column(nullable=false, name="id")
 	private String name;
 	/**
 	 * La date d'introduction du computer.
 	 */
+	@Column(name="introduced")
 	private LocalDate introduced;
 	/**
 	 * La date d'arrêt du computer.
 	 */
+	@Column(name="discontinued")
 	private LocalDate discontinued;
 	/**
 	 * La company du computer.
 	 */
-	@OneToOne()
+	@ManyToOne
 	@JoinColumn(name="company_id", referencedColumnName="id")
 	private Company company;
 

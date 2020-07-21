@@ -2,7 +2,9 @@ package com.excilys.formation.cdb.persistence;
 
 import java.util.List;
 
-import com.excilys.formation.cdb.Pageable.Page;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import com.excilys.formation.cdb.enumeration.Resultat;
 import com.excilys.formation.cdb.model.Computer;
 
@@ -33,6 +35,7 @@ public interface ComputerDao {
 
 	static final String REQUETECREATE = "INSERT INTO computer (name, introduced, discontinued, company_id) VALUES (:name, :introduced, :discontinued, :companyId);";
 
+	
 	public int nombre();
 
 	public boolean findcomputerById(int computerId) throws Exception;

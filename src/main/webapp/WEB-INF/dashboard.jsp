@@ -51,7 +51,7 @@
 					</form>
 				</div>
 				<div class="pull-right">
-					<a class="btn btn-success" id="addComputer" href="addComputer"><fmt:message
+					<a class="btn btn-success" id="addcomputer" href="addcomputer"><fmt:message
 							key="addComputer" /></a> <a class="btn btn-default"
 						id="editComputer" href="#" onclick="$.fn.toggleEditMode();"><fmt:message
 							key="edit" /></a>

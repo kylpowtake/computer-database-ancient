@@ -16,7 +16,7 @@ import com.excilys.formation.cdb.service.ComputerService;
 public class ComputerServiceImpl implements ComputerService{
 	
 	@Autowired
-	public ComputerServiceImpl(@Qualifier(value = "computerDaoJdbc") ComputerDaoJdbc computerDAO){
+	public ComputerServiceImpl(@Qualifier(value = "computerDaoHibernate") ComputerDao computerDAO){
 		this.computerDAO = computerDAO;
 		
 	}

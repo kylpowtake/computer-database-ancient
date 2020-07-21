@@ -134,6 +134,7 @@ public class dashBoardController {
 		try {
 			page.setNombreComputers(computerService.nombre());
 			List<Computer> listComputers = null;
+			logger.debug("plop bizarre ?");
 			if ("".equals(page.getNomRecherche())) {
 				try {
 					listComputers = computerService.some(page.getOrderBy());

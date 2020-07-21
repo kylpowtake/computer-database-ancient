@@ -7,7 +7,7 @@
 
 	<groupId>com.excilys.formation.cdb</groupId>
 	<artifactId>computer-database-master</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<packaging>war</packaging>
 
 	<name>computer-database-master Maven Webapp</name>
@@ -16,19 +16,19 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-
+		<querydsl.version>4.2.2</querydsl.version>
 		<org.springframework.version>5.2.6.RELEASE</org.springframework.version>
+		<hibernate.version>5.4.18.Final</hibernate.version>
+		<selenium.version>3.141.59</selenium.version>
+		<javaee-api.version>6.0</javaee-api.version>
 	</properties>
 
 	<dependencies>
 
 		<!-- Maven -->
 		<!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-site-plugin -->
-		<dependency>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-site-plugin</artifactId>
-			<version>3.9.1</version>
-		</dependency>
+		<!-- <dependency> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-site-plugin</artifactId> 
+			<version>3.9.1</version> </dependency> -->
 
 		<!-- Spring -->
 		<!-- https://mvnrepository.com/artifact/org.springframework/spring-core -->
@@ -49,13 +49,20 @@
 			<artifactId>spring-web</artifactId>
 			<version>${org.springframework.version}</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-orm -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<version>${org.springframework.version}</version>
+		</dependency>
+
 
 
 		<!-- WEB -->
 		<dependency>
 			<groupId>javax</groupId>
 			<artifactId>javaee-api</artifactId>
-			<version>6.0</version>
+			<version>${javaee-api.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
@@ -187,49 +194,48 @@
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-java</artifactId>
-			<version>3.141.59</version>
+			<version>${selenium.version}</version>
 			<scope>test</scope>
 		</dependency>
 
+
+
 		<!-- Validator -->
 		<!-- https://mvnrepository.com/artifact/org.hibernate.validator/hibernate-validator -->
-		<dependency>
-			<groupId>org.hibernate.validator</groupId>
-			<artifactId>hibernate-validator</artifactId>
-			<version>6.1.0.Final</version>
-		</dependency>
+		<!-- <dependency> <groupId>org.hibernate.validator</groupId> <artifactId>hibernate-validator</artifactId> 
+			<version>6.1.0.Final</version> </dependency> -->
 
-		<!-- persistence -->
+
+
+
+		<!-- hibernate -->
+		<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-annotations -->
+<!-- 		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-annotations</artifactId>
+			<version>3.5.6-Final</version>
+		</dependency> -->
+
 		<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>5.4.18.Final</version>
+			<version>${hibernate.version}</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-annotations -->
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-annotations</artifactId>
-			<version>3.5.6-Final</version>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/com.querydsl/querydsl-apt -->
+		<!-- queryDSL -->
 		<dependency>
 			<groupId>com.querydsl</groupId>
 			<artifactId>querydsl-apt</artifactId>
-			<version>4.3.1</version>
+			<version>${querydsl.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/com.querydsl/querydsl-jpa -->
-<!-- 		<dependency>
+		<dependency>
 			<groupId>com.querydsl</groupId>
 			<artifactId>querydsl-jpa</artifactId>
-			<version>4.1.3</version>
-		</dependency> -->
-		<!-- https://mvnrepository.com/artifact/com.mysema.querydsl/querydsl-hql -->
-		<!-- <dependency> <groupId>com.mysema.querydsl</groupId> <artifactId>querydsl-hql</artifactId> 
-			<version>1.9.7</version> </dependency> -->
+			<version>${querydsl.version}</version>
+		</dependency>
 
 	</dependencies>
 
@@ -241,15 +247,15 @@
 			<plugin>
 				<groupId>com.mysema.maven</groupId>
 				<artifactId>apt-maven-plugin</artifactId>
-				<version>1.1.2</version>
+				<version>1.1.3</version>
 				<executions>
 					<execution>
 						<goals>
 							<goal>process</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>target/generated-sources/java</outputDirectory>
-							<processor>com.querydsl.apt.hibernate.HibernateAnnotationProcessor</processor>
+							<outputDirectory>target/generated-sources</outputDirectory>
+							<processor>com.querydsl.apt.jpa.JPAAnnotationProcessor</processor>
 						</configuration>
 					</execution>
 				</executions>

@@ -1,7 +1,11 @@
 package com.excilys.formation.cdb.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  * Classe représentant une company avec ses différentes valeurs.
@@ -9,16 +13,20 @@ import javax.persistence.Id;
  * @author kylian
  *
  */
-@Entity
+@Entity(name = "Company")
+@Table(name = "company")
 public class Company {
 	/**
 	 * L'id de la company.
 	 */
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "name")
 	private int id;
 	/**
 	 * Le nom de la company.
 	 */
+	@Column(name = "name")
 	private String name;
 
 	/**
@@ -27,10 +35,11 @@ public class Company {
 	private Company() {
 	}
 
-//	public Company(String plop) {
-//		id = Integer.parseInt(plop);
-//	}
-	
+	private Company(Company company) {
+		this.id = company.getId();
+		this.name = company.getName();
+	}
+
 	public static class CompanyBuilder {
 		private int id;
 		private String name;
@@ -88,7 +97,8 @@ public class Company {
 		if (this.id != other.getId()) {
 			return false;
 		}
-		if ((this.name == null && other.getName() != null) || (this.name != null && !this.name.equals(other.getName()))) {
+		if ((this.name == null && other.getName() != null)
+				|| (this.name != null && !this.name.equals(other.getName()))) {
 			return false;
 		}
 		return true;

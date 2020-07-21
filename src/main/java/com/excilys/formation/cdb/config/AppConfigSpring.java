@@ -7,6 +7,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.JpaVendorAdapter;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -23,6 +29,7 @@ import com.excilys.formation.cdb.datasource.ConnectionSQL;
 
 @EnableWebMvc
 @Configuration
+@EnableTransactionManagement
 @ComponentScan(basePackages = { "com.excilys.formation.cdb.persistence", "com.excilys.formation.cdb.service",
 		"com.excilys.formation.cdb.servlets", "com.excilys.formation.cdb.validation", "com.excilys.formation.cdb.controllers" })
 public class AppConfigSpring implements WebMvcConfigurer{
@@ -68,4 +75,23 @@ public class AppConfigSpring implements WebMvcConfigurer{
 	    localeChangeInterceptor.setParamName("lang");
 	    registry.addInterceptor(localeChangeInterceptor);
 	}
+	
+	 @Bean
+	 public PlatformTransactionManager transactionManager() {
+	     JpaTransactionManager transactionManager = new JpaTransactionManager();
+	     transactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
+	  
+	     return transactionManager;
+	 }
+	 @Bean
+	   public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+	      LocalContainerEntityManagerFactoryBean entityManagerFactoryBean
+	        = new LocalContainerEntityManagerFactoryBean();
+	      entityManagerFactoryBean.setDataSource(TheConnection().getDataSource());
+	      entityManagerFactoryBean.setPackagesToScan(new String[]{ "com.excilys.formation.cdb.models" });
+
+	      JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+	      entityManagerFactoryBean.setJpaVendorAdapter(vendorAdapter);
+	      return entityManagerFactoryBean;
+	   }
 }

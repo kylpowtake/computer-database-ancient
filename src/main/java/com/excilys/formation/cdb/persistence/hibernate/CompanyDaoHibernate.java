@@ -2,95 +2,78 @@ package com.excilys.formation.cdb.persistence.hibernate;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.hibernate.Session;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Repository;
 
-//import com.excilys.formation.cdb.config.SessionFactoryProvider;
+import com.excilys.formation.cdb.config.EntityManagerProvider;
+import com.excilys.formation.cdb.config.HibernateUtil;
+import com.excilys.formation.cdb.enumeration.ComputerOrderBy;
 import com.excilys.formation.cdb.enumeration.Resultat;
-import com.excilys.formation.cdb.model.Computer;
-import com.excilys.formation.cdb.persistence.ComputerDao;
+import com.excilys.formation.cdb.logging.Logging;
+import com.excilys.formation.cdb.model.Company;
+import com.excilys.formation.cdb.model.QCompany;
+import com.excilys.formation.cdb.model.QComputer;
+import com.excilys.formation.cdb.persistence.CompanyDao;
+import com.querydsl.jpa.hibernate.HibernateDeleteClause;
+import com.querydsl.jpa.impl.JPAQuery;
 
-public class CompanyDaoHibernate implements ComputerDao{
+@Repository
+public class CompanyDaoHibernate implements CompanyDao{
+	private static Logger logger = Logging.getLogger();
+
+	@PersistenceContext
+	EntityManager entityManager;
 
 	@Override
-	public int nombre() {
-		return 0;
+	public List<Company> all(String pOrderBy) {
+		logger.debug("Start of all.");
+		QCompany company = QCompany.company;
+		JPAQuery<Company> query = new JPAQuery<Company>(EntityManagerProvider.getEntityManager());
+		return query.from(company)
+				.orderBy(ComputerOrderBy.getOrder(pOrderBy))
+				.fetch();
 	}
 
 	@Override
-	public boolean findcomputerById(int computerId) throws Exception {
-		// TODO Auto-generated method stub
-		return false;
+	public List<Company> allSearch(String motRecherche, String pOrderBy) {
+		logger.debug("Start of allSearch.");
+		QCompany company = QCompany.company;
+		JPAQuery<Company> query = new JPAQuery<Company>(EntityManagerProvider.getEntityManager());
+		return query.from(company)
+				.where(company.name.contains(motRecherche))
+				.orderBy(ComputerOrderBy.getOrder(pOrderBy))
+				.fetch();
 	}
 
 	@Override
-	public int faireRequeteSansResultat(String requete) {
-		// TODO Auto-generated method stub
-		return 0;
+	public Company find(int companyId) throws Exception {
+		logger.debug("Start of find.");
+		QCompany company = QCompany.company;
+		JPAQuery<Company> query = new JPAQuery<Company>(EntityManagerProvider.getEntityManager());
+		List<Company> companyList = query.from(company).where(company.id.eq(companyId)).fetch();
+		if(companyList.size() != 1) {
+			return null;
+		} else {
+			return companyList.get(0);
+		}
 	}
 
 	@Override
-	public List<Computer> some(String pOrderBy) throws Exception {
-		
-//		Session session = SessionFactoryProvider.getSessionFactory().openSession();
-//		HibernateQuery query = new HibernateQuery(session);
-//		QComputer c = Qcomputer.
-//		QComputer c = QComputer.
-//		QComputer c = QComputer.
-		return null;
+	public Resultat delete(int id) {
+		logger.debug("Start of delete.");
+		Session session = HibernateUtil.getSession();
+		session.beginTransaction();
+		QComputer computer = QComputer.computer;
+		QCompany company = QCompany.company;
+		new HibernateDeleteClause(session, computer).where(computer.company.id.eq(id)).execute();
+		if(new HibernateDeleteClause(session, company).where(company.id.eq(id)).execute() == 1) {
+			return Resultat.REUSSI;
+		} else {
+			return Resultat.ECHOUE;
+		}
 	}
-
-	@Override
-	public List<Computer> someSearch(String motRecherche, String pOrderBy) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Computer> all() throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Resultat verificationFonctionnementRequêteNonSelectUnique(int nombreLignes) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Resultat create(Computer computer) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Resultat modify(Computer computerObject) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Resultat delete(int computerId) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Computer find(int computerId) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Computer> all(String pOrderBy) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Computer> allSearch(String orderby, String search) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

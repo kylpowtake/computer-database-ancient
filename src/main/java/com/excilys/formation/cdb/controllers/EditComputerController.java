@@ -27,7 +27,7 @@ public class EditComputerController {
 	private CompanyService companyService;
 	private static Logger logger = Logging.getLogger();
 	
-	@RequestMapping(value = "/addComputer", method = RequestMethod.GET)
+	@RequestMapping(value = "/editComputer", method = RequestMethod.GET)
 	public ModelAndView editComputer(HttpServletRequest request, HttpServletResponse response, @ModelAttribute("computerId") int computerId) {
 		ModelAndView mv = new ModelAndView("editComputer");
 		mv.setViewName("editComputer");
@@ -43,7 +43,7 @@ public class EditComputerController {
 		return mv;
 	}
 	
-	@RequestMapping(value = "/addComputer", method = RequestMethod.POST)
+	@RequestMapping(value = "/editComputer", method = RequestMethod.POST)
 	public ModelAndView editComputer(HttpServletRequest request, HttpServletResponse response,
 			@ModelAttribute("computer") ComputerDto computerDto, BindingResult result) {
 		ModelAndView mv = new ModelAndView("editComputer");

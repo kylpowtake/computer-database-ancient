@@ -15,7 +15,7 @@ import com.excilys.formation.cdb.service.CompanyService;
 public class CompanyServiceImpl implements CompanyService {
 
 	@Autowired
-	public CompanyServiceImpl(@Qualifier(value = "companyDaoJdbc") CompanyDao companyDAO) {
+	public CompanyServiceImpl(@Qualifier(value = "companyDaoHibernate") CompanyDao companyDAO) {
 		this.companyDAO = companyDAO;
 	}
 
