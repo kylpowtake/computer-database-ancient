@@ -30,6 +30,7 @@
 		<mockito.core.version>3.3.3</mockito.core.version>
 		<dbunit.version>2.7.0</dbunit.version>
 		<apt.maven.plugin.version>1.1.3</apt.maven.plugin.version>
+		<spring.security.version>5.3.3.RELEASE</spring.security.version>
 	</properties>
 
 	<!-- core persistence service binding webapp console -->
