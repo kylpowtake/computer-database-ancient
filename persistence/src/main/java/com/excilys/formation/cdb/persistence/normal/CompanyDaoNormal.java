@@ -12,11 +12,11 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.excilys.formation.cdb.datasource.ConnectionSQL;
-import com.excilys.formation.cdb.enumeration.Resultat;
-import com.excilys.formation.cdb.logging.Logging;
-import com.excilys.formation.cdb.mapper.MapperCompany;
-import com.excilys.formation.cdb.model.Company;
+import com.excilys.formation.cdb.persistence.datasource.ConnectionSQL;
+import com.excilys.formation.cdb.core.enumeration.Resultat;
+import com.excilys.formation.cdb.core.logging.Logging;
+import com.excilys.formation.cdb.binding.mapper.MapperCompany;
+import com.excilys.formation.cdb.core.model.Company;
 import com.excilys.formation.cdb.persistence.CompanyDao;
 
 @Repository

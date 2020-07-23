@@ -1,8 +1,8 @@
-package com.excilys.formation.cdb.DTO.Mappers;
+package com.excilys.formation.cdb.service.DTO.Mappers;
 
-import com.excilys.formation.cdb.DTO.CompanyDto;
-import com.excilys.formation.cdb.model.Company;
-import com.excilys.formation.cdb.model.Company.CompanyBuilder;
+import com.excilys.formation.cdb.service.DTO.CompanyDto;
+import com.excilys.formation.cdb.core.model.Company;
+import com.excilys.formation.cdb.core.model.Company.CompanyBuilder;
 
 public class CompanyDtoMapper {
 	private CompanyDtoMapper() {

@@ -13,13 +13,12 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.excilys.formation.cdb.Pageable.Page;
-import com.excilys.formation.cdb.datasource.ConnectionSQL;
-import com.excilys.formation.cdb.enumeration.Resultat;
-import com.excilys.formation.cdb.exception.ParametresException;
-import com.excilys.formation.cdb.logging.Logging;
-import com.excilys.formation.cdb.mapper.MapperComputer;
-import com.excilys.formation.cdb.model.Computer;
+import com.excilys.formation.cdb.core.Pageable.Page;
+import com.excilys.formation.cdb.persistence.datasource.ConnectionSQL;
+import com.excilys.formation.cdb.core.enumeration.Resultat;
+import com.excilys.formation.cdb.core.logging.Logging;
+import com.excilys.formation.cdb.binding.mapper.MapperComputer;
+import com.excilys.formation.cdb.core.model.Computer;
 import com.excilys.formation.cdb.persistence.ComputerDao;
 
 /**
@@ -31,7 +30,7 @@ import com.excilys.formation.cdb.persistence.ComputerDao;
  *
  */
 @Repository
-public class ComputerDaoNormal implements ComputerDao{
+public class ComputerDaoNormal implements ComputerDao {
 	/**
 	 * Constructeur de la classe, en privé pour le singleton.
 	 */
@@ -39,13 +38,13 @@ public class ComputerDaoNormal implements ComputerDao{
 	public ComputerDaoNormal(ConnectionSQL connectionSQL) {
 		this.connectionSQL = connectionSQL;
 	}
-	
+
 	ConnectionSQL connectionSQL;
 
 	public ConnectionSQL getConnection() {
 		return connectionSQL;
 	}
-	
+
 	public void setConnection(ConnectionSQL connectionSQL) {
 		this.connectionSQL = connectionSQL;
 	}
@@ -215,7 +214,7 @@ public class ComputerDaoNormal implements ComputerDao{
 	 *                         requêtes.
 	 * @see Page
 	 */
-	public List<Computer> some(String pOrderBy) throws Exception {
+	public List<Computer> some(String pOrderBy) {
 		logger.debug("Start of some of Computer");
 		Page page = Page.getPage();
 		String orderBy = ComputerDao.modificationOrderBy(pOrderBy);
@@ -223,18 +222,17 @@ public class ComputerDaoNormal implements ComputerDao{
 		page.setPeutAllerAncienneEtNouvellePage(nombreComputers);
 		List<Computer> listComputers = null;
 		// Requête pour obtenir les computers de la page actuelle.
-		Connection connection = connectionSQL.getConnection();
-		Statement statement = connection.createStatement();
-		ResultSet resultSet = statement.executeQuery(REQUETENOMBRECOMPUTERSDEPUIS + " ORDER BY " + orderBy + " LIMIT "
-				+ page.getNombreParPage() + " OFFSET " + (page.getNumeroPage()) * page.getNombreParPage() + ";");
-		try {
+		try (Connection connection = connectionSQL.getConnection();
+				Statement statement = connection.createStatement();) {
+			ResultSet resultSet = statement.executeQuery(
+					REQUETENOMBRECOMPUTERSDEPUIS + " ORDER BY " + orderBy + " LIMIT " + page.getNombreParPage()
+							+ " OFFSET " + (page.getNumeroPage()) * page.getNombreParPage() + ";");
 			listComputers = MapperComputer.mapResultSetToListComputer(resultSet);
-		} catch (Exception e) {
-			throw new Exception(e.getLocalizedMessage() + " listerComputerPage");
-		} finally {
-			statement.close();
-			connection.close();
-			resultSet.close();
+		} catch (SQLException e) {
+			logger.debug("Erreur SQL : " + e.getLocalizedMessage());
+			listComputers = null;
+		} catch (IllegalArgumentException e) {
+
 		}
 		logger.debug("End of some of Computer");
 		return listComputers;
@@ -250,7 +248,7 @@ public class ComputerDaoNormal implements ComputerDao{
 	 *                         requêtes.
 	 * @see Page
 	 */
-	public List<Computer> someSearch(String motRecherche, String pOrderBy) throws Exception {
+	public List<Computer> someSearch(String motRecherche, String pOrderBy) {
 //		String message = "";
 		Page page = Page.getPage();
 		String orderBy = ComputerDao.modificationOrderBy(pOrderBy);
@@ -258,19 +256,17 @@ public class ComputerDaoNormal implements ComputerDao{
 		page.setPeutAllerAncienneEtNouvellePage(nombreComputers);
 		List<Computer> listComputers = null;
 		// Requête pour obtenir les computers de la page actuelle.
-		Connection connection = connectionSQL.getConnection();
-		Statement statement = connection.createStatement();
-		ResultSet resultSet = statement.executeQuery(REQUETENOMBRECOMPUTERSDEPUIS + "WHERE ((computer.name LIKE '%"
-				+ motRecherche + "%') OR (company.name LIKE '%" + motRecherche + "%')) ORDER BY " + orderBy + " LIMIT "
-				+ page.getNombreParPage() + " OFFSET " + (page.getNumeroPage()) * page.getNombreParPage() + ";");
-		try {
+
+		try (Connection connection = connectionSQL.getConnection();
+				Statement statement = connection.createStatement();) {
+			ResultSet resultSet = statement.executeQuery(REQUETENOMBRECOMPUTERSDEPUIS + "WHERE ((computer.name LIKE '%"
+					+ motRecherche + "%') OR (company.name LIKE '%" + motRecherche + "%')) ORDER BY " + orderBy
+					+ " LIMIT " + page.getNombreParPage() + " OFFSET "
+					+ (page.getNumeroPage()) * page.getNombreParPage() + ";");
 			listComputers = MapperComputer.mapResultSetToListComputer(resultSet);
-		} catch (Exception e) {
-			throw new Exception(e.getLocalizedMessage() + " listerComputerPageRecherche");
-		} finally {
-			resultSet.close();
-			statement.close();
-			connection.close();
+		} catch (SQLException e) {
+			logger.error("Erreur SQL : " + e.getLocalizedMessage());
+			return null;
 		}
 //		message = listComputers.toString();
 		return listComputers;
@@ -286,17 +282,14 @@ public class ComputerDaoNormal implements ComputerDao{
 	 */
 	public List<Computer> all() throws Exception {
 		List<Computer> listeComputers = null;
-		Connection connection = connectionSQL.getConnection();
-		Statement statement = connection.createStatement();
-		ResultSet resultSet = statement.executeQuery(REQUETELISTECOMPLETECOMPUTERS);
-		try {
+
+		try (Connection connection = connectionSQL.getConnection();
+				Statement statement = connection.createStatement();) {
+			ResultSet resultSet = statement.executeQuery(REQUETELISTECOMPLETECOMPUTERS);
 			listeComputers = MapperComputer.mapResultSetToListComputer(resultSet);
-		} catch (ParametresException e) {
-			throw new Exception(e.getLocalizedMessage() + " listerComputers");
-		} finally {
-			resultSet.close();
-			statement.close();
-			connection.close();
+		} catch (SQLException e) {
+			logger.error("Erreur SQL : " + e.getLocalizedMessage());
+			return null;
 		}
 		return listeComputers;
 	}
@@ -465,15 +458,7 @@ public class ComputerDaoNormal implements ComputerDao{
 		Connection connection = connectionSQL.getConnection();
 		Statement statement = connection.createStatement();
 		ResultSet resultSet = statement.executeQuery(REQUETEFINDCOMPUTERBYID + computerId + ";");
-		try {
-			listeComputers = MapperComputer.mapResultSetToListComputer(resultSet);
-		} catch (ParametresException e) {
-			throw new Exception(e.getLocalizedMessage() + " computerDetails");
-		} finally {
-			resultSet.close();
-			statement.close();
-			connection.close();
-		}
+		listeComputers = MapperComputer.mapResultSetToListComputer(resultSet);
 		if (listeComputers.get(0) != null) {
 			return listeComputers.get(0);
 		}
@@ -485,21 +470,13 @@ public class ComputerDaoNormal implements ComputerDao{
 		List<Computer> listeComputers = null;
 		Connection connection = connectionSQL.getConnection();
 		PreparedStatement preparedStatement = connection.prepareStatement(REQUETELISTECOMPLETECOMPUTERS);
-		Statement statement = connection.createStatement();
-		try {
-			preparedStatement.setString(1, orderBy);
-			ResultSet resultSet = preparedStatement.executeQuery();
-			listeComputers = MapperComputer.mapResultSetToListComputer(resultSet);
-			resultSet.close();
-		} catch (ParametresException e) {
-			throw new Exception(e.getLocalizedMessage() + " listerComputers");
-		} finally {
-			statement.close();
-			connection.close();
-		}
+		preparedStatement.setString(1, orderBy);
+		ResultSet resultSet = preparedStatement.executeQuery();
+		listeComputers = MapperComputer.mapResultSetToListComputer(resultSet);
+		resultSet.close();
 		return listeComputers;
 	}
-	
+
 	public List<Computer> allSearch(String orderby, String search) throws Exception {
 		// TODO Auto-generated method stub
 		return null;

@@ -6,10 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.excilys.formation.cdb.enumeration.Resultat;
-import com.excilys.formation.cdb.model.Computer;
+import com.excilys.formation.cdb.core.enumeration.Resultat;
+import com.excilys.formation.cdb.core.model.Computer;
 import com.excilys.formation.cdb.persistence.ComputerDao;
-import com.excilys.formation.cdb.persistence.jdbc.ComputerDaoJdbc;
 import com.excilys.formation.cdb.service.ComputerService;
 
 @Service

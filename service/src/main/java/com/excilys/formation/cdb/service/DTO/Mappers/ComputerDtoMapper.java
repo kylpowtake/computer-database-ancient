@@ -1,10 +1,10 @@
-package com.excilys.formation.cdb.DTO.Mappers;
+package com.excilys.formation.cdb.service.DTO.Mappers;
 
 import java.time.LocalDate;
 
-import com.excilys.formation.cdb.DTO.ComputerDto;
-import com.excilys.formation.cdb.model.Computer;
-import com.excilys.formation.cdb.model.Computer.ComputerBuilder;
+import com.excilys.formation.cdb.service.DTO.ComputerDto;
+import com.excilys.formation.cdb.core.model.Computer;
+import com.excilys.formation.cdb.core.model.Computer.ComputerBuilder;
 import com.excilys.formation.cdb.service.Utility;
 
 public class ComputerDtoMapper {

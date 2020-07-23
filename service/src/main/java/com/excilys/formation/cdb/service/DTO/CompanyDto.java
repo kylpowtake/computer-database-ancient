@@ -1,4 +1,4 @@
-package com.excilys.formation.cdb.DTO;
+package com.excilys.formation.cdb.service.DTO;
 
 /**
  * Classe représentant une company avec ses différentes valeurs.

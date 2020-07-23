@@ -1,6 +1,6 @@
-package com.excilys.formation.cdb.DTO;
+package com.excilys.formation.cdb.service.DTO;
 
-import com.excilys.formation.cdb.model.Company;
+import com.excilys.formation.cdb.core.model.Company;
 
 /**
  * Classe représentant un computer avec ses différentes valeurs.

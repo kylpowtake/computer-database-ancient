@@ -7,25 +7,21 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TransactionRequiredException;
 import javax.transaction.Transactional;
 
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Repository;
 
-import com.excilys.formation.cdb.Pageable.Page;
+import com.excilys.formation.cdb.core.Pageable.Page;
 //import com.excilys.formation.cdb.config.EntityManagerProvider;
 //import com.excilys.formation.cdb.config.HibernateUtil;
-import com.excilys.formation.cdb.enumeration.ComputerOrderBy;
+import com.excilys.formation.cdb.core.enumeration.ComputerOrderBy;
 //import com.excilys.formation.cdb.config.SessionFactoryProvider;
-import com.excilys.formation.cdb.enumeration.Resultat;
-import com.excilys.formation.cdb.logging.Logging;
-import com.excilys.formation.cdb.model.Computer;
-import com.excilys.formation.cdb.model.QCompany;
-import com.excilys.formation.cdb.model.QComputer;
-//import com.excilys.formation.cdb.model.QComputer;
+import com.excilys.formation.cdb.core.enumeration.Resultat;
+import com.excilys.formation.cdb.core.logging.Logging;
+import com.excilys.formation.cdb.core.model.Computer;
+import com.excilys.formation.cdb.core.model.QCompany;
+import com.excilys.formation.cdb.core.model.QComputer;
 import com.excilys.formation.cdb.persistence.ComputerDao;
-import com.querydsl.jpa.hibernate.HibernateDeleteClause;
-import com.querydsl.jpa.hibernate.HibernateUpdateClause;
+
 import com.querydsl.jpa.impl.JPAQuery;
 
 @Repository
@@ -60,7 +56,7 @@ public class ComputerDaoHibernate implements ComputerDao {
 	}
 
 	@Override
-	public List<Computer> some(String pOrderBy) throws Exception {
+	public List<Computer> some(String pOrderBy) {
 		logger.debug("Start of some.");
 		Page page = Page.getPage();
 		int nombreComputers = nombre();
@@ -73,11 +69,12 @@ public class ComputerDaoHibernate implements ComputerDao {
 		computerList = query.from(qComputer).leftJoin(qCompany).on(qComputer.company.id.eq(qCompany.id))
 				.orderBy(ComputerOrderBy.getOrder(pOrderBy + " " + Page.getPage().getOrder().getValue()))
 				.limit(page.getNombreParPage()).offset(indice).fetch();
+		logger.debug("End of some.");
 		return computerList;
 	}
 
 	@Override
-	public List<Computer> someSearch(String motRecherche, String pOrderBy) throws Exception {
+	public List<Computer> someSearch(String motRecherche, String pOrderBy){
 		logger.debug("Start of someSearch.");
 		Page page = Page.getPage();
 		int nombreComputers = nombre();

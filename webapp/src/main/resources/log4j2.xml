@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration status="debug" strict="true"
+	name="XMLConfigTest" xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+	<Appenders>
+		<Appender name="Console" type="Console">
+			<PatternLayout
+				pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+		</Appender>
+		<Appender name="FileFile" type="File" filename="report.log">
+			<layout class="org.apache.log4j.SimpleLayout" />
+		</Appender>
+	</Appenders>
+	<Loggers>
+		<Root level="trace">
+			<Appender-Ref ref="Console" />
+		</Root>
+		<Logger name="com.excilys.formation.cdb" level="trace">
+			<Appender-Ref ref="FileFile" />
+		</Logger>
+<!-- 		<Logger name="org.springframework.beans.factory" level="DEBUG" />
+		<Root level="error">
+			<AppenderRef ref="Console" />
+		</Root> -->
+	</Loggers>
+</log4j:configuration>

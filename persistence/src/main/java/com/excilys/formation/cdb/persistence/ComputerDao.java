@@ -2,11 +2,8 @@ package com.excilys.formation.cdb.persistence;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
-import com.excilys.formation.cdb.enumeration.Resultat;
-import com.excilys.formation.cdb.model.Computer;
+import com.excilys.formation.cdb.core.enumeration.Resultat;
+import com.excilys.formation.cdb.core.model.Computer;
 
 public interface ComputerDao {
 
@@ -42,9 +39,9 @@ public interface ComputerDao {
 
 	public int faireRequeteSansResultat(String requete);
 
-	public List<Computer> some(String pOrderBy) throws Exception;
+	public List<Computer> some(String pOrderBy);
 
-	public List<Computer> someSearch(String motRecherche, String pOrderBy) throws Exception;
+	public List<Computer> someSearch(String motRecherche, String pOrderBy);
 
 	public List<Computer> all() throws Exception;
 

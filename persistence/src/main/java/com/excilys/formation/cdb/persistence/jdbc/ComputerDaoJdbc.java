@@ -12,11 +12,11 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import com.excilys.formation.cdb.Pageable.Page;
-import com.excilys.formation.cdb.datasource.ConnectionSQL;
-import com.excilys.formation.cdb.enumeration.Resultat;
-import com.excilys.formation.cdb.logging.Logging;
-import com.excilys.formation.cdb.model.Computer;
+import com.excilys.formation.cdb.core.Pageable.Page;
+import com.excilys.formation.cdb.persistence.datasource.ConnectionSQL;
+import com.excilys.formation.cdb.core.enumeration.Resultat;
+import com.excilys.formation.cdb.core.logging.Logging;
+import com.excilys.formation.cdb.core.model.Computer;
 import com.excilys.formation.cdb.persistence.ComputerDao;
 import com.excilys.formation.cdb.persistence.jdbc.row.mapper.ComputerRowMapper;
 
@@ -85,7 +85,7 @@ public class ComputerDaoJdbc implements ComputerDao {
 //	}
 
 	@Override
-	public List<Computer> some(String orderBy) throws Exception {
+	public List<Computer> some(String orderBy){
 		Page page = Page.getPage();
 		String requete = "";
 		if(orderBy.equals("company.name")) {
@@ -105,7 +105,7 @@ public class ComputerDaoJdbc implements ComputerDao {
 	}
 
 	@Override
-	public List<Computer> someSearch(String motRecherche, String orderBy) throws Exception {
+	public List<Computer> someSearch(String motRecherche, String orderBy){
 		Page page = Page.getPage();
 		int nombreComputers = nombre();
 		page.setPeutAllerAncienneEtNouvellePage(nombreComputers);

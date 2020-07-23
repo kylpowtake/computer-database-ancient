@@ -3,9 +3,9 @@ package com.excilys.formation.cdb.persistence;
 import java.util.List;
 
 
-import com.excilys.formation.cdb.enumeration.Resultat;
+import com.excilys.formation.cdb.core.enumeration.Resultat;
 
-import com.excilys.formation.cdb.model.Company;
+import com.excilys.formation.cdb.core.model.Company;
 
 /**
  * Classe comprenant les méthodes pour faire des requêtes à la base de données à

@@ -5,8 +5,8 @@ import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
 
-import com.excilys.formation.cdb.mapper.MapperComputer;
-import com.excilys.formation.cdb.model.Computer;
+import com.excilys.formation.cdb.binding.mapper.MapperComputer;
+import com.excilys.formation.cdb.core.model.Computer;
 
 public class ComputerRowMapper implements RowMapper<Computer> {
 

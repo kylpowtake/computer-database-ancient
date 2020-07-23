@@ -11,17 +11,16 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
-import com.excilys.formation.cdb.datasource.ConnectionSQL;
-//import com.excilys.formation.cdb.config.EntityManagerProvider;
-//import com.excilys.formation.cdb.config.HibernateUtil;
-import com.excilys.formation.cdb.enumeration.ComputerOrderBy;
-import com.excilys.formation.cdb.enumeration.Resultat;
-import com.excilys.formation.cdb.logging.Logging;
-import com.excilys.formation.cdb.model.Company;
-import com.excilys.formation.cdb.model.QCompany;
+import com.excilys.formation.cdb.persistence.datasource.ConnectionSQL;
+
+import com.excilys.formation.cdb.core.enumeration.ComputerOrderBy;
+import com.excilys.formation.cdb.core.enumeration.Resultat;
+import com.excilys.formation.cdb.core.logging.Logging;
+import com.excilys.formation.cdb.core.model.Company;
+import com.excilys.formation.cdb.core.model.QCompany;
 import com.excilys.formation.cdb.persistence.CompanyDao;
 import com.querydsl.jpa.impl.JPAQuery;
-//EntityManagerProvider.getEntityManager()
+
 @Repository
 public class CompanyDaoHibernate implements CompanyDao{
 	private static Logger logger = Logging.getLogger();

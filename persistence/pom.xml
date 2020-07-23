@@ -5,23 +5,87 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
+
 	<parent>
 		<groupId>com.excilys.formation.cdb</groupId>
 		<artifactId>computer-database-master</artifactId>
 		<version>1.1.0</version>
 	</parent>
-	
+
+
 	<artifactId>computer-database-master-persistence</artifactId>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<name>computer-database-master Maven persistence</name>
-	
-	<!--
-	persistence : 
-	querDSL
-	springFramework.jdbc.core
-	logger
-	glassfixh (javax.persistence)
-	spring context (stereotype)
-	-->
-	
+
+
+	<dependencies>
+		<!-- Modules -->
+		<dependency>
+			<groupId>com.excilys.formation.cdb</groupId>
+			<artifactId>computer-database-master-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.excilys.formation.cdb</groupId>
+			<artifactId>computer-database-master-binding</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<!-- QueryDSL : JPAQuery -->
+		<dependency>
+			<groupId>com.querydsl</groupId>
+			<artifactId>querydsl-jpa</artifactId>
+			<version>${querydsl.version}</version>
+		</dependency>
+
+		<!-- Hikari : datasource -->
+		<!-- https://mvnrepository.com/artifact/com.zaxxer/HikariCP -->
+		<dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+			<version>${hikariCP.version}</version>
+		</dependency>
+
+		<!-- Hibernate : annotation -->
+		<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>${hibernate.version}</version>
+		</dependency>
+
+		<!-- Connector mySQL -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>${mysql.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.google.protobuf</groupId>
+					<artifactId>protobuf-java</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- Spring framewrok Requetes -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<version>${org.springframework.version}</version>
+		</dependency>
+				<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<version>${org.springframework.version}</version>
+		</dependency>
+		
+		<!-- Annotations Spring -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${org.springframework.version}</version>
+		</dependency>
+	</dependencies>
+
+
 </project>

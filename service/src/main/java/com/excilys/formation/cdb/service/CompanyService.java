@@ -2,8 +2,8 @@ package com.excilys.formation.cdb.service;
 
 import java.util.List;
 
-import com.excilys.formation.cdb.enumeration.Resultat;
-import com.excilys.formation.cdb.model.Company;
+import com.excilys.formation.cdb.core.enumeration.Resultat;
+import com.excilys.formation.cdb.core.model.Company;
 
 public interface CompanyService {
 	public List<Company> all(String pOrderBy);

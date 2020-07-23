@@ -11,10 +11,10 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.excilys.formation.cdb.datasource.ConnectionSQL;
-import com.excilys.formation.cdb.enumeration.Resultat;
-import com.excilys.formation.cdb.logging.Logging;
-import com.excilys.formation.cdb.model.Company;
+import com.excilys.formation.cdb.persistence.datasource.ConnectionSQL;
+import com.excilys.formation.cdb.core.enumeration.Resultat;
+import com.excilys.formation.cdb.core.logging.Logging;
+import com.excilys.formation.cdb.core.model.Company;
 import com.excilys.formation.cdb.persistence.CompanyDao;
 import com.excilys.formation.cdb.persistence.jdbc.row.mapper.CompanyRowMapper;
 
