@@ -28,11 +28,10 @@ public interface ComputerDao {
 
 	static final String REQUETEDELETE = "DELETE FROM computer WHERE computer.id = :id";
 
-	static final String REQUETEUPDATE = "update computer set computer.name = :name, computer.introduced = :introduced, computer.discontinued = :discontinued, computer.companyId = :companyId where computer.name = :id;";
+	static final String REQUETEUPDATE = "update computer set computer.name = :name, computer.introduced = :introduced, computer.discontinued = :discontinued, computer.companyId = :companyId where computer.id = :id;";
 
 	static final String REQUETECREATE = "INSERT INTO computer (name, introduced, discontinued, company_id) VALUES (:name, :introduced, :discontinued, :companyId);";
 
-	
 	public int nombre();
 
 	public boolean findcomputerById(Long computerId) throws Exception;

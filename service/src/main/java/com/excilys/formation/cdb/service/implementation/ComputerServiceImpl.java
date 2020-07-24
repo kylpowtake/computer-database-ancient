@@ -17,7 +17,6 @@ public class ComputerServiceImpl implements ComputerService{
 	@Autowired
 	public ComputerServiceImpl(@Qualifier(value = "computerDaoHibernate") ComputerDao computerDAO){
 		this.computerDAO = computerDAO;
-		
 	}
 	
 	ComputerDao computerDAO;

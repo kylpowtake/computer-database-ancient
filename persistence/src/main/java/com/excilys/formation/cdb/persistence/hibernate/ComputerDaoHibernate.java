@@ -58,6 +58,11 @@ public class ComputerDaoHibernate implements ComputerDao {
 	@Override
 	public List<Computer> some(String pOrderBy) {
 		logger.debug("Start of some.");
+		logger.debug("Start of some.");
+		logger.debug("Start of some.");
+		logger.debug("Start of some.");
+		logger.debug("Start of some.");
+
 		Page page = Page.getPage();
 		int nombreComputers = nombre();
 		page.setPeutAllerAncienneEtNouvellePage(nombreComputers);
