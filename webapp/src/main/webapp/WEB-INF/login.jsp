@@ -23,9 +23,8 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="dashboard"> Application - Computer
-				Database </a>
-		</div>
+			<a class="navbar-brand" href="dashboard"> <fmt:message key="header" /> </a>
+		</div> 
 	</header>
 
 	<section id="main">
@@ -33,17 +32,17 @@
 			<div class="row">
 				<div class="col-xs-8 col-xs-offset-2 box">
 					<h1>
-						<fmt:message key="addComputer" />
+						<fmt:message key="login" />
 					</h1>
 					<form:form modelAttribute="user">
 						<form:errors path="*" cssClass="error" />
 						<fieldset>
 							<div class="form-group">
 								<div class="form-group">
-									<label for="pseudo"><fmt:message
-											key="pseudo" /></label>
-									<form:input path="pseudo" />
-									<form:errors path="pseudo" cssClass="error" />
+									<label for="username"><fmt:message
+											key="username" /></label>
+									<form:input path="username" />
+									<form:errors path="username" cssClass="error" />
 								</div>
 								<div class="form-group">
 									<label for="password"><fmt:message
@@ -64,11 +63,11 @@
 		</div>
 	</section>
 	<div class="btn-group btn-group-sm pull-right" role="group">
-		<button onclick="location.href='addComputer?lang=fr'" type="button"
+		<button onclick="location.href='login?lang=fr'" type="button"
 			class="btn btn-default">
 			<fmt:message key="fr" />
 		</button>
-		<button onclick="location.href='addComputer?lang=en'" type="button"
+		<button onclick="location.href='login?lang=en'" type="button"
 			class="btn btn-default">
 			<fmt:message key="en" />
 		</button>

@@ -4,7 +4,7 @@ import com.excilys.formation.cdb.core.model.User;
 
 public class UserDto {
 	Long id;
-	String pseudo;
+	String username;
 	String password;
 	
 	public UserDto() {
@@ -13,14 +13,14 @@ public class UserDto {
 	
 	public UserDto(String pseudo, String password) {
 		super();
-		this.pseudo = pseudo;
+		this.username = pseudo;
 		this.password = password;
 	}
 	
 	public UserDto(Long id, String pseudo, String password) {
 		super();
 		this.id = id;
-		this.pseudo = pseudo;
+		this.username = pseudo;
 		this.password = password;
 	}
 	
@@ -35,7 +35,7 @@ public class UserDto {
 		}
 		User other = (User) obj;
 		if((this.getId() != null && !this.getId().equals(other.getId())) 
-				|| (this.getPseudo() != null && !this.getPseudo().equals(other.getPseudo()))
+				|| (this.getUsername() != null && !this.getUsername().equals(other.getUsername()))
 				|| (this.getPassword() != null && !this.getPassword().equals(other.getPassword()))) {
 			return false;
 		}
@@ -47,14 +47,14 @@ public class UserDto {
 		int value = 25;
 		int result = 1;
 		result = value * result + ((this.getId() == null) ? 0 : this.getId().hashCode());
-		result = value * result + ((this.getPseudo() == null) ? 0 : this.getPseudo().hashCode());
+		result = value * result + ((this.getUsername() == null) ? 0 : this.getUsername().hashCode());
 		result = value * result + ((this.getPassword() == null) ? 0 : this.getPassword().hashCode());
 		return result;
 	}
 
 	@Override
 	public String toString() {
-		return this.getId() + " " + this.getPseudo() + " " + this.getPassword();
+		return this.getId() + " " + this.getUsername() + " " + this.getPassword();
 	}
 	
 	public Long getId() {
@@ -63,11 +63,11 @@ public class UserDto {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public String getPseudo() {
-		return pseudo;
+	public String getUsername() {
+		return username;
 	}
-	public void setPseudo(String pseudo) {
-		this.pseudo = pseudo;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 	public String getPassword() {
 		return password;

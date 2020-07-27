@@ -2,7 +2,6 @@ package com.excilys.formation.cdb.service.DTO.Mappers;
 
 
 import com.excilys.formation.cdb.core.model.User;
-import com.excilys.formation.cdb.core.model.User.UserBuilder;
 import com.excilys.formation.cdb.service.Utility;
 import com.excilys.formation.cdb.service.DTO.UserDto;
 
@@ -12,20 +11,18 @@ public class UserDtoMapper {
 	}
 
 	public static User userDtoToUser(UserDto userDto) {
-		User user = null;
+		User user = new User();
 		if (userDto == null) {
-			return user;
+			return null;
 		}
-		UserBuilder userBuilder = null;
-		if (Utility.stringIsSomething(userDto.getPseudo()) && Utility.stringIsSomething(userDto.getPassword())) {
-			userBuilder = new UserBuilder(userDto.getPseudo(), userDto.getPseudo());
+		if (Utility.stringIsSomething(userDto.getUsername()) && Utility.stringIsSomething(userDto.getPassword())) {
+			user = new User(userDto.getUsername(), user.getPassword());
 		} else {
 			return null;
 		}
 		if (userDto.getId() != null) {
-			userBuilder.withId(userDto.getId());
+			user.setId(userDto.getId());
 		}
-		user = userBuilder.build();
 		return user;
 	}
 
@@ -35,10 +32,10 @@ public class UserDtoMapper {
 			return null;
 		}
 		userDto.setId(user.getId());
-		if (user.getPseudo() != null) {
-			userDto.setPseudo(user.getPseudo());
+		if (user.getUsername() != null) {
+			userDto.setUsername(user.getUsername());
 		}
-		if (user.getPseudo() != null) {
+		if (user.getUsername() != null) {
 			userDto.setPassword(user.getPassword());
 		}
 		return userDto;

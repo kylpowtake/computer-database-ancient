@@ -33,7 +33,6 @@
 		<spring.security.version>5.3.3.RELEASE</spring.security.version>
 	</properties>
 
-	<!-- core persistence service binding webapp console -->
 
 	<modules>
 		<module>binding</module>
@@ -111,7 +110,7 @@
 			<artifactId>junit</artifactId>
 			<version>${junit.version}</version>
 			<scope>test</scope>
-		</dependency>
+		</dependency>		
 	</dependencies>
 
 	<build>

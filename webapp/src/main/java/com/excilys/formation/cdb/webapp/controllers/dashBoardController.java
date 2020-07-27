@@ -48,9 +48,9 @@ public class dashBoardController {
 	@Autowired
 	private ComputerService computerService;
 	
-	ApplicationContext applicationContext = WebAppInitializer.rootContext;
+//	ApplicationContext applicationContext = WebAppInitializer.rootContext;
 
-	MessageSource messageSource = applicationContext.getBean(MessageSource.class);
+//	MessageSource messageSource = applicationContext.getBean(MessageSource.class);
 
 
 //	private String orderByGeneral = "id";
@@ -147,14 +147,7 @@ public class dashBoardController {
 					logger.error(e.getLocalizedMessage() + " doGet : DashBoard");
 				}
 			}
-			if(listComputers == null) {
-				logger.debug("null nulln ulllnbu");
-			} else {
-				logger.debug("tout ça n'est pas null \\o/");
-			}
 			page.setComputers(listComputers);
-			logger.debug("The computers's list is composed of " + page.getComputers().size() + " computers     "
-					+ page.getNomRecherche());
 //			resultat = "Liste de computers obtenue.";
 		} catch (Exception e) {
 //			resultat = "Liste de résultat non obtenue : " + e.getLocalizedMessage();

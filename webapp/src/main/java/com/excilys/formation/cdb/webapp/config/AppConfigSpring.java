@@ -21,6 +21,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
+import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
@@ -31,20 +32,22 @@ import com.excilys.formation.cdb.persistence.datasource.ConnectionSQL;
 @Configuration
 @EnableTransactionManagement
 @ComponentScan(basePackages = { "com.excilys.formation.cdb.persistence", "com.excilys.formation.cdb.service",
-		"com.excilys.formation.cdb.webapp.servlets", "com.excilys.formation.cdb.validation", "com.excilys.formation.cdb.webapp.controllers" })
-public class AppConfigSpring implements WebMvcConfigurer{
-	
+		"com.excilys.formation.cdb.webapp.servlets", "com.excilys.formation.cdb.service.validation",
+		"com.excilys.formation.cdb.webapp.controllers" })
+public class AppConfigSpring implements WebMvcConfigurer
+{
 	@Bean
 	public ConnectionSQL TheConnection() {
 		ConnectionHikari connectionHikari = new ConnectionHikari("/datasource.properties");
 		return connectionHikari;
 	}
 
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/js/**").addResourceLocations("/js/");
-        registry.addResourceHandler("/css/**").addResourceLocations("/css/");
-    }
+	@Override
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		registry.addResourceHandler("/js/**").addResourceLocations("/js/");
+		registry.addResourceHandler("/css/**").addResourceLocations("/css/");
+	}
+
 	@Bean
 	public MessageSource messageSource() {
 		ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
@@ -58,40 +61,39 @@ public class AppConfigSpring implements WebMvcConfigurer{
 	public LocaleResolver localeResolver() {
 		return new CookieLocaleResolver();
 	}
-	
-	 @Bean
-	 public ViewResolver configureViewResolver() {
-	     InternalResourceViewResolver viewResolve = new InternalResourceViewResolver();
-	     viewResolve.setViewClass(JstlView.class);
-	     viewResolve.setPrefix("/WEB-INF/");
-	     viewResolve.setSuffix(".jsp");
 
-	     return viewResolve;
-	 }
-	
+	@Bean
+	public ViewResolver configureViewResolver() {
+		InternalResourceViewResolver viewResolve = new InternalResourceViewResolver();
+		viewResolve.setViewClass(JstlView.class);
+		viewResolve.setPrefix("/WEB-INF/");
+		viewResolve.setSuffix(".jsp");
+
+		return viewResolve;
+	}
+
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-	    LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
-	    localeChangeInterceptor.setParamName("lang");
-	    registry.addInterceptor(localeChangeInterceptor);
+		LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
+		localeChangeInterceptor.setParamName("lang");
+		registry.addInterceptor(localeChangeInterceptor);
 	}
-	
-	 @Bean
-	 public PlatformTransactionManager transactionManager() {
-	     JpaTransactionManager transactionManager = new JpaTransactionManager();
-	     transactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
-	  
-	     return transactionManager;
-	 }
-	 @Bean
-	   public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
-	      LocalContainerEntityManagerFactoryBean entityManagerFactoryBean
-	        = new LocalContainerEntityManagerFactoryBean();
-	      entityManagerFactoryBean.setDataSource(TheConnection().getDataSource());
-	      entityManagerFactoryBean.setPackagesToScan("com.excilys.formation.cdb.core.model");
 
-	      JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
-	      entityManagerFactoryBean.setJpaVendorAdapter(vendorAdapter);
-	      return entityManagerFactoryBean;
-	   }
+	@Bean
+	public PlatformTransactionManager transactionManager() {
+		JpaTransactionManager transactionManager = new JpaTransactionManager();
+		transactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
+
+		return transactionManager;
+	}
+
+	@Bean
+	public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+		LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
+		entityManagerFactoryBean.setDataSource(TheConnection().getDataSource());
+		entityManagerFactoryBean.setPackagesToScan("com.excilys.formation.cdb.core.model");
+		JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+		entityManagerFactoryBean.setJpaVendorAdapter(vendorAdapter);
+		return entityManagerFactoryBean;
+	}
 }

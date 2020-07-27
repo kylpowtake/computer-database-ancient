@@ -40,8 +40,8 @@ public class AddComputerController {
 	private CompanyService companyService;
 	private static Logger logger = Logging.getLogger();
 
-	ApplicationContext applicationContext = WebAppInitializer.rootContext;
-	MessageSource messageSource = applicationContext.getBean(MessageSource.class);
+//	ApplicationContext applicationContext = WebAppInitializer.rootContext;
+//	MessageSource messageSource = applicationContext.getBean(MessageSource.class);
 
 	
 	@RequestMapping(value = "/addcomputer", method = RequestMethod.GET)

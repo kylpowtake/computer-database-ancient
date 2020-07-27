@@ -2,17 +2,18 @@ package com.excilys.formation.cdb.webapp.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-@Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private final UserDetailsService userDetailsService;
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -25,12 +26,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //		.httpBasic();
 		http
 			.authorizeRequests()
-				.antMatchers("dashboard").hasRole("ADMIN")
 				.antMatchers("/").permitAll()
+				.antMatchers("/login").permitAll()
 				.anyRequest().authenticated()
 				.and()
 			.formLogin()
 				.loginPage("/login")
+				.loginProcessingUrl("/perform_login")
+				.defaultSuccessUrl("/dashboard", true)
+				.failureUrl("/login")
 				.permitAll()
 				.and()
 			.logout()
@@ -43,13 +47,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
     
+    @Autowired
+    public WebSecurityConfig(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-            .withUser("jim").password(passwordEncoder().encode("jim")).roles("USER", "ACTUATOR")
-            .and().withUser("pam").password(passwordEncoder().encode("pam")).roles("USER")
-            .and().withUser("michael").password(passwordEncoder().encode("michael")).roles("MANAGER");
+//        auth.inMemoryAuthentication()
+//            .withUser("useruser").password(passwordEncoder().encode("mdp")).roles("USER")
+//            .and().withUser("pam").password(passwordEncoder().encode("pam")).roles("USER")
+//            .and().withUser("michael").password(passwordEncoder().encode("michael")).roles("MANAGER");
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+
     }
     
     
