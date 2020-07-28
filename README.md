@@ -1,8 +1,7 @@
 # computer-database
-
-This project is the implementation of the following training.
-The branch master is the state of the project at the end of the latest spring.
-The branch develop is the state of the project the last time it was compilable.
+This project is the implementation of the following training.  
+The branch master is the state of the project at the end of the latest spring.  
+The branch develop is the state of the project the last time it was compilable.  
 The branch devInWork is the lastest commit.
 
 
@@ -44,7 +43,7 @@ with password: `qwerty1234`
 - Add your project to the current workspace: **Import Project**, select **Create project from existing sources**
 - Create a new Tomcat 8.0 Server: **Run** -> **Edit Configurations** and point it to your local Tomcat directory (button **Configure...**) 
 - Set project structure: In **File** -> **Project Structure**, add an Artifact with default options (Artifact tab)  
-
+commit
 ## 3. Git repository
 - Create your own github account, and initialize a new git repository called "computer-database".  
 - After the initial commit, add and commit a meaningful .gitignore file. 
