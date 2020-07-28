@@ -23,45 +23,47 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="dashboard"> <fmt:message key="header" /> </a>
-		</div> 
+			<a class="navbar-brand" href="dashboard"> <fmt:message
+					key="header" />
+			</a>
+		</div>
+		<div class="btn-group btn-group-sm pull-right" role="group">
+			<button onclick="location.href='logout'" type="button"
+				class="btn btn-default">
+				<fmt:message key="logout" />
+			</button>
+		</div>
 	</header>
 
-	<section id="main">
-		<div class="container">
-			<div class="row">
-				<div class="col-xs-8 col-xs-offset-2 box">
-					<h1>
-						<fmt:message key="login" />
-					</h1>
-					<form:form modelAttribute="user">
-						<form:errors path="*" cssClass="error" />
-						<fieldset>
-							<div class="form-group">
-								<div class="form-group">
-									<label for="username"><fmt:message
-											key="username" /></label>
-									<form:input path="username" />
-									<form:errors path="username" cssClass="error" />
-								</div>
-								<div class="form-group">
-									<label for="password"><fmt:message
-											key="password" /></label>
-									<form:input path="password" />
-									<form:errors path="password" cssClass="error" />
-								</div>
-							</div>
-						</fieldset>
-						<div class="actions pull-right">
-							<input type="submit" value="<fmt:message key="add" />" id="Add"
-								class="btn btn-primary"> or <a href="dashboard"
-								class="btn btn-default"><fmt:message key="cancel" /></a>
-						</div>
-					</form:form>
-				</div>
-			</div>
+
+	<form class="form-signin navbar navbar-default" method="POST"
+		action="<c:url value='/perform_login'/>">
+		<div class="form-signin-img">
+			<span class="form-signin-img-helper"></span> <img
+				src="<c:url value='/img/itensis_logo.gif'/>" />
 		</div>
-	</section>
+		<h2 class="form-signin-heading">${msg_heading}</h2>
+		<c:if test="${error == true}">
+			<div class="alert alert-danger">
+				<button type="button" class="close close-box">&times;</button>
+				<p>${msg_error}</p>
+			</div>
+		</c:if>
+		<input type="text" name="security_username" id="security_username"
+			class="form-control" placeholder="${msg_username}" required autofocus>
+		<input type="password" name="security_password" id="security_password"
+			class="form-control" placeholder="${msg_password}" required>
+
+		<label class="checkbox"> <input type="checkbox"
+			name="remember_me_checkbox"> ${msg_rememberMe}
+		</label>
+		<button class="btn btn-lg btn-primary btn-block" type="submit">
+			<i class="fa fa-sign-in fa-lg"></i> <span>${msg_login}</span>
+		</button>
+	</form>
+
+
+
 	<div class="btn-group btn-group-sm pull-right" role="group">
 		<button onclick="location.href='login?lang=fr'" type="button"
 			class="btn btn-default">

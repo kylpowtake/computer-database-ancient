@@ -1,4 +1,4 @@
-package com.excilys.formation.cdb.webapp.config;
+package com.excilys.formation.cdb.persistence.config;
 
 import java.util.Locale;
 
@@ -21,7 +21,6 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
-import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
@@ -33,11 +32,11 @@ import com.excilys.formation.cdb.persistence.datasource.ConnectionSQL;
 @EnableTransactionManagement
 @ComponentScan(basePackages = { "com.excilys.formation.cdb.persistence", "com.excilys.formation.cdb.service",
 		"com.excilys.formation.cdb.webapp.servlets", "com.excilys.formation.cdb.service.validation",
-		"com.excilys.formation.cdb.webapp.controllers" })
+		"com.excilys.formation.cdb.webapp.controllers", "com.excilys.formation.cdb.webapp.config" })
 public class AppConfigSpring implements WebMvcConfigurer
 {
 	@Bean
-	public ConnectionSQL TheConnection() {
+	public static ConnectionSQL theConnection() {
 		ConnectionHikari connectionHikari = new ConnectionHikari("/datasource.properties");
 		return connectionHikari;
 	}
@@ -90,7 +89,7 @@ public class AppConfigSpring implements WebMvcConfigurer
 	@Bean
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
 		LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
-		entityManagerFactoryBean.setDataSource(TheConnection().getDataSource());
+		entityManagerFactoryBean.setDataSource(theConnection().getDataSource());
 		entityManagerFactoryBean.setPackagesToScan("com.excilys.formation.cdb.core.model");
 		JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
 		entityManagerFactoryBean.setJpaVendorAdapter(vendorAdapter);

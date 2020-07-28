@@ -30,21 +30,47 @@ public class User {
 	@Column(name = "password", nullable = false)
 	private String password;
 
+	@Column(name = "account_non_expired")
+	private boolean accountNonExpired;
+	
+	@Column(name = "account_non_locked")
+	private boolean accountNonLocked;
+	
+	@Column(name = "credentials_non_expired")
+	private boolean credentialsNonExpired;
+	
+	@Column(name = "enabled")
+	private boolean enabled;
+	
+//	@ManyToMany(fetch = FetchType.EAGER)
+//	@JoinTable(name = "user_authority", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {
+//			@JoinColumn(name = "authority_id") })
+//	private Set<Role> authorities = new HashSet<>();
+	
 	public User() {
-		super();
+		this.setAccountNonExpired(true);
+		this.setAccountNonLocked(true);
+		this.setCredentialsNonExpired(true);
+		this.setEnabled(true);
 	}
 
 	public User(String pseudo, String password) {
-		super();
 		this.username = pseudo;
 		this.password = password;
+		this.setAccountNonExpired(true);
+		this.setAccountNonLocked(true);
+		this.setCredentialsNonExpired(true);
+		this.setEnabled(true);
 	}
 
 	public User(Long id, String pseudo, String password) {
-		super();
 		this.id = id;
 		this.username = pseudo;
 		this.password = password;
+		this.setAccountNonExpired(true);
+		this.setAccountNonLocked(true);
+		this.setCredentialsNonExpired(true);
+		this.setEnabled(true);
 	}
 
 	@Override
@@ -59,7 +85,11 @@ public class User {
 		User other = (User) obj;
 		if((this.getId() != null && !this.getId().equals(other.getId())) 
 				|| (this.getUsername() != null && !this.getUsername().equals(other.getUsername()))
-				|| (this.getPassword() != null && !this.getPassword().equals(other.getPassword()))) {
+				|| (this.getPassword() != null && !this.getPassword().equals(other.getPassword()))
+				|| (this.isAccountNonExpired() != other.isAccountNonExpired())
+				|| (this.isAccountNonLocked() != other.isAccountNonLocked())
+				|| (this.isCredentialsNonExpired() != other.isCredentialsNonExpired())
+				|| (this.isEnabled() != other.isEnabled())) {
 			return false;
 		}
 		return true;
@@ -72,6 +102,10 @@ public class User {
 		result = value * result + ((this.getId() == null) ? 0 : this.getId().hashCode());
 		result = value * result + ((this.getUsername() == null) ? 0 : this.getUsername().hashCode());
 		result = value * result + ((this.getPassword() == null) ? 0 : this.getPassword().hashCode());
+		result = value * result + ((this.isAccountNonExpired()) ? 0 : 1);
+		result = value * result + ((this.isAccountNonLocked()) ? 0 : 1);
+		result = value * result + ((this.isCredentialsNonExpired()) ? 0 : 1);
+		result = value * result + ((this.isEnabled()) ? 0 : 1);
 		return result;
 	}
 
@@ -104,17 +138,43 @@ public class User {
 		this.password = password;
 	}
 	
-
-	public Set<Role> getAuthorities() {
-		return authorities;
+	public boolean isAccountNonExpired() {
+		return accountNonExpired;
 	}
 
-	public void setAuthorities(Set<Role> authorities) {
-		this.authorities = authorities;
+	public void setAccountNonExpired(boolean accountNonExpired) {
+		this.accountNonExpired = accountNonExpired;
 	}
 
-	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "user_authority", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {
-			@JoinColumn(name = "authority_id") })
-	private Set<Role> authorities = new HashSet<>();
+	public boolean isAccountNonLocked() {
+		return accountNonLocked;
+	}
+
+	public void setAccountNonLocked(boolean accountNonLocked) {
+		this.accountNonLocked = accountNonLocked;
+	}
+
+	public boolean isCredentialsNonExpired() {
+		return credentialsNonExpired;
+	}
+
+	public void setCredentialsNonExpired(boolean credentialsNonExpired) {
+		this.credentialsNonExpired = credentialsNonExpired;
+	}
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
+//	public Set<Role> getAuthorities() {
+//		return authorities;
+//	}
+//
+//	public void setAuthorities(Set<Role> authorities) {
+//		this.authorities = authorities;
+//	}
 }

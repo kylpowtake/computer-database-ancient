@@ -27,21 +27,6 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public Resultat create(User user) throws Exception {
-		return userDao.create(user);
-	}
-
-	@Override
-	public Resultat modify(User user) throws Exception {
-		return userDao.modify(user);
-	}
-
-	@Override
-	public Resultat delete(int id) throws Exception{
-		return userDao.delete(id);
-	}
-
-	@Override
 	public User find(int id) throws Exception {
 		return userDao.find(id);
 	}

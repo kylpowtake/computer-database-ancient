@@ -20,11 +20,5 @@ public interface UserDao {
 	
 	public List<User> all() throws Exception;
 
-	public Resultat create(User user) throws Exception;
-
-	public Resultat modify(User user) throws Exception;
-
-	public Resultat delete(int id) throws Exception;
-
 	public User find(int id) throws Exception;
 }

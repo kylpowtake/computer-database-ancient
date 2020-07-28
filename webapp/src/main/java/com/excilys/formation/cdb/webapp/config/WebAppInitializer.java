@@ -6,6 +6,8 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
+import com.excilys.formation.cdb.persistence.config.AppConfigSpring;
+
 public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
 	public static AnnotationConfigWebApplicationContext rootContext;
@@ -13,28 +15,6 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
 	protected Class<?>[] getRootConfigClasses() {
 		return new Class[] { WebSecurityConfig.class };
 	}
-
-//	@Override
-//	public void onStartup(ServletContext container) throws ServletException {
-//		rootContext = new AnnotationConfigWebApplicationContext();
-//		rootContext.register(AppConfigSpring.class);
-//
-//		container.addListener(new ContextLoaderListener(rootContext));
-//
-//		AnnotationConfigWebApplicationContext dispatcherServlet = new AnnotationConfigWebApplicationContext();
-//
-//		ServletRegistration.Dynamic dispatcher = container.addServlet("dispatcher",
-//				(Servlet) new DispatcherServlet(dispatcherServlet));
-//		dispatcher.setLoadOnStartup(1);
-//		dispatcher.addMapping("/");
-//	}
-
-//	@Override
-//	protected javax.servlet.Filter[] getServletFilters() {
-//		DelegatingFilterProxy delegateFilterProxy = new DelegatingFilterProxy();
-//		delegateFilterProxy.setTargetBeanName("loggingFilter");
-//		return new Filter[] { delegateFilterProxy };
-//	}
 
 	@Override
 	protected Class<?>[] getServletConfigClasses() {

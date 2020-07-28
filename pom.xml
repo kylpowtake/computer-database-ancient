@@ -45,41 +45,6 @@
 
 
 	<dependencies>
-		<!-- Pas l'air utile -->
-		<!-- https://mvnrepository.com/artifact/org.springframework/spring-jdbc -->
-		<!-- <dependency> <groupId>org.springframework</groupId> <artifactId>spring-jdbc</artifactId> 
-			<version>${org.springframework.version}</version> </dependency> -->
-		<!-- <dependency> <groupId>mysql</groupId> <artifactId>mysql-connector-java</artifactId> 
-			<version>${mysql.version}</version> <exclusions> <exclusion> <groupId>com.google.protobuf</groupId> 
-			<artifactId>protobuf-java</artifactId> </exclusion> </exclusions> </dependency> -->
-
-		<!-- <dependency> <groupId>org.slf4j</groupId> <artifactId>slf4j-api</artifactId> 
-			<version>${slf4j.version}</version> </dependency> -->
-
-		<!-- https://mvnrepository.com/artifact/org.springframework/spring-web -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.springframework</groupId> -->
-<!-- 			<artifactId>spring-web</artifactId> -->
-<!-- 			<version>${org.springframework.version}</version> -->
-<!-- 		</dependency> -->
-
-		<!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.springframework</groupId> -->
-<!-- 			<artifactId>spring-context</artifactId> -->
-<!-- 			<version>${org.springframework.version}</version> -->
-<!-- 		</dependency> -->
-
-		<!-- https://mvnrepository.com/artifact/org.springframework/spring-core -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.springframework</groupId> -->
-<!-- 			<artifactId>spring-core</artifactId> -->
-<!-- 			<version>${org.springframework.version}</version> -->
-<!-- 		</dependency> -->
-
-
-
-		<!-- Emplacement à modifier lorsque que les tests seront commencées :( -->
 		<!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java -->
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>

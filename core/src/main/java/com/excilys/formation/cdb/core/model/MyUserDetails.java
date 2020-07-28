@@ -16,12 +16,7 @@ public class MyUserDetails implements UserDetails{
 		this.user = user;
 	}
 
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return user.getAuthorities().stream()
-				.map(authority -> new SimpleGrantedAuthority(authority.getName().toString()))
-				.collect(Collectors.toList());
-	}
+
 	public Long getId() {
 		return user.getId();
 	}
@@ -38,24 +33,32 @@ public class MyUserDetails implements UserDetails{
 
 	@Override
 	public boolean isAccountNonExpired() {
-		return true;
+		return user.isAccountNonExpired();
 	}
 
 	@Override
 	public boolean isAccountNonLocked() {
-		return true;
+		return user.isAccountNonLocked();
 	}
 
 	@Override
 	public boolean isCredentialsNonExpired() {
-		return true;
+		return user.isCredentialsNonExpired();
 	}
 
 	@Override
 	public boolean isEnabled() {
-		return true;
+		return user.isEnabled();
 	}
-
+	
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return null;
+//		return user.getAuthorities().stream()
+//				.map(authority -> new SimpleGrantedAuthority(authority.getName().toString()))
+//				.collect(Collectors.toList());
+	}
+	
 	public User getUserDetails() {
 		return user;
 	}

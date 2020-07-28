@@ -33,10 +33,10 @@ public class CompanyDaoHibernate implements CompanyDao{
 	@Override
 	public List<Company> all(String pOrderBy) {
 		logger.debug("Start of all.");
-		QCompany company = QCompany.company;
+		QCompany qCompany = QCompany.company;
 		JPAQuery<Company> query = new JPAQuery<Company>(entityManager);
-		return query.from(company)
-				.orderBy(ComputerOrderBy.getOrder(pOrderBy))
+		return query.from(qCompany)
+				.orderBy(qCompany.id.asc())
 				.fetch();
 	}
 

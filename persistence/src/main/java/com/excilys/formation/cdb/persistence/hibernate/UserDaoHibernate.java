@@ -33,50 +33,6 @@ public class UserDaoHibernate implements UserDao {
 	}
 
 	@Override
-	@Transactional
-	public Resultat create(User user) throws Exception {
-		logger.debug("Start of create.");
-		try {
-			entityManager.persist(user);
-			return Resultat.REUSSI;
-		} catch (IllegalArgumentException iae) {
-			return Resultat.ECHOUE;
-		} catch (TransactionRequiredException tre) {
-			return Resultat.ECHOUE;
-		}
-	}
-
-	@Override
-	@Transactional
-	public Resultat modify(User user) throws Exception {
-		logger.debug("Start of modify.");
-		try {
-			entityManager.merge(user);
-			return Resultat.REUSSI;
-		} catch (IllegalArgumentException iae) {
-			return Resultat.ECHOUE;
-		} catch (TransactionRequiredException tre) {
-			return Resultat.ECHOUE;
-		}
-	}
-
-	@Override
-	@Transactional
-	public Resultat delete(int id) throws Exception {
-		logger.debug("Start of delete.");
-		try {
-			entityManager.remove(find(id));
-			return Resultat.REUSSI;
-		} catch (IllegalArgumentException iae) {
-			logger.debug("illegalArgument exception.");
-			return Resultat.ECHOUE;
-		} catch (TransactionRequiredException tre) {
-			logger.debug("Transaction exception.");
-			return Resultat.ECHOUE;
-		}
-	}
-
-	@Override
 	public User find(int id) throws Exception {
 		logger.debug("Start of find.");
 		QUser qUser = QUser.user;
