@@ -44,11 +44,12 @@
 <!-- 		<version>${hibernate.version}</version> -->
 <!-- 		</dependency> -->
 
-		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-config -->
+		<!-- Annotations SQL -->
 		<dependency>
-		<groupId>org.springframework.security</groupId>
-		<artifactId>spring-security-config</artifactId>
-		<version>${spring.security.version}</version>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
+			<version>${javaee-api.version}</version>
+			<scope>provided</scope>
 		</dependency>
 		
 		<!-- queryDSL -->
@@ -60,13 +61,7 @@
 		</dependency>
 
 
-		<!-- Annotations SQL -->
-		<dependency>
-			<groupId>javax</groupId>
-			<artifactId>javaee-api</artifactId>
-			<version>${javaee-api.version}</version>
-			<scope>provided</scope>
-		</dependency>
+
 
 		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-core -->
 <!-- 		<dependency> -->
@@ -75,7 +70,12 @@
 <!-- 		<version>${spring.security.version}</version> -->
 <!-- 		</dependency> -->
 
-
+		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-config -->
+<!-- 		<dependency> -->
+<!-- 		<groupId>org.springframework.security</groupId> -->
+<!-- 		<artifactId>spring-security-config</artifactId> -->
+<!-- 		<version>${spring.security.version}</version> -->
+<!-- 		</dependency> -->
 	</dependencies>
 
 
