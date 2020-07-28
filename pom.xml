@@ -19,7 +19,7 @@
 		<org.springframework.version>5.2.6.RELEASE</org.springframework.version>
 		<hibernate.version>5.4.18.Final</hibernate.version>
 		<selenium.version>3.141.59</selenium.version>
-		<javaee-api.version>6.0</javaee-api.version>
+		<javaee-api.version>8.0</javaee-api.version>
 		<jstl.version>1.2</jstl.version>
 		<jquery.version>3.5.1</jquery.version>
 		<slf4j.version>1.7.30</slf4j.version>
