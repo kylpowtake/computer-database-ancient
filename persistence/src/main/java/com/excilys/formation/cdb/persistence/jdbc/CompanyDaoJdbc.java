@@ -83,4 +83,18 @@ public class CompanyDaoJdbc implements CompanyDao{
 		}
 	}
 
+
+	@Override
+	public Resultat update(Company company) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public Resultat create(Company company) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

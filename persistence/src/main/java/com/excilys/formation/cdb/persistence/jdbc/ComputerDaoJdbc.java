@@ -17,6 +17,7 @@ import com.excilys.formation.cdb.persistence.datasource.ConnectionSQL;
 import com.excilys.formation.cdb.core.enumeration.Resultat;
 import com.excilys.formation.cdb.core.logging.Logging;
 import com.excilys.formation.cdb.core.model.Computer;
+import com.excilys.formation.cdb.core.model.QueryParams;
 import com.excilys.formation.cdb.persistence.ComputerDao;
 import com.excilys.formation.cdb.persistence.jdbc.row.mapper.ComputerRowMapper;
 
@@ -203,6 +204,12 @@ public class ComputerDaoJdbc implements ComputerDao {
 
 	@Override
 	public List<Computer> allSearch(String orderby, String search) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Computer> someUltimateSearch(QueryParams queryParams) {
 		// TODO Auto-generated method stub
 		return null;
 	}

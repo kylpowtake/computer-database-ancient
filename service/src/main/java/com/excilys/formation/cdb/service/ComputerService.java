@@ -4,12 +4,15 @@ import java.util.List;
 
 import com.excilys.formation.cdb.core.enumeration.Resultat;
 import com.excilys.formation.cdb.core.model.Computer;
+import com.excilys.formation.cdb.core.model.QueryParams;
 
 public interface ComputerService {
 
 	public List<Computer> some(String pOrderBy) throws Exception;
 	
 	public List<Computer> someSearch(String motRecherche, String pOrderBy) throws Exception;
+	
+	public List<Computer> someUltimateSearch(QueryParams queryParams);
 	
 	public List<Computer> all(String pOrderBy) throws Exception;
 

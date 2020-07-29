@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.excilys.formation.cdb.core.enumeration.Resultat;
 import com.excilys.formation.cdb.core.model.Computer;
+import com.excilys.formation.cdb.core.model.QueryParams;
 import com.excilys.formation.cdb.persistence.ComputerDao;
 import com.excilys.formation.cdb.service.ComputerService;
 
@@ -29,6 +30,11 @@ public class ComputerServiceImpl implements ComputerService{
 	@Override
 	public List<Computer> someSearch(String motRecherche, String pOrderBy) throws Exception {
 		return computerDAO.someSearch(motRecherche, pOrderBy);
+	}
+
+	@Override
+	public List<Computer> someUltimateSearch(QueryParams queryParams){
+		return computerDAO.someUltimateSearch(queryParams);
 	}
 
 	@Override

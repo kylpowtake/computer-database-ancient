@@ -37,6 +37,16 @@ public class CompanyServiceImpl implements CompanyService {
 	}
 
 	@Override
+	public Resultat create(Company company) {
+		return companyDAO.create(company);
+	}
+
+	@Override
+	public Resultat update(Company company) {
+	return companyDAO.update(company);
+	}
+	
+	@Override
 	public Resultat delete(int id) {
 		return companyDAO.delete(id);
 	}
@@ -45,5 +55,7 @@ public class CompanyServiceImpl implements CompanyService {
 	public String modificationOrderBy(String orderBy) {
 		return CompanyDao.modificationOrderBy(orderBy);
 	}
+
+
 
 }

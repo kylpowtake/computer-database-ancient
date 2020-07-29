@@ -20,8 +20,9 @@ import com.excilys.formation.cdb.core.logging.Logging;
 import com.excilys.formation.cdb.core.model.Computer;
 import com.excilys.formation.cdb.core.model.QCompany;
 import com.excilys.formation.cdb.core.model.QComputer;
+import com.excilys.formation.cdb.core.model.QueryParams;
 import com.excilys.formation.cdb.persistence.ComputerDao;
-
+import com.querydsl.core.support.QueryBase;
 import com.querydsl.jpa.impl.JPAQuery;
 
 @Repository
@@ -91,6 +92,19 @@ public class ComputerDaoHibernate implements ComputerDao {
 				.where(computer.name.contains(motRecherche).or(computer.company.name.contains(motRecherche)))
 				.orderBy(ComputerOrderBy.getOrder(pOrderBy + " " + Page.getPage().getOrder().getValue())).offset(indice)
 				.limit(page.getNombreParPage()).fetch();
+	}
+	
+	@Override
+	public List<Computer> someUltimateSearch(QueryParams queryParams){
+		logger.debug("Start of someUltimateSearch.");
+		QComputer computer = QComputer.computer;
+		JPAQuery<Computer> query = new JPAQuery<Computer>(entityManager);
+		return query.from(computer)
+				.where(computer.name.contains(queryParams.getSearch()).or(computer.company.name.contains(queryParams.getSearch())))
+				.orderBy(ComputerOrderBy.getOrder(queryParams.getOrderBy()))
+				.offset(Integer.parseInt(queryParams.getOffSet()))
+				.limit(Integer.parseInt(queryParams.getLimit()))
+				.fetch();
 	}
 
 	@Override

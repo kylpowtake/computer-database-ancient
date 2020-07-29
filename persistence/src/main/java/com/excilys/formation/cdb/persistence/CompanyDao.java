@@ -33,6 +33,10 @@ public interface CompanyDao {
 	public Company find(int companyId) throws Exception;
 	
 	public Resultat delete(int id);
+	
+	public Resultat update(Company company);
+	
+	public Resultat create(Company company);
 		
 	public static String modificationOrderBy(String orderBy) {
 		String message = "";

@@ -42,6 +42,9 @@
 		</div>
 	</header>
 
+
+<c:out value="${testvaleur}"/>
+
 	<section id="main">
 		<div class="container">
 			<h1 id="homeTitle">${page.getNombreComputers()}
@@ -66,7 +69,7 @@
 			</div>
 		</div>
 
-		<form id="deleteForm" action="#" method="POST">
+		<form id="deleteForm" action="deleteComputer" method="POST">
 			<input type="hidden" name="selection" value="">
 		</form>
 

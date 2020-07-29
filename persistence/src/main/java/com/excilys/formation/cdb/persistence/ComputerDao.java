@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.excilys.formation.cdb.core.enumeration.Resultat;
 import com.excilys.formation.cdb.core.model.Computer;
+import com.excilys.formation.cdb.core.model.QueryParams;
 
 public interface ComputerDao {
 
@@ -41,6 +42,8 @@ public interface ComputerDao {
 	public List<Computer> some(String pOrderBy);
 
 	public List<Computer> someSearch(String motRecherche, String pOrderBy);
+	
+	public List<Computer> someUltimateSearch(QueryParams queryParams);
 
 	public List<Computer> all() throws Exception;
 

@@ -2,6 +2,7 @@ package com.excilys.formation.cdb.webapp.controllers;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -9,8 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,14 +18,13 @@ import org.springframework.web.servlet.ModelAndView;
 import com.excilys.formation.cdb.service.DTO.PageDTO;
 import com.excilys.formation.cdb.core.Pageable.Page;
 import com.excilys.formation.cdb.core.Pageable.Page.OrderEnum;
-import com.excilys.formation.cdb.webapp.config.WebAppInitializer;
 import com.excilys.formation.cdb.core.logging.Logging;
 import com.excilys.formation.cdb.core.model.Computer;
 import com.excilys.formation.cdb.service.ComputerService;
 import com.excilys.formation.cdb.service.validation.Validation;
 
 @Controller
-public class dashBoardController {
+public class DashBoardController {
 	public static final String CHAMP_NUMERO_PAGE = "numeroPage";
 	public static final String CHAMP_NOMBRE_PAR_PAGE = "nombreParPage";
 	public static final String CHAMP_SEARCH = "search";
@@ -39,7 +37,7 @@ public class dashBoardController {
 	public static final String PAR_NEXT = "next";
 	public static final String ATT_DELETE = "delete";
 	public static final String PARAM_ORDER_BY = "orderby";
-
+	
 	private static Logger logger = Logging.getLogger();
 
 	@Autowired
@@ -47,13 +45,6 @@ public class dashBoardController {
 
 	@Autowired
 	private ComputerService computerService;
-	
-//	ApplicationContext applicationContext = WebAppInitializer.rootContext;
-
-//	MessageSource messageSource = applicationContext.getBean(MessageSource.class);
-
-
-//	private String orderByGeneral = "id";
 
 	@RequestMapping(value = "/dashboard", method = RequestMethod.GET)
 	protected ModelAndView doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -70,7 +61,7 @@ public class dashBoardController {
 		return mv;
 	}
 
-	@RequestMapping(value = "/dashboard", method = RequestMethod.POST)
+	@RequestMapping(value = "/deleteComputer", method = RequestMethod.POST)
 	protected ModelAndView doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		logger.debug("Début du doPost de Dashboard");

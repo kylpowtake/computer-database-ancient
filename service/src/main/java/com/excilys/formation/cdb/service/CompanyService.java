@@ -12,6 +12,10 @@ public interface CompanyService {
 	
 	public Company find(int companyId) throws Exception;
 	
+	public Resultat create(Company company);
+	
+	public Resultat update(Company company);
+	
 	public Resultat delete(int id);
 	
 	public String modificationOrderBy(String orderBy);

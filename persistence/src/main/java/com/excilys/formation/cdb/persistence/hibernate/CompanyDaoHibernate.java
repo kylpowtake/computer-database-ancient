@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TransactionRequiredException;
+import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -17,6 +19,7 @@ import com.excilys.formation.cdb.core.enumeration.ComputerOrderBy;
 import com.excilys.formation.cdb.core.enumeration.Resultat;
 import com.excilys.formation.cdb.core.logging.Logging;
 import com.excilys.formation.cdb.core.model.Company;
+import com.excilys.formation.cdb.core.model.Computer;
 import com.excilys.formation.cdb.core.model.QCompany;
 import com.excilys.formation.cdb.persistence.CompanyDao;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -61,6 +64,34 @@ public class CompanyDaoHibernate implements CompanyDao{
 			return null;
 		} else {
 			return companyList.get(0);
+		}
+	}
+	
+	@Override
+	@Transactional
+	public Resultat create(Company company) {
+		logger.debug("Start of create.");
+		try {
+			entityManager.persist(company);
+			return Resultat.REUSSI;
+		} catch (IllegalArgumentException iae) {
+			return Resultat.ECHOUE;
+		} catch (TransactionRequiredException tre) {
+			return Resultat.ECHOUE;
+		}
+	}
+
+	@Override
+	@Transactional
+	public Resultat update(Company company) {
+		logger.debug("Start of modify.");
+		try {
+			entityManager.merge(company);
+			return Resultat.REUSSI;
+		} catch (IllegalArgumentException iae) {
+			return Resultat.ECHOUE;
+		} catch (TransactionRequiredException tre) {
+			return Resultat.ECHOUE;
 		}
 	}
 

@@ -1,4 +1,4 @@
-
+ 
 package com.excilys.formation.cdb.webapp.controllers;
 
 import java.io.IOException;
@@ -11,8 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -24,7 +22,6 @@ import com.excilys.formation.cdb.service.DTO.CompanyDto;
 import com.excilys.formation.cdb.service.DTO.ComputerDto;
 import com.excilys.formation.cdb.service.DTO.Mappers.CompanyDtoMapper;
 import com.excilys.formation.cdb.service.DTO.Mappers.ComputerDtoMapper;
-import com.excilys.formation.cdb.webapp.config.WebAppInitializer;
 import com.excilys.formation.cdb.core.enumeration.Resultat;
 import com.excilys.formation.cdb.core.logging.Logging;
 import com.excilys.formation.cdb.core.model.Computer;

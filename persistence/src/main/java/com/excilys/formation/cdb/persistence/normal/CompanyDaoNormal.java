@@ -205,12 +205,19 @@ public class CompanyDaoNormal implements CompanyDao{
 		return null;
 	}
 
-	public Resultat modify(Company object) throws Exception {
+	public Resultat modify(Company object) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Resultat create(Company object) throws Exception {
+	public Resultat create(Company object) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public Resultat update(Company company) {
 		// TODO Auto-generated method stub
 		return null;
 	}
