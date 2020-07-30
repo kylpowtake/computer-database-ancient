@@ -18,6 +18,17 @@
 	<!-- webapp : logger javax servlet ? springframework (annot/stereo/...) -->
 
 	<dependencies>
+		<dependency>
+			<groupId>com.excilys.formation.cdb</groupId>
+			<artifactId>computer-database-master-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.excilys.formation.cdb</groupId>
+			<artifactId>computer-database-master-service</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
 		<!-- jackson : JSon -->
 		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
 		<dependency>
@@ -38,17 +49,19 @@
 			<artifactId>jackson-annotations</artifactId>
 			<version>${jackson.databind.version}</version>
 		</dependency>
-
-
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.module/jackson-modules-java8 -->
 		<dependency>
-			<groupId>com.excilys.formation.cdb</groupId>
-			<artifactId>computer-database-master-core</artifactId>
-			<version>${project.version}</version>
+			<groupId>com.fasterxml.jackson.module</groupId>
+			<artifactId>jackson-modules-java8</artifactId>
+			<version>${jackson.databind.version}</version>
+			<type>pom</type>
+			<scope>runtime</scope>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310 -->
 		<dependency>
-			<groupId>com.excilys.formation.cdb</groupId>
-			<artifactId>computer-database-master-service</artifactId>
-			<version>${project.version}</version>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr310</artifactId>
+			<version>${jackson.databind.version}</version>
 		</dependency>
 		<!-- JQuery -->
 		<!-- https://mvnrepository.com/artifact/org.webjars/jquery -->

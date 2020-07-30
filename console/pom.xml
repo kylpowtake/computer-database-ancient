@@ -10,17 +10,57 @@
 		<artifactId>computer-database-master</artifactId>
 		<version>1.1.0</version>
 	</parent>
-	
+
 	<artifactId>computer-database-master-console</artifactId>
 	<packaging>jar</packaging>
 	<name>computer-database-master Maven console</name>
 
+	<dependencies>
+		<dependency>
+			<groupId>com.excilys.formation.cdb</groupId>
+			<artifactId>computer-database-master-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/javax.ws.rs/javax.ws.rs-api -->
+		<dependency>
+			<groupId>javax.ws.rs</groupId>
+			<artifactId>javax.ws.rs-api</artifactId>
+			<version>${javax.rs.version}</version>
+		</dependency>
+		<!-- jackson : JSon -->
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.jaxrs/jackson-jaxrs-json-provider -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.jaxrs</groupId>
+			<artifactId>jackson-jaxrs-json-provider</artifactId>
+			<version>${jackson.databind.version}</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.module/jackson-modules-java8 -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.module</groupId>
+			<artifactId>jackson-modules-java8</artifactId>
+			<version>${jackson.databind.version}</version>
+			<type>pom</type>
+			<scope>runtime</scope>
+		</dependency>
+				<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310 -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr310</artifactId>
+			<version>${jackson.databind.version}</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.glassfish.jersey.core/jersey-client -->
+		<!-- <dependency> <groupId>org.glassfish.jersey.core</groupId> <artifactId>jersey-client</artifactId> 
+			<version>3.0.0-M6</version> </dependency> -->
+		<dependency>
+			<groupId>io.smallrye</groupId>
+			<artifactId>smallrye-rest-client</artifactId>
+			<version>1.2.2</version>
+		</dependency>
+	</dependencies>
 
-	
-	<!--
-	console :
-	logger
-	-->
-	
 
+	<!-- <build> <plugins> <plugin> <groupId>com.excilys.formation.cdb</groupId> 
+		<artifactId>computer-database-master-console</artifactId> <version>${project.version}</version> 
+		<configuration> <mainClass>com.excilys.formation.cdb.console.CLI</mainClass> 
+		<arguments> </arguments> </configuration> </plugin> </plugins> </build> -->
 </project>

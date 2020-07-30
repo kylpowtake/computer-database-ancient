@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,16 +24,17 @@ import com.excilys.formation.cdb.service.DTO.ComputerDto;
 import com.excilys.formation.cdb.service.DTO.Mappers.ComputerDtoMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 @RestController
 public class ComputersWebService {
 
-	static private final Logger logger = Logging.getLogger();
-
 	@Autowired
 	private ComputerService computerService;
+	
+	static private final Logger logger = Logging.getLogger();
 
-	@GetMapping("/rest/getComputer")
+	@GetMapping(value = "/rest/getComputer/id/")
 	public ResponseEntity<String> getComputer(@RequestParam(value = "id", defaultValue = "-1") String id) {
 		if (Utility.stringIsSomething(id) && !id.equals("-1")) {
 			Computer computer;
@@ -41,7 +43,7 @@ public class ComputersWebService {
 			} catch (Exception e1) {
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("FAILURE");
 			}
-			ObjectMapper mapper = new ObjectMapper();
+			ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
 			String computerJSon = "";
 			try {
 				computerJSon = mapper.writeValueAsString(computer);
@@ -54,26 +56,73 @@ public class ComputersWebService {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("FAILURE");
 		}
 	}
-	
-	@GetMapping("/rest/getComputers")
-	public String getComputers(@RequestParam(value = "orderBy", defaultValue = "id asc") String orderBy,
+
+	@GetMapping(value = "/rest/getComputers")
+	public ResponseEntity<String> getComputers(@RequestParam(value = "orderBy", defaultValue = "id asc") String orderBy,
 			@RequestParam(value = "offSet", defaultValue = "0") String offSet,
 			@RequestParam(value = "limit", defaultValue = "100") String limit,
 			@RequestParam(value = "search", defaultValue = "") String search) {
 		QueryParams queryParams = new QueryParams(orderBy, offSet, limit, search);
 		List<Computer> computersList = computerService.someUltimateSearch(queryParams);
-		ObjectMapper mapper = new ObjectMapper();
+		ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
 		String computersListJSon = "";
 		try {
 			computersListJSon = mapper.writeValueAsString(computersList);
 		} catch (JsonProcessingException e) {
 			logger.error("Problème de JSon.");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("FAILURE");
 		}
-		return computersListJSon;
+		return ResponseEntity.status(HttpStatus.OK).body(computersListJSon);
 	}
 
-	@PostMapping("/rest/deleteComputer/id")
-	public ResponseEntity<String> deleteComputers(@RequestBody String id) {
+	@PostMapping(value = "/rest/addComputer")
+	public ResponseEntity<String> addComputer(@RequestBody ComputerDto computerDto) {
+		Computer computer = ComputerDtoMapper.computerDTOToComputer(computerDto);
+		String computerString = "";
+		try {
+			ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+			computerString = mapper.writeValueAsString(computer);
+		} catch (JsonProcessingException e) {
+			logger.error("Problème de JSon.");
+		}
+		try {
+			Resultat resultat = computerService.create(computer);
+			if (resultat.equals(Resultat.REUSSI)) {
+				return ResponseEntity.status(HttpStatus.OK).body(computerString);
+			} else {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("FAILURE");
+			}
+		} catch (Exception e) {
+			logger.error("A réparé.");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("FAILURE");
+		}
+	}
+
+	@PostMapping(value = "/rest/updateComputer")
+	public ResponseEntity<String> updateComputer(@RequestBody ComputerDto computerDto) {
+		Computer computer = ComputerDtoMapper.computerDTOToComputer(computerDto);
+		String computerString = "";
+		try {
+			ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+			computerString = mapper.writeValueAsString(computer);
+		} catch (JsonProcessingException e) {
+			logger.error("Problème de JSon.");
+		}
+		try {
+			Resultat resultat = computerService.modify(computer);
+			if (resultat.equals(Resultat.REUSSI)) {
+				return ResponseEntity.status(HttpStatus.OK).body(computerString);
+			} else {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("FAILURE");
+			}
+		} catch (Exception e) {
+			logger.error("A réparé.");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("FAILURE");
+		}
+	}
+
+	@DeleteMapping(value = "/rest/deleteComputer/id/")
+	public ResponseEntity<String> deleteComputer(@RequestParam(value = "id", defaultValue = "-1") String id) {
 		if (!"-1".equals(id) && Utility.stringIsSomething(id)) {
 			try {
 				Resultat resultat = computerService.delete(Integer.parseInt(id));
@@ -90,52 +139,6 @@ public class ComputersWebService {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("FAILURE");
 		}
 	}
-	
-	@PostMapping("/rest/addcomputer")
-	public ResponseEntity<String> addComputer(@RequestBody ComputerDto computerDto) {
-		Computer computer = ComputerDtoMapper.computerDTOToComputer(computerDto);
-		String computerString = "";
-		try {
-			ObjectMapper mapper = new ObjectMapper();
-			computerString = mapper.writeValueAsString(computer);
-		} catch (JsonProcessingException e) {
-			logger.error("Problème de JSon.");
-		}
-		try {
-			Resultat resultat = computerService.create(computer);
-			if (resultat.equals(Resultat.REUSSI)) {
-				return ResponseEntity.status(HttpStatus.OK).body("SUCCESS : " + computerString);
-			} else {
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("FAILURE");
-			}
-		} catch (Exception e) {
-			logger.error("A réparé.");
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("FAILURE");
-		}
-	}
-	
-	@PostMapping("/rest/updateComputer")
-	public ResponseEntity<String> updateComputer(@RequestBody ComputerDto computerDto) {
-		Computer computer = ComputerDtoMapper.computerDTOToComputer(computerDto);
-		String computerString = "";
-		try {
-			ObjectMapper mapper = new ObjectMapper();
-			computerString = mapper.writeValueAsString(computer);
-		} catch (JsonProcessingException e) {
-			logger.error("Problème de JSon.");
-		}
-		try {
-			Resultat resultat = computerService.modify(computer);
-			if (resultat.equals(Resultat.REUSSI)) {
-				return ResponseEntity.status(HttpStatus.OK).body("SUCCESS : " + computerString);
-			} else {
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("FAILURE");
-			}
-		} catch (Exception e) {
-			logger.error("A réparé.");
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("FAILURE");
-		}
-	}	
 
 	public void gestionListeComputers() {
 		Page page = Page.getPage();

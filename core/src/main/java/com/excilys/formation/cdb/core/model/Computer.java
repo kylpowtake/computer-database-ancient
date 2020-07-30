@@ -12,6 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.excilys.formation.cdb.core.logging.Logging;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 /**
  * Classe représentant un computer avec ses différentes valeurs.
@@ -38,11 +39,13 @@ public class Computer {
 	 * La date d'introduction du computer.
 	 */
 	@Column(name="introduced")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private LocalDate introduced;
 	/**
 	 * La date d'arrêt du computer.
 	 */
 	@Column(name="discontinued")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private LocalDate discontinued;
 	/**
 	 * La company du computer.

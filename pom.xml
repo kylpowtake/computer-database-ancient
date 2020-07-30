@@ -32,6 +32,7 @@
 		<apt.maven.plugin.version>1.1.3</apt.maven.plugin.version>
 		<spring.security.version>5.3.3.RELEASE</spring.security.version>
 		<jackson.databind.version>2.11.1</jackson.databind.version>
+		<javax.rs.version>2.1.1</javax.rs.version>
 	</properties>
 
 
