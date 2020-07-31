@@ -11,7 +11,7 @@
 		<version>1.1.0</version>
 	</parent>
 	
-	<artifactId>computer-database-master-service</artifactId>
+	<artifactId>cdb-service</artifactId>
 	<packaging>jar</packaging>
 	<name>computer-database-master Maven service</name>
 	

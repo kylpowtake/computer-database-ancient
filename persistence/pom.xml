@@ -13,7 +13,7 @@
 	</parent>
 
 
-	<artifactId>computer-database-master-persistence</artifactId>
+	<artifactId>cdb-persistence</artifactId>
 	<packaging>jar</packaging>
 	<name>computer-database-master Maven persistence</name>
 

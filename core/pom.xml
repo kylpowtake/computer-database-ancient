@@ -13,7 +13,7 @@
 	</parent>
 
 
-	<artifactId>computer-database-master-core</artifactId>
+	<artifactId>cdb-core</artifactId>
 	<packaging>jar</packaging>
 	<name>computer-database-master Maven core</name>
 

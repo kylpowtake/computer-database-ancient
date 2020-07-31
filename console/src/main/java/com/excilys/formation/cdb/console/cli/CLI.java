@@ -89,7 +89,8 @@ public abstract class CLI {
 			return ("No action done because of unknown error, more information : " + result.getClass());
 		case GOOD_CLASS:
 			Company company = (Company) result;
-			String message = "\n\n\n\n\n\n\n\n\n\n\n\n\n\n plop : " + company.toString() + "\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+			String message = "\n\n\n\n\n\n\n\n\n\n\n\n\n\n plop : " + company.toString()
+					+ "\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
 			return message;
 		default:
 			return ("No action done by default because of unknown error");
@@ -114,8 +115,61 @@ public abstract class CLI {
 			return ("No action done because of unknown error, more information : " + result.getClass());
 		case GOOD_CLASS:
 			Computer computer = (Computer) result;
-			String message = "\n\n\n\n\n\n\n\n\n\n\n\n\n\n plop : " + computer.toString() + "\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+			String message = "\n\n\n\n\n\n\n\n\n\n\n\n\n\n plop : " + computer.toString()
+					+ "\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
 			return message;
+		default:
+			return ("No action done by default because of unknown error");
+		}
+	}
+	
+	private static String deleteCompany(String argument) {
+		Object result = SendRequestGet(STARTURI + "deleteCompany/id/?id=" + argument, String.class);
+		ResultCLI resultCLI = testResult(result.getClass(), String.class);
+		switch (resultCLI) {
+		case BAD_RESULT:
+			StatusType statusType = (StatusType) result;
+			return statusType.getStatusCode() + " " + statusType.getReasonPhrase();
+		case JSON_MAPPING_EXCEPTION:
+			JsonProcessingException e = (JsonProcessingException) result;
+			return e.getLocalizedMessage();
+		case OTHER:
+			return ("No action done because of unknown error, more information : " + result.getClass());
+		case GOOD_CLASS:
+			String resultString = (String) result;
+			if("SUCCESS".equals(resultString)) {
+			String message = "\n\n\n\n\n\n\n\n\n\n\n\n\n\n plop : " + resultString
+					+ "\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+			return message;
+			} else {
+				return "Failed operation";
+			}
+		default:
+			return ("No action done by default because of unknown error");
+		}
+	}
+
+	private static String deleteComputer(String argument) {
+		Object result = SendRequestGet(STARTURI + "deleteComputer/id/?id=" + argument, String.class);
+		ResultCLI resultCLI = testResult(result.getClass(), String.class);
+		switch (resultCLI) {
+		case BAD_RESULT:
+			StatusType statusType = (StatusType) result;
+			return statusType.getStatusCode() + " " + statusType.getReasonPhrase();
+		case JSON_MAPPING_EXCEPTION:
+			JsonProcessingException e = (JsonProcessingException) result;
+			return e.getLocalizedMessage();
+		case OTHER:
+			return ("No action done because of unknown error, more information : " + result.getClass());
+		case GOOD_CLASS:
+			String resultString = (String) result;
+			if("SUCCESS".equals(resultString)) {
+			String message = "\n\n\n\n\n\n\n\n\n\n\n\n\n\n plop : " + resultString
+					+ "\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+			return message;
+			} else {
+				return "Failed operation";
+			}
 		default:
 			return ("No action done by default because of unknown error");
 		}
@@ -215,7 +269,7 @@ public abstract class CLI {
 				gestionDiscussion(getComputers());
 				break;
 			default:
-				System.out.println("fin de l'application suite à une erreur d'input.");
+				System.out.println("Wrong command given, application stopped.");
 				System.exit(1);
 				break;
 			}
@@ -231,11 +285,15 @@ public abstract class CLI {
 				gestionDiscussion(findComputer(argument));
 				break;
 			case "deleteCompany":
+				deleteCompany(argument);
 				break;
 			case "deleteComputer":
+				deleteComputer(argument);
 				break;
 			case "createCompany":
-				System.out.println("fin de l'application suite à une erreur d'input.");
+				break;
+			default:
+				System.out.println("Wrong command given, application stopped.");
 				System.exit(1);
 				break;
 			}
@@ -250,10 +308,15 @@ public abstract class CLI {
 			case "createComputer":
 				break;
 			case "updateComputer":
-				System.out.println("fin de l'application suite à une erreur d'input.");
+				break;
+			default:
+				System.out.println("Wrong command given, application stopped.");
 				System.exit(1);
 				break;
 			}
+		} else {
+			System.out.println("Wrong command given, application stopped.");
+			System.exit(1);
 		}
 	}
 
