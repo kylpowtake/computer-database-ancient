@@ -28,7 +28,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests().regexMatchers("////", ".*/rest/.*").permitAll().antMatchers("/login").permitAll().anyRequest()
+		http.authorizeRequests().regexMatchers("////", ".*/console/.*").permitAll().antMatchers("/login").permitAll().anyRequest()
 				.authenticated().and().formLogin().loginPage("/login").loginProcessingUrl("/perform_login")
 				.usernameParameter("security_username").passwordParameter("security_password")
 				.defaultSuccessUrl("/dashboard", true).failureUrl("/").permitAll().and().logout().permitAll().and()

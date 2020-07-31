@@ -24,7 +24,12 @@ import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
  *
  */
 public abstract class CLI {
-	private static final String STARTURI = "http://localhost:8080/computer-database-master/rest/";
+	private static final String STARTURI = "http://localhost:8080/computer-database-master/console/";
+
+	private static final String COMPANY = "company";
+
+	private static final String COMPUTER = "computer";
+
 	/**
 	 * Le scanner permettant à l'utilisateur de donner des commandes.
 	 */
@@ -76,7 +81,7 @@ public abstract class CLI {
 			return "Mauvais paramètres.";
 		}
 		Class<Company> objectClass = Company.class;
-		Object result = SendRequestGet(STARTURI + "getCompany/id/?id=" + argument, objectClass);
+		Object result = SendRequestGet(STARTURI + COMPANY + "/" + argument, objectClass);
 		ResultCLI resultCLI = testResult(result.getClass(), objectClass);
 		switch (resultCLI) {
 		case BAD_RESULT:
@@ -102,7 +107,7 @@ public abstract class CLI {
 			return "Mauvais paramètres.";
 		}
 		Class<Computer> objectClass = Computer.class;
-		Object result = SendRequestGet(STARTURI + "getComputer/id/?id=" + argument, objectClass);
+		Object result = SendRequestGet(STARTURI + COMPUTER + "/" + argument, objectClass);
 		ResultCLI resultCLI = testResult(result.getClass(), objectClass);
 		switch (resultCLI) {
 		case BAD_RESULT:
@@ -122,62 +127,30 @@ public abstract class CLI {
 			return ("No action done by default because of unknown error");
 		}
 	}
-	
+
 	private static String deleteCompany(String argument) {
-		Object result = SendRequestGet(STARTURI + "deleteCompany/id/?id=" + argument, String.class);
-		ResultCLI resultCLI = testResult(result.getClass(), String.class);
-		switch (resultCLI) {
-		case BAD_RESULT:
-			StatusType statusType = (StatusType) result;
-			return statusType.getStatusCode() + " " + statusType.getReasonPhrase();
-		case JSON_MAPPING_EXCEPTION:
-			JsonProcessingException e = (JsonProcessingException) result;
-			return e.getLocalizedMessage();
-		case OTHER:
-			return ("No action done because of unknown error, more information : " + result.getClass());
-		case GOOD_CLASS:
-			String resultString = (String) result;
-			if("SUCCESS".equals(resultString)) {
-			String message = "\n\n\n\n\n\n\n\n\n\n\n\n\n\n plop : " + resultString
-					+ "\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+		String result = SendRequestDelete(STARTURI + COMPANY + "/" + argument, String.class);
+		if ("SUCCESS".equals(result)) {
+			String message = "\n\n\n\n\n\n\n\n\n\n\n\n\n\n plop : " + result + "\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
 			return message;
-			} else {
-				return "Failed operation";
-			}
-		default:
-			return ("No action done by default because of unknown error");
+		} else {
+			return result;
 		}
 	}
 
 	private static String deleteComputer(String argument) {
-		Object result = SendRequestGet(STARTURI + "deleteComputer/id/?id=" + argument, String.class);
-		ResultCLI resultCLI = testResult(result.getClass(), String.class);
-		switch (resultCLI) {
-		case BAD_RESULT:
-			StatusType statusType = (StatusType) result;
-			return statusType.getStatusCode() + " " + statusType.getReasonPhrase();
-		case JSON_MAPPING_EXCEPTION:
-			JsonProcessingException e = (JsonProcessingException) result;
-			return e.getLocalizedMessage();
-		case OTHER:
-			return ("No action done because of unknown error, more information : " + result.getClass());
-		case GOOD_CLASS:
-			String resultString = (String) result;
-			if("SUCCESS".equals(resultString)) {
-			String message = "\n\n\n\n\n\n\n\n\n\n\n\n\n\n plop : " + resultString
-					+ "\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+		String result = SendRequestDelete(STARTURI + COMPUTER + "/" + argument, String.class);
+		if ("SUCCESS".equals(result)) {
+			String message = "\n\n\n\n\n\n\n\n\n\n\n\n\n\n plop : " + result + "\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
 			return message;
-			} else {
-				return "Failed operation";
-			}
-		default:
-			return ("No action done by default because of unknown error");
+		} else {
+			return result;
 		}
 	}
 
 	private static String getCompanies() {
 		Class<Company[]> objectClass = Company[].class;
-		Object result = SendRequestGet(STARTURI + "getCompanies", objectClass);
+		Object result = SendRequestGet(STARTURI + COMPANY + "/", objectClass);
 		ResultCLI resultCLI = testResult(result.getClass(), objectClass);
 		switch (resultCLI) {
 		case BAD_RESULT:
@@ -187,7 +160,7 @@ public abstract class CLI {
 			JsonProcessingException e = (JsonProcessingException) result;
 			return e.getLocalizedMessage();
 		case OTHER:
-			return ("No action done because of unknown error, more information : " + result.getClass());
+			return ("No action done because of unknown error, more information : " + result.getClass() + result.toString());
 		case GOOD_CLASS:
 			Company[] companiesList = (Company[]) result;
 			String message = "\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
@@ -203,7 +176,7 @@ public abstract class CLI {
 
 	private static String getComputers() {
 		Class<Computer[]> objectClass = Computer[].class;
-		Object result = SendRequestGet(STARTURI + "getComputers", objectClass);
+		Object result = SendRequestGet(STARTURI + COMPUTER + "/", objectClass);
 		ResultCLI resultCLI = testResult(result.getClass(), objectClass);
 		switch (resultCLI) {
 		case BAD_RESULT:
@@ -237,6 +210,7 @@ public abstract class CLI {
 				Object resultObject = mapper.readValue(resultString, resultClass);
 				return resultObject;
 			} else {
+				System.out.println("Response not good :(");
 				return response.getStatusInfo();
 			}
 		} catch (InvalidDefinitionException e) {
@@ -245,6 +219,22 @@ public abstract class CLI {
 			return e;
 		} catch (JsonProcessingException e) {
 			return e;
+		} finally {
+			response.close();
+		}
+	}
+
+	private static String SendRequestDelete(String uri, Class<?> resultClass) {
+		WebTarget target = client.target(uri);
+		Response response = target.request().delete();
+		try {
+			if (response.getStatus() == 200) {
+				response.bufferEntity();
+				String resultString = response.readEntity(String.class);
+				return resultString;
+			} else {
+				return response.getStatusInfo().toString();
+			}
 		} finally {
 			response.close();
 		}
@@ -285,10 +275,10 @@ public abstract class CLI {
 				gestionDiscussion(findComputer(argument));
 				break;
 			case "deleteCompany":
-				deleteCompany(argument);
+				gestionDiscussion(deleteCompany(argument));
 				break;
 			case "deleteComputer":
-				deleteComputer(argument);
+				gestionDiscussion(deleteComputer(argument));
 				break;
 			case "createCompany":
 				break;

@@ -8,7 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,11 +33,11 @@ public class ComputersWebService {
 
 	@Autowired
 	private ComputerService computerService;
-	
+
 	static private final Logger logger = Logging.getLogger();
 
-	@GetMapping(value = "/rest/getComputer/id/")
-	public ResponseEntity<String> getComputer(@RequestParam(value = "id", defaultValue = "-1") String id) {
+	@GetMapping(path = "/console/computer/{id}")
+	public ResponseEntity<String> getComputer(@PathVariable String id) {
 		if (Utility.stringIsSomething(id) && !id.equals("-1")) {
 			Computer computer;
 			try {
@@ -57,7 +59,7 @@ public class ComputersWebService {
 		}
 	}
 
-	@GetMapping(value = "/rest/getComputers")
+	@GetMapping(value = "/console/computer/")
 	public ResponseEntity<String> getComputers(@RequestParam(value = "orderBy", defaultValue = "id asc") String orderBy,
 			@RequestParam(value = "offSet", defaultValue = "0") String offSet,
 			@RequestParam(value = "limit", defaultValue = "100") String limit,
@@ -75,7 +77,7 @@ public class ComputersWebService {
 		return ResponseEntity.status(HttpStatus.OK).body(computersListJSon);
 	}
 
-	@PostMapping(value = "/rest/addComputer")
+	@PutMapping(value = "/console/computer/")
 	public ResponseEntity<String> addComputer(@RequestBody ComputerDto computerDto) {
 		Computer computer = ComputerDtoMapper.computerDTOToComputer(computerDto);
 		String computerString = "";
@@ -98,7 +100,7 @@ public class ComputersWebService {
 		}
 	}
 
-	@PostMapping(value = "/rest/updateComputer")
+	@PostMapping(value = "/console/computer/")
 	public ResponseEntity<String> updateComputer(@RequestBody ComputerDto computerDto) {
 		Computer computer = ComputerDtoMapper.computerDTOToComputer(computerDto);
 		String computerString = "";
@@ -121,8 +123,8 @@ public class ComputersWebService {
 		}
 	}
 
-	@DeleteMapping(value = "/rest/deleteComputer/id/")
-	public ResponseEntity<String> deleteComputer(@RequestParam(value = "id", defaultValue = "-1") String id) {
+	@DeleteMapping(path = "/console/computer/{id}")
+	public ResponseEntity<String> deleteComputer(@PathVariable String id) {
 		if (!"-1".equals(id) && Utility.stringIsSomething(id)) {
 			try {
 				Resultat resultat = computerService.delete(Integer.parseInt(id));

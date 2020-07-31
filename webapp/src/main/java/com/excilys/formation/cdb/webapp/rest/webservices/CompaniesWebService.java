@@ -9,9 +9,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.excilys.formation.cdb.core.enumeration.Resultat;
@@ -26,14 +27,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 public class CompaniesWebService {
-	
+
 	@Autowired
 	private CompanyService companyService;
-	
+
 	static private final Logger logger = Logging.getLogger();
 
-	@GetMapping(value = "/rest/getCompany/id/")
-	public ResponseEntity<String> getCompany(@RequestParam(value = "id", defaultValue = "-1") String id) {
+	@GetMapping(path = "/console/company/{id}")
+	public ResponseEntity<String> getCompany(@PathVariable String id) {
 		if (Utility.stringIsSomething(id) && !id.equals("-1")) {
 			Company company;
 			try {
@@ -55,7 +56,7 @@ public class CompaniesWebService {
 		}
 	}
 
-	@GetMapping(value = "/rest/getCompanies")
+	@GetMapping(value = "/console/company/")
 	public ResponseEntity<String> getCompanies() {
 		List<CompanyDto> companiesDtoList = companyService.all("").stream()
 				.map(x -> CompanyDtoMapper.companyToCompanyDto(x)).collect(Collectors.toList());
@@ -69,8 +70,8 @@ public class CompaniesWebService {
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(listCompaniesJSon);
 	}
-	
-	@PostMapping(value = "/rest/addCompany")
+
+	@PutMapping(value = "/console/company/")
 	public ResponseEntity<String> addCompany(@RequestBody CompanyDto companyDto) {
 		Company company = CompanyDtoMapper.companyDtoToCompany(companyDto);
 		String companyString = "";
@@ -92,8 +93,8 @@ public class CompaniesWebService {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("FAILURE");
 		}
 	}
-	
-	@PostMapping(value = "/rest/updateCompany")
+
+	@PostMapping(value = "/console/company/")
 	public ResponseEntity<String> updateCompany(@RequestBody CompanyDto companyDto) {
 		Company company = CompanyDtoMapper.companyDtoToCompany(companyDto);
 		String companyString = "";
@@ -115,9 +116,9 @@ public class CompaniesWebService {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("FAILURE");
 		}
 	}
-	
-	@DeleteMapping(value = "/rest/deleteCompany/id/")
-	public ResponseEntity<String> deleteCompany(@RequestParam(value = "id", defaultValue = "-1") String id) {
+
+	@DeleteMapping(path = "/console/company/{id}")
+	public ResponseEntity<String> deleteCompany(@PathVariable String id) {
 		if (!"-1".equals(id) && Utility.stringIsSomething(id)) {
 			try {
 				Resultat resultat = companyService.delete(Integer.parseInt(id));
